@@ -1,0 +1,285 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+#pragma warning(disable : 4996)
+
+#include "server.h"
+#include<sstream>
+#include"Runtime/Core/Public/GenericPlatform/GenericPlatformAffinity.h"
+#include"Runtime/Core/Public/HAL/Runnable.h"
+#include "RunnableThread.h"
+#include<algorithm>
+#include<string>
+//#include"projectlevelCharacter.h"
+//#include"MainPlayerController.h"
+#include"HKayaCharacter.h"
+#include"CharacterPlayerController.h"
+
+
+server::server() :StopTaskCounter(0)
+{
+}
+
+
+server::~server()
+{
+	delete Thread;
+	Thread = nullptr;
+
+	closesocket(Sock);
+	WSACleanup();
+}
+
+bool server::InitSock()
+{
+	WSADATA wsaData;
+	// 윈속 버전을 2.2로 초기화
+	int retval = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (retval != 0)
+	{
+		return false;
+	}
+
+	// TCP 소켓 생성	
+	Sock = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
+	if (Sock == INVALID_SOCKET)
+	{
+		return false;
+	}
+
+	return true;
+}
+bool server::Connect(const char* pszIP, int nPort)
+{
+	// 접속할 서버 정보를 저장할 구조체
+	SOCKADDR_IN stServerAddr;
+
+	stServerAddr.sin_family = AF_INET;
+	// 접속할 서버 포트 및 IP
+	stServerAddr.sin_port = htons(nPort);
+	stServerAddr.sin_addr.s_addr = inet_addr(pszIP);
+
+	int nRet = connect(Sock, (sockaddr*)&stServerAddr, sizeof(sockaddr));
+	if (nRet == SOCKET_ERROR)
+	{
+		return false;
+	}
+
+	return true;
+}
+void server::EnrollCharacterInfo(cPlayer& info)
+{
+	stringstream SendStream;
+
+	SendStream << PacketType::ENROLL_CHARACTER << endl;;
+	SendStream << info;
+
+	int nSendLen = send
+	(
+		Sock,
+		(CHAR*)SendStream.str().c_str(),
+		SendStream.str().length(),
+		0
+	);
+
+	if (nSendLen == -1)
+	{
+		return;
+	}
+}
+
+void server::SendPlayer(cPlayer& info)
+{
+	// 캐릭터 정보 직렬화
+	stringstream SendStream;
+	// 요청 종류
+	SendStream << PacketType::SEND_CHARACTER << endl;;
+	SendStream << info;
+
+	// 캐릭터 정보 전송
+	int nSendLen = send
+	(
+		Sock,
+		(CHAR*)SendStream.str().c_str(),
+		SendStream.str().length(),
+		0
+	);
+
+	if (nSendLen == -1)
+	{
+		return;
+	}
+}
+// 캐릭터 동기화
+void server::SendCharacterInfo(cPlayer& info)
+{
+	// 캐릭터 정보 직렬화
+	stringstream SendStream;
+	// 요청 종류
+	SendStream << PacketType::SEND_CHARACTER << endl;;
+	SendStream << info;
+
+	// 캐릭터 정보 전송
+	int nSendLen = send
+	(
+		Sock,
+		(CHAR*)SendStream.str().c_str(),
+		SendStream.str().length(),
+		0
+	);
+
+	if (nSendLen == -1)
+	{
+		return;
+	}
+}
+// 캐릭터 로그아웃
+void server::LogoutCharacter(int SessionId)
+{
+	stringstream SendStream;
+	SendStream << PacketType::LOGOUT_CHARACTER << endl;
+	SendStream << SessionId << endl;
+
+	int nSendLen = send
+	(
+		Sock,
+		(CHAR*)SendStream.str().c_str(),
+		SendStream.str().length(),
+		0
+	);
+
+	if (nSendLen == -1)
+	{
+		return;
+	}
+
+	closesocket(Sock);
+	WSACleanup();
+}
+// 스레드 시작 및 종료
+bool server::StartListen()
+{
+	// 스레드 시작
+	if (Thread != nullptr)
+	{
+		cout << "Thread != nullptr" << endl;
+		return false;
+	}
+
+	Thread = FRunnableThread::Create(this, TEXT("serversocket"), 0, TPri_BelowNormal);
+
+	return (Thread != nullptr);
+}
+void server::CloseSocket()
+{
+	closesocket(Sock);
+	WSACleanup();
+}
+void server::StopListen()
+{
+	Stop();
+	Thread->WaitForCompletion();
+	Thread->Kill();
+	delete Thread;
+	Thread = nullptr;
+	StopTaskCounter.Reset();
+}
+
+cPlayerInfo* server::RecvCharacterInfo(stringstream& RecvStream)
+{
+	RecvStream >> playerinfo;
+	return &playerinfo;
+}
+
+//FRunnable override 함수
+bool server::Init()
+{
+	return true;
+}
+
+uint32 server::Run()
+{
+	FPlatformProcess::Sleep(0.03);
+	while (StopTaskCounter.GetValue() == 0 && Controller != nullptr)
+	{
+		stringstream RecvStream;
+		int PacketType;
+		int nRecvLen = recv
+		(
+			Sock,
+			(CHAR*)&recvBuffer,
+			SOCKET_BUF_SIZE,
+			0
+		);
+		if (nRecvLen == SOCKET_ERROR)
+		{
+			UE_LOG(LogTemp, Log, TEXT("Recv Socket ERROR\n"));
+		}
+
+		if (nRecvLen > 0)
+		{
+			RecvStream << recvBuffer;
+			RecvStream >> PacketType;
+
+			switch (PacketType)
+			{
+			case PacketType::RECV_CHARACTER:
+			{
+				Controller->RecvWorldInfo(RecvCharacterInfo(RecvStream));
+			}
+			break;
+			case PacketType::ENTER_NEW_PLAYER:
+			{
+				Controller->RecvNewPlayer(RecvNewPlayer(RecvStream));
+			}
+			break;
+			case PacketType::ENTER_NEW_MONSTER:
+			{
+				Controller->RecvNewMonster(RecvMonsterSet(RecvStream));
+			}
+			break;
+			case PacketType::SPAWN_MONSTER:
+			{
+				Controller->RecvSpawnMonster(RecvMonster(RecvStream));
+			}
+			break;
+
+
+
+			default:
+				break;
+			}
+		}
+	}
+	return 0;
+}
+void server::Stop()
+{
+	StopTaskCounter.Increment();
+}
+void server::Exit()
+{
+
+}
+//FRunnable override 함수
+MonsterSet* server::RecvMonsterSet(stringstream& RecvStream)
+{
+	RecvStream >> MonsterSetInfo;
+	return &MonsterSetInfo;
+}
+Monster* server::RecvMonster(stringstream& RecvStream)
+{
+	RecvStream >> MonsterInfo;
+	return &MonsterInfo;
+}
+cPlayer *server::RecvNewPlayer(stringstream & RecvStream)
+{
+	RecvStream >> NewPlayer;
+	return &NewPlayer;
+}
+
+void server::SetPlayerController(ACharacterPlayerController* PlayerController)
+{
+	if (PlayerController)
+	{
+		Controller = PlayerController;
+	}
+}
