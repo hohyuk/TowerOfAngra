@@ -7,20 +7,17 @@
 #include "CharacterPlayerController.h"
 #include "Blueprint/UserWidget.h"
 
-void ATowerofAngraGameMode::BeginPlay()
-{
-	//As Soon as the player enter the game apply huid to the screen.
-}
-
 ATowerofAngraGameMode::ATowerofAngraGameMode()
 {
+	DefaultPawnClass = AHKayaCharacter::StaticClass();
+	//DefaultPawnClass = AHAxeCharacter::StaticClass();
+
 	// set default character controller class by c++
 	PlayerControllerClass = ACharacterPlayerController::StaticClass();
 	
 	// set set default character class by c++
 
-	DefaultPawnClass = AHKayaCharacter::StaticClass();
-	//DefaultPawnClass = AHAxeCharacter::StaticClass();
+	
 }
 
 void ATowerofAngraGameMode::PostInitializeComponents()
