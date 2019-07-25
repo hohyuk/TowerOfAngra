@@ -66,5 +66,5 @@ void UHBTService_Detect::TickNode(UBehaviorTreeComponent & OwnerComp, uint8 * No
 	// 범위를 벗어나면 다시 타겟키를 null로 만든다.
 	OwnerComp.GetBlackboardComponent()->SetValueAsObject(AHMonsterAIController::TargetKey, nullptr);
 	AMonster->SetHpShow(false);
-	DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 0.2f);
+	//DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 0.2f);
 }
