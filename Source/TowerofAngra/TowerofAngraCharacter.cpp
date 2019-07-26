@@ -26,7 +26,7 @@ ATowerofAngraCharacter::ATowerofAngraCharacter()
 	Camera->SetupAttachment(SpringArm);
 
 	SetCamMode(ECAMMode::DYNAMIC_CAM);
-	InitCommon();
+	//InitCommon();
 
 	// 캐릭터 UI 및 상태 =======================
 	// UI

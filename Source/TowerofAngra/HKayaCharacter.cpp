@@ -25,7 +25,7 @@ AHKayaCharacter::AHKayaCharacter()
 	if (KAYA_ANIM.Succeeded())
 		GetMesh()->SetAnimInstanceClass(KAYA_ANIM.Class);
 
-	SetControlMode();			// 캐릭터 컨트롤 설정
+	InitCommon();			// 캐릭터 컨트롤 설정
 	AttackEndComboState();
 
 	//Set Particle
@@ -72,8 +72,9 @@ void AHKayaCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AHKayaCharacter::SetControlMode()
+void AHKayaCharacter::InitCommon()
 {
+	Super::InitCommon();
 	MaxCombo = 4;			// 콤보 개수
 	fAttackPower = 50.f;			// 기본 공격력
 	fSkillPower = 100.f;			// 스킬 공격력

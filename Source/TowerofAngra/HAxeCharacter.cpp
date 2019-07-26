@@ -24,12 +24,18 @@ AHAxeCharacter::AHAxeCharacter()
 		JumpSound = JUMPSOUND.Object;
 
 
-	MaxCombo = 3;			// ÄÞº¸ °³¼ö
+	
 }
 
 void AHAxeCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void AHAxeCharacter::InitCommon()
+{
+	Super::InitCommon();
+	MaxCombo = 3;			// ÄÞº¸ °³¼ö
 }
 
 void AHAxeCharacter::Tick(float DeltaTime)

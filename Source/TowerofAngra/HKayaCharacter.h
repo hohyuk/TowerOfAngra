@@ -22,7 +22,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	void SetControlMode();
+	virtual void InitCommon() override;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
