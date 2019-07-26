@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "EngineMinimal.h"
+#include "TowerofAngra.h"
 #include "GameFramework/GameModeBase.h"
 #include "TowerofAngraGameMode.generated.h"
 
@@ -13,8 +13,6 @@ class ATowerofAngraGameMode : public AGameModeBase
 
 	ATowerofAngraGameMode();
 public:
-	
-	//FName LoadFirstLevel;
 
 public:
 	virtual void PostInitializeComponents() override;

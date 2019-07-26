@@ -56,9 +56,9 @@ AHKayaCharacter::AHKayaCharacter()
 	}
 
 	// Sound
-	static ConstructorHelpers::FObjectFinder<USoundBase> JUMPSOUND(TEXT("/Game/HumanVocalizations/HumanFemaleB/Wavs/voice_female_b_effort_jump_action_10.voice_female_b_effort_jump_action_10"));
+	/*static ConstructorHelpers::FObjectFinder<USoundBase> JUMPSOUND(TEXT("/Game/HumanVocalizations/HumanFemaleB/Wavs/voice_female_b_effort_jump_action_10.voice_female_b_effort_jump_action_10"));
 	if (JUMPSOUND.Succeeded())
-		JumpSound = JUMPSOUND.Object;
+		JumpSound = JUMPSOUND.Object;*/
 
 	static ConstructorHelpers::FObjectFinder<USoundBase> SKILLSOUND(TEXT("/Game/HumanVocalizations/HumanFemaleC/Wavs/voice_female_c_battle_shout_short_02.voice_female_c_battle_shout_short_02"));
 	if (SKILLSOUND.Succeeded())

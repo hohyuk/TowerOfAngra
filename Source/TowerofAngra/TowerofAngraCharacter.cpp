@@ -72,6 +72,7 @@ void ATowerofAngraCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 
 	PlayerInputComponent->BindAction(TEXT("ViewChange"), EInputEvent::IE_Pressed, this, &ATowerofAngraCharacter::ViewChange);
 
+	TOALOG_S(Warning);
 }
 
 void ATowerofAngraCharacter::Tick(float DeltaTime)

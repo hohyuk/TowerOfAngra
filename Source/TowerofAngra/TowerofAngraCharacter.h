@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "EngineMinimal.h"
+#include "TowerofAngra.h"
 #include "GameFramework/Character.h"
 #include "TowerofAngraCharacter.generated.h"
 

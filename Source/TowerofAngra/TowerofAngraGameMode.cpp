@@ -17,8 +17,6 @@ ATowerofAngraGameMode::ATowerofAngraGameMode()
 	PlayerControllerClass = ACharacterPlayerController::StaticClass();
 	
 	// set set default character class by c++
-
-	
 }
 
 void ATowerofAngraGameMode::PostInitializeComponents()

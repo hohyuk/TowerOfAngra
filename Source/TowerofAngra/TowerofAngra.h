@@ -2,7 +2,10 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Runtime/Engine/Classes/Engine/Engine.h"
-#include "DrawDebugHelpers.h"
+#include "EngineMinimal.h"
 #include "UObject/ConstructorHelpers.h"
+
+DECLARE_LOG_CATEGORY_EXTERN(TowerofAngra, Log, All);
+#define TOALOG_CALLINFO (FString(__FUNCTION__) + TEXT("(") + FString::FromInt(__LINE__) + TEXT(")"))
+#define TOALOG_S(Verbosity) UE_LOG(TowerofAngra, Verbosity, TEXT("%s"), *TOALOG_CALLINFO)
+#define TOALOG(Verbosity, Format, ...) UE_LOG(TowerofAngra, Verbosity, TEXT("%s %s"),*TOALOG_CALLINFO, *FString::Printf(Format,##__VA_ARGS__))
