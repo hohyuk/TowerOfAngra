@@ -19,6 +19,21 @@ AHWarriorCharacter::AHWarriorCharacter()
 	if (WARRIOR_ANIM.Succeeded())
 		GetMesh()->SetAnimInstanceClass(WARRIOR_ANIM.Class);
 
+	// Weapon
+	FName WeaponSocket(TEXT("hand_rSocket"));
+	if (GetMesh()->DoesSocketExist(WeaponSocket))
+	{
+		Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WEAPON"));
+		static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_WEAPON(TEXT("/Game/TowerofAngra/Weapon/Swords/Blade_BlackKnight/SK_Blade_BlackKnight.SK_Blade_BlackKnight"));
+
+		if (SK_WEAPON.Succeeded())
+		{
+			Weapon->SetSkeletalMesh(SK_WEAPON.Object);
+		}
+
+		Weapon->SetupAttachment(GetMesh(), WeaponSocket);
+	}
+
 	InitCommon();
 }
 
