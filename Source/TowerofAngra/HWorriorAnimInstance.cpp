@@ -13,6 +13,10 @@ UHWorriorAnimInstance::UHWorriorAnimInstance()
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/TowerofAngra/Character/Warrior/Animations/HWarriorAttack_Montage.HWarriorAttack_Montage"));
 	if (ATTACK_MONTAGE.Succeeded())
 		AttackMontage = ATTACK_MONTAGE.Object;
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SKILL_MONTAGE(TEXT("/Game/TowerofAngra/Character/Warrior/Animations/HWarriorSkill_Montage.HWarriorSkill_Montage"));
+	if (SKILL_MONTAGE.Succeeded())
+		SkillMontage = SKILL_MONTAGE.Object;
 	
 }
 
@@ -40,6 +44,7 @@ void UHWorriorAnimInstance::PlayAttackMontage()
 
 void UHWorriorAnimInstance::PlaySkillMontage()
 {
+	Montage_Play(SkillMontage, 1.5f);
 }
 
 void UHWorriorAnimInstance::JumpToAttackMontageSection(int32 NewSection)

@@ -2,6 +2,8 @@
 
 #include "HWarriorCharacter.h"
 #include "HWorriorAnimInstance.h"
+#include "HCharaterStateComponent.h"
+#include "HMonster.h"
 
 AHWarriorCharacter::AHWarriorCharacter()
 {
@@ -34,6 +36,21 @@ AHWarriorCharacter::AHWarriorCharacter()
 		Weapon->SetupAttachment(GetMesh(), WeaponSocket);
 	}
 
+	//Set Particle
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PARTICLE(TEXT("/Game/VFX_Toolkit_V1/ParticleSystems/356Days/Par_KineticForce_01.Par_KineticForce_01"));
+	SkillEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Effect"));
+
+	if (PARTICLE.Succeeded())
+	{
+		SkillEffect->SetTemplate(PARTICLE.Object);
+		SkillEffect->bAutoActivate = false;
+	}
+
+	// Sound
+	static ConstructorHelpers::FObjectFinder<USoundBase> JUMPSOUND(TEXT("/Game/HumanVocalizations/HumanMaleB/Wavs/voice_male_b_effort_jump_07.voice_male_b_effort_jump_07"));
+	if (JUMPSOUND.Succeeded())
+		JumpSound = JUMPSOUND.Object;
+
 	InitCommon();
 }
 
@@ -49,6 +66,7 @@ void AHWarriorCharacter::InitCommon()
 	MaxCombo = 4;			// 콤보 개수
 	fAttackPower = 50.f;			// 기본 공격력
 	fSkillPower = 100.f;			// 스킬 공격력
+	SkillMP = 20.f;					// 마나 소모
 }
 
 void AHWarriorCharacter::Tick(float DeltaTime)
@@ -110,6 +128,22 @@ void AHWarriorCharacter::Attack()
 
 void AHWarriorCharacter::Skill()
 {
+	Super::Skill();
+
+	if (IsSkilling) return;
+	if (IsAttacking) return;
+	if (CharacterState->GetMP() <= SkillMP)return;
+
+	FinalMana += SkillMP;
+
+	WorriorAnim->PlaySkillMontage();
+	SkillEffect->Activate(true);
+	// Effect 위치 다시 받기
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SkillEffect->Template, GetActorLocation(), GetActorRotation());
+	UGameplayStatics::PlaySoundAtLocation(this, HowlSound, GetActorLocation());
+	SkillCheck();
+
+	IsSkilling = true;
 }
 
 void AHWarriorCharacter::OnAttackMontageEnded(UAnimMontage * Montage, bool bInterrupted)
@@ -184,4 +218,38 @@ void AHWarriorCharacter::AttackCheck()
 
 void AHWarriorCharacter::OnSkillMontageEnded(UAnimMontage * Montage, bool bInterrupted)
 {
+	IsSkilling = false;
+
+	OnSkillEnd.Broadcast();
+}
+
+void AHWarriorCharacter::SkillCheck()
+{
+	// 충돌체크
+	float AttackRadius = 500.f;
+
+	TArray<FOverlapResult> OverlapResults;
+	FCollisionQueryParams Params(NAME_None, false, this);
+	bool bResult = GetWorld()->OverlapMultiByChannel(
+		OverlapResults,
+		GetActorLocation(),
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel2,
+		FCollisionShape::MakeSphere(AttackRadius),
+		Params
+	);
+
+	if (bResult)
+	{
+		for (auto OverlapResult : OverlapResults)
+		{
+			AHMonster* Monster = Cast<AHMonster>(OverlapResult.GetActor());
+			if (Monster)
+			{
+				FDamageEvent DamageEvent;
+				Monster->DamageAnim();
+				OverlapResult.Actor->TakeDamage(fSkillPower, DamageEvent, GetController(), this);
+			}
+		}
+	}
 }

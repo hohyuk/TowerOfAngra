@@ -56,4 +56,10 @@ private:
 public:
 	UPROPERTY()
 	class UHWorriorAnimInstance* WorriorAnim;
+
+public:
+	UPROPERTY(VisibleAnywhere, Category = Effect)
+	class UParticleSystemComponent* SkillEffect;
+
+	void SkillCheck();		// 스킬 충돌체크
 };

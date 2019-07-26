@@ -61,6 +61,4 @@ public:
 	class UParticleSystemComponent* SkillEffect;
 
 	void SkillCheck();		// 스킬 충돌체크
-	// 스킬 마나
-	float SkillMP;
 };
