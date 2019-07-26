@@ -4,14 +4,15 @@
 #include "TowerofAngraGameMode.h"
 #include "HKayaCharacter.h"
 #include "HAxeCharacter.h"
+#include "HWarriorCharacter.h"
 #include "CharacterPlayerController.h"
 #include "Blueprint/UserWidget.h"
 
 ATowerofAngraGameMode::ATowerofAngraGameMode()
 {
-	DefaultPawnClass = AHKayaCharacter::StaticClass();
+	//DefaultPawnClass = AHKayaCharacter::StaticClass();
 	//DefaultPawnClass = AHAxeCharacter::StaticClass();
-
+	DefaultPawnClass = AHWarriorCharacter::StaticClass();
 	// set default character controller class by c++
 	PlayerControllerClass = ACharacterPlayerController::StaticClass();
 	

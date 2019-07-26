@@ -10,6 +10,7 @@
 #include "TowerofAngraCharacter.h"
 #include "HKayaCharacter.h"
 #include "HAxeCharacter.h"
+#include "HWarriorCharacter.h"
 #include "HMonster.h"
 #include "SaveGameInstance.h"
 
@@ -32,7 +33,7 @@ ACharacterPlayerController::ACharacterPlayerController()
 	MonsterNum = -1;
 	MonsterSpawn = false;
 
-	PlayerType = EPlayerType::KAYA;
+	PlayerType = EPlayerType::WARRIOR;
 
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -62,6 +63,11 @@ void ACharacterPlayerController::BeginPlay()
 	{
 		Player = Cast<AHAxeCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 		TOA_PlayerClass = AHAxeCharacter::StaticClass();
+	}
+	else if (PlayerType == EPlayerType::WARRIOR)
+	{
+		Player = Cast<AHWarriorCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+		TOA_PlayerClass = AHWarriorCharacter::StaticClass();
 	}
 	else
 		return;
@@ -168,6 +174,10 @@ void ACharacterPlayerController::SendPlayerInfo()
 	else if (PlayerType == EPlayerType::AXE)
 	{
 		Player = Cast<AHAxeCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	}
+	else if (PlayerType == EPlayerType::WARRIOR)
+	{
+		Player = Cast<AHWarriorCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	}
 	else
 		return;
@@ -305,6 +315,10 @@ void ACharacterPlayerController::UpdatePlayerInfo(const cPlayer & info)
 	else if (PlayerType == EPlayerType::AXE)
 	{
 		Player = Cast<AHAxeCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	}
+	else if (PlayerType == EPlayerType::WARRIOR)
+	{
+		Player = Cast<AHWarriorCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	}
 	else
 		return;

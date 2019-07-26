@@ -15,6 +15,7 @@ enum class EPlayerType : uint8
 {
 	KAYA,
 	AXE,
+	WARRIOR,
 	NONE
 };
 
