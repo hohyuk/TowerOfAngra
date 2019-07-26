@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "HWarriorCharacter.h"
-
+#include "HWorriorAnimInstance.h"
 
 AHWarriorCharacter::AHWarriorCharacter()
 {
@@ -12,9 +12,14 @@ AHWarriorCharacter::AHWarriorCharacter()
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_WARRIOR(TEXT("/Game/InfinityBladeWarriors/Character/CompleteCharacters/SK_CharM_Tusk.SK_CharM_Tusk"));
 	if (SK_WARRIOR.Succeeded())
-	{
 		GetMesh()->SetSkeletalMesh(SK_WARRIOR.Object);
-	}
+
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	static ConstructorHelpers::FClassFinder<UAnimInstance> WARRIOR_ANIM(TEXT("/Game/TowerofAngra/Character/Warrior/Animations/Warrior_AnimBlueprint.Warrior_AnimBlueprint_C"));
+	if (WARRIOR_ANIM.Succeeded())
+		GetMesh()->SetAnimInstanceClass(WARRIOR_ANIM.Class);
+
+	InitCommon();
 }
 
 void AHWarriorCharacter::BeginPlay()
@@ -35,6 +40,9 @@ void AHWarriorCharacter::Tick(float DeltaTime)
 void AHWarriorCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+
+	KayaAnim = Cast<UHKayaAnimInstance>(GetMesh()->GetAnimInstance());
+	if (KayaAnim == nullptr) return;
 }
 
 void AHWarriorCharacter::SetupPlayerInputComponent(UInputComponent * PlayerInputComponent)
