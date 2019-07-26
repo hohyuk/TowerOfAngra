@@ -9,6 +9,9 @@
 /**
  * 
  */
+
+DECLARE_MULTICAST_DELEGATE(FOnSkillEndDelegate);
+
 UCLASS()
 class TOWEROFANGRA_API AHWarriorCharacter : public ATowerofAngraCharacter
 {
@@ -32,7 +35,25 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	USkeletalMeshComponent* Weapon;
+
+	virtual void Attack() override;
+	virtual void Skill() override;
+	FOnSkillEndDelegate OnSkillEnd;
+private:
+	UFUNCTION()
+	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+	void AttackStartComboState();
+	void AttackEndComboState();
+
+	void AttackCheck();		// 충돌체크
+
+	// Skill
+	UFUNCTION()
+	void OnSkillMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 public:
 	UPROPERTY()
-	class UHKayaAnimInstance* KayaAnim;
+	class UHWorriorAnimInstance* WorriorAnim;
 };

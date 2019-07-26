@@ -10,6 +10,10 @@ UHWorriorAnimInstance::UHWorriorAnimInstance()
 	IsInAir = false;
 	IsDead = false;
 
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/TowerofAngra/Character/Warrior/Animations/HWarriorAttack_Montage.HWarriorAttack_Montage"));
+	if (ATTACK_MONTAGE.Succeeded())
+		AttackMontage = ATTACK_MONTAGE.Object;
+	
 }
 
 void UHWorriorAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -31,6 +35,7 @@ void UHWorriorAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 void UHWorriorAnimInstance::PlayAttackMontage()
 {
+	Montage_Play(AttackMontage, 1.f);
 }
 
 void UHWorriorAnimInstance::PlaySkillMontage()
@@ -39,6 +44,7 @@ void UHWorriorAnimInstance::PlaySkillMontage()
 
 void UHWorriorAnimInstance::JumpToAttackMontageSection(int32 NewSection)
 {
+	Montage_JumpToSection(GetAttackMontageSectionName(NewSection), AttackMontage);
 }
 
 void UHWorriorAnimInstance::AnimNotify_AttackHitCheck()
