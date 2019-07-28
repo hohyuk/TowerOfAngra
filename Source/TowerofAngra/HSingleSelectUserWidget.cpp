@@ -1,42 +1,46 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "HMultiSelectUserWidget.h"
+#include "HSingleSelectUserWidget.h"
 #include "Components/Button.h"
 
-void UHMultiSelectUserWidget::NativeConstruct()
+void UHSingleSelectUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
 	WarriorButton = Cast<UButton>(GetWidgetFromName(TEXT("btnWarrior")));
-	
+
 	AxeButton = Cast<UButton>(GetWidgetFromName(TEXT("btnAxe")));
 
 	BackButton = Cast<UButton>(GetWidgetFromName(TEXT("btnBack")));
 
-	WarriorButton->OnClicked.AddDynamic(this, &UHMultiSelectUserWidget::OnWorriorButtonClicked);
+	WarriorButton->OnClicked.AddDynamic(this, &UHSingleSelectUserWidget::OnWorriorButtonClicked);
 
-	AxeButton->OnClicked.AddDynamic(this, &UHMultiSelectUserWidget::OnAxeButtonClicked);
+	AxeButton->OnClicked.AddDynamic(this, &UHSingleSelectUserWidget::OnAxeButtonClicked);
 
-	BackButton->OnClicked.AddDynamic(this, &UHMultiSelectUserWidget::OnBackButtonClicked);
+	BackButton->OnClicked.AddDynamic(this, &UHSingleSelectUserWidget::OnBackButtonClicked);
 
-	CurrentGameMode = EGameMode::MULTI_GAME;
+	CurrentGameMode = EGameMode::SINGLE_GAME;
 }
 
-void UHMultiSelectUserWidget::OnWorriorButtonClicked()
+void UHSingleSelectUserWidget::OnWorriorButtonClicked()
 {
 	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Stage2"));
 
 	PlayerType = EPlayerType::WARRIOR;
 }
 
-void UHMultiSelectUserWidget::OnAxeButtonClicked()
+void UHSingleSelectUserWidget::OnAxeButtonClicked()
 {
 	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Stage2"));
 
 	PlayerType = EPlayerType::AXE;
 }
 
-void UHMultiSelectUserWidget::OnBackButtonClicked()
+void UHSingleSelectUserWidget::OnBackButtonClicked()
 {
 	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Title"));
 }
+
+
+
+
