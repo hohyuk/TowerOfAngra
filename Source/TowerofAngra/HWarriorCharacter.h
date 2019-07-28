@@ -55,7 +55,7 @@ private:
 	void OnSkillMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 public:
 	UPROPERTY()
-	class UHWorriorAnimInstance* WorriorAnim;
+	class UHWarriorAnimInstance* WarriorAnim;
 
 public:
 	UPROPERTY(VisibleAnywhere, Category = Effect)

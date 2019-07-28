@@ -33,8 +33,6 @@ ACharacterPlayerController::ACharacterPlayerController()
 	MonsterNum = -1;
 	MonsterSpawn = false;
 
-	PlayerType = EPlayerType::WARRIOR;
-
 	PrimaryActorTick.bCanEverTick = true;
 }
 

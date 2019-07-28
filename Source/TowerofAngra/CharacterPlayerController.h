@@ -10,14 +10,6 @@
 /**
  * 
  */
-UENUM(BlueprintType)
-enum class EPlayerType : uint8
-{
-	KAYA,
-	AXE,
-	WARRIOR,
-	NONE
-};
 
 UCLASS()
 class TOWEROFANGRA_API ACharacterPlayerController : public APlayerController
@@ -71,7 +63,5 @@ private:
 	void UpdateNewPlayer();
 
 public:
-	EPlayerType PlayerType{ EPlayerType::NONE };
-
 	TSubclassOf<class ATowerofAngraCharacter> TOA_PlayerClass;
 };

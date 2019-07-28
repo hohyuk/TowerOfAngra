@@ -6,8 +6,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "TowerofAngraGameMode.generated.h"
 
-UCLASS(minimalapi)
-class ATowerofAngraGameMode : public AGameModeBase
+UCLASS()
+class TOWEROFANGRA_API ATowerofAngraGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 

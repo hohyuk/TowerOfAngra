@@ -1,10 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "HWorriorAnimInstance.h"
+#include "HWarriorAnimInstance.h"
 
 
-
-UHWorriorAnimInstance::UHWorriorAnimInstance()
+UHWarriorAnimInstance::UHWarriorAnimInstance()
 {
 	CurrentPawnSpeed = 0.f;
 	IsInAir = false;
@@ -17,10 +16,9 @@ UHWorriorAnimInstance::UHWorriorAnimInstance()
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> SKILL_MONTAGE(TEXT("/Game/TowerofAngra/Character/Warrior/Animations/HWarriorSkill_Montage.HWarriorSkill_Montage"));
 	if (SKILL_MONTAGE.Succeeded())
 		SkillMontage = SKILL_MONTAGE.Object;
-	
 }
 
-void UHWorriorAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
+void UHWarriorAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
@@ -37,32 +35,32 @@ void UHWorriorAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	}
 }
 
-void UHWorriorAnimInstance::PlayAttackMontage()
+void UHWarriorAnimInstance::PlayAttackMontage()
 {
 	Montage_Play(AttackMontage, 1.f);
 }
 
-void UHWorriorAnimInstance::PlaySkillMontage()
+void UHWarriorAnimInstance::PlaySkillMontage()
 {
 	Montage_Play(SkillMontage, 1.5f);
 }
 
-void UHWorriorAnimInstance::JumpToAttackMontageSection(int32 NewSection)
+void UHWarriorAnimInstance::JumpToAttackMontageSection(int32 NewSection)
 {
 	Montage_JumpToSection(GetAttackMontageSectionName(NewSection), AttackMontage);
 }
 
-void UHWorriorAnimInstance::AnimNotify_AttackHitCheck()
+void UHWarriorAnimInstance::AnimNotify_AttackHitCheck()
 {
 	OnAttackHitCheck.Broadcast();
 }
 
-void UHWorriorAnimInstance::AnimNotify_NextAttackCheck()
+void UHWarriorAnimInstance::AnimNotify_NextAttackCheck()
 {
 	OnNextAttackCheck.Broadcast();
 }
 
-FName UHWorriorAnimInstance::GetAttackMontageSectionName(int32 Section)
+FName UHWarriorAnimInstance::GetAttackMontageSectionName(int32 Section)
 {
 	return FName(*FString::Printf(TEXT("Attack%d"), Section));
 }

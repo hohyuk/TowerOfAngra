@@ -4,8 +4,7 @@
 
 #include "EngineMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "HWorriorAnimInstance.generated.h"
-
+#include "HWarriorAnimInstance.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnNextAttackCheckDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnNextAttackHitCheckDelegate);
@@ -15,19 +14,19 @@ DECLARE_MULTICAST_DELEGATE(FOnSkillCheckDelegate);
  * 
  */
 UCLASS()
-class TOWEROFANGRA_API UHWorriorAnimInstance : public UAnimInstance
+class TOWEROFANGRA_API UHWarriorAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 	
 public:
-	UHWorriorAnimInstance();
+	UHWarriorAnimInstance();
 
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 	void PlayAttackMontage();
 	void PlaySkillMontage();
 	void JumpToAttackMontageSection(int32 NewSection);
-	
+
 public:
 	FOnNextAttackCheckDelegate OnNextAttackCheck;
 	FOnNextAttackHitCheckDelegate OnAttackHitCheck;
@@ -56,8 +55,8 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* SkillMontage;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool IsDead;
-
-
+	
 };

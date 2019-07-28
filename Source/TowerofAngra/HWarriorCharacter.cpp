@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "HWarriorCharacter.h"
-#include "HWorriorAnimInstance.h"
+#include "HWarriorAnimInstance.h"
 #include "HCharaterStateComponent.h"
 #include "HMonster.h"
 
@@ -78,23 +78,23 @@ void AHWarriorCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	WorriorAnim = Cast<UHWorriorAnimInstance>(GetMesh()->GetAnimInstance());
-	if (WorriorAnim == nullptr) return;
+	WarriorAnim = Cast<UHWarriorAnimInstance>(GetMesh()->GetAnimInstance());
+	if (WarriorAnim == nullptr) return;
 
-	WorriorAnim->OnMontageEnded.AddDynamic(this, &AHWarriorCharacter::OnAttackMontageEnded);
-	WorriorAnim->OnMontageEnded.AddDynamic(this, &AHWarriorCharacter::OnSkillMontageEnded);
+	WarriorAnim->OnMontageEnded.AddDynamic(this, &AHWarriorCharacter::OnAttackMontageEnded);
+	WarriorAnim->OnMontageEnded.AddDynamic(this, &AHWarriorCharacter::OnSkillMontageEnded);
 
-	WorriorAnim->OnNextAttackCheck.AddLambda([this]() -> void {
+	WarriorAnim->OnNextAttackCheck.AddLambda([this]() -> void {
 		CanNextCombo = false;
 
 		if (IsComboInputOn)
 		{
 			AttackStartComboState();
-			WorriorAnim->JumpToAttackMontageSection(CurrentCombo);
+			WarriorAnim->JumpToAttackMontageSection(CurrentCombo);
 		}
 	});
 
-	WorriorAnim->OnAttackHitCheck.AddUObject(this, &AHWarriorCharacter::AttackCheck);
+	WarriorAnim->OnAttackHitCheck.AddUObject(this, &AHWarriorCharacter::AttackCheck);
 }
 
 void AHWarriorCharacter::SetupPlayerInputComponent(UInputComponent * PlayerInputComponent)
@@ -120,8 +120,8 @@ void AHWarriorCharacter::Attack()
 	else
 	{
 		AttackStartComboState();
-		WorriorAnim->PlayAttackMontage();
-		WorriorAnim->JumpToAttackMontageSection(CurrentCombo);
+		WarriorAnim->PlayAttackMontage();
+		WarriorAnim->JumpToAttackMontageSection(CurrentCombo);
 		IsAttacking = true;
 	}
 }
@@ -136,7 +136,7 @@ void AHWarriorCharacter::Skill()
 
 	FinalMana += SkillMP;
 
-	WorriorAnim->PlaySkillMontage();
+	WarriorAnim->PlaySkillMontage();
 	SkillEffect->Activate(true);
 	// Effect 위치 다시 받기
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SkillEffect->Template, GetActorLocation(), GetActorRotation());
