@@ -26,12 +26,14 @@ void UHMultiSelectUserWidget::NativeConstruct()
 
 	InputButton->OnClicked.AddDynamic(this, &UHMultiSelectUserWidget::OnInputButtonClicked);
 
+	
 	CurrentGameMode = EGameMode::MULTI_GAME;
 }
 
 void UHMultiSelectUserWidget::OnWorriorButtonClicked()
 {
 	PlayerType = EPlayerType::WARRIOR;
+	
 }
 
 void UHMultiSelectUserWidget::OnAxeButtonClicked()

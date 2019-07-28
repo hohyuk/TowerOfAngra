@@ -45,6 +45,8 @@ ATowerofAngraCharacter::ATowerofAngraCharacter()
 
 void ATowerofAngraCharacter::InitCommon()
 {
+	CurrentPlayerType = PlayerType;		// 내 캐릭 타입
+
 	ArmLengthSpeed = 3.f;
 	ArmRotationSpeed = 10.f;
 	GetCharacterMovement()->JumpZVelocity = 700.f;	// 점프 높이

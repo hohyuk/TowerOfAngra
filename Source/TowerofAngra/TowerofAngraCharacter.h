@@ -113,6 +113,13 @@ public:
 	virtual void Skill();
 /* ---------------------- virtual 함수 ---------------------- */
 
+/* ---------------------- 현재 나의 캐릭터 함수 ---------------------- */
+private:
+	EPlayerType CurrentPlayerType{ EPlayerType::NONE };
+public:
+	EPlayerType GetPlayerType()const { return CurrentPlayerType; }
+/* ---------------------- 현재 나의 캐릭터 함수 ---------------------- */
+
 /* ================ HoHyuk ================ */
 
 protected:
