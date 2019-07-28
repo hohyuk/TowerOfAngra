@@ -114,10 +114,10 @@ public:
 /* ---------------------- virtual 함수 ---------------------- */
 
 /* ---------------------- 현재 나의 캐릭터 함수 ---------------------- */
-private:
-	EPlayerType CurrentPlayerType{ EPlayerType::NONE };
 public:
-	EPlayerType GetPlayerType()const { return CurrentPlayerType; }
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = PlayerType, Meta = (AllowPrivateAccess = true))
+	EPlayerType CurrentPlayerType{ EPlayerType::NONE };
+
 /* ---------------------- 현재 나의 캐릭터 함수 ---------------------- */
 
 /* ================ HoHyuk ================ */
