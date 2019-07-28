@@ -27,6 +27,12 @@ protected:
 	UPROPERTY()
 	class UButton* BackButton;
 
+	UPROPERTY()
+	class UButton* InputButton;
+
+	UPROPERTY()
+	class UEditableTextBox* TextBox;
+
 private:
 	UFUNCTION()
 	void OnWorriorButtonClicked();
@@ -36,4 +42,7 @@ private:
 	
 	UFUNCTION()
 	void OnBackButtonClicked();
+
+	UFUNCTION()
+	void OnInputButtonClicked();
 };

@@ -21,8 +21,8 @@ ACharacterPlayerController::ACharacterPlayerController()
 	// 서버와 연결
 	Socket = server::GetSingleton();
 	Socket->InitSock();
-
-	bIsConnected = Socket->Connect("127.0.0.1", 9000);
+	const char* ip = TCHAR_TO_ANSI(*IPaddress);
+	bIsConnected = Socket->Connect(ip, 9000);
 	if (bIsConnected)
 	{
 		UE_LOG(LogClass, Log, TEXT("IOCP Server connect success!"));
