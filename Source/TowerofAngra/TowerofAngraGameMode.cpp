@@ -6,18 +6,10 @@
 #include "HAxeCharacter.h"
 #include "HWarriorCharacter.h"
 #include "CharacterPlayerController.h"
-#include "Blueprint/UserWidget.h"
-
+#include "HSingleGamePlayerController.h"
 ATowerofAngraGameMode::ATowerofAngraGameMode()
 {
-	
-	//DefaultPawnClass = AHKayaCharacter::StaticClass();
-	//DefaultPawnClass = AHAxeCharacter::StaticClass();
-	//DefaultPawnClass = AHWarriorCharacter::StaticClass();
-	// set default character controller class by c++
-	PlayerControllerClass = ACharacterPlayerController::StaticClass();
 	// set set default character class by c++
-
 	if (PlayerType  == EPlayerType::WARRIOR)
 	{
 		DefaultPawnClass = AHWarriorCharacter::StaticClass();
@@ -25,6 +17,16 @@ ATowerofAngraGameMode::ATowerofAngraGameMode()
 	else if(PlayerType == EPlayerType::AXE)
 	{
 		DefaultPawnClass = AHAxeCharacter::StaticClass();
+	}
+
+	// set default character controller class by c++
+	if (CurrentGameMode == EGameMode::MULTI_GAME)
+	{
+		PlayerControllerClass = ACharacterPlayerController::StaticClass();
+	}
+	else
+	{
+		PlayerControllerClass = AHSingleGamePlayerController::StaticClass();
 	}
 }
 
