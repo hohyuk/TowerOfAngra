@@ -3,7 +3,7 @@
 // *******************************************************
 #define WIN32_LEAN_AND_MEAN
 // *******************************************************
-#include "CoreMinimal.h"
+#include "TowerofAngra.h"
 #pragma comment(lib, "ws2_32.lib")
 #include<WinSock2.h>
 #include<iostream>
@@ -55,6 +55,9 @@ public:
 	//아이디
 	int ClientID = 0;
 
+	// PlayerType
+	int clientPlayerType = 0;
+
 	// 위치
 	float X;
 	float Y;
@@ -87,6 +90,7 @@ public:
 		stream << info.Roll << endl;
 		stream << info.IsSkilling << endl;
 		stream << info.IsAttacking << endl;
+		stream << info.clientPlayerType << endl;
 		return stream;
 	}
 
@@ -104,6 +108,7 @@ public:
 		stream >> info.Roll;
 		stream >> info.IsSkilling;
 		stream >> info.IsAttacking;
+		stream >> info.clientPlayerType;
 		return stream;
 	}
 };

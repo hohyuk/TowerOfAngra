@@ -91,6 +91,7 @@ void ACharacterPlayerController::BeginPlay()
 	cp.VZ = 0;
 	cp.IsSkilling = Player->IsSkilling;
 	cp.IsAttacking = Player->IsAttacking;
+	cp.clientPlayerType = int(Player->GetPlayerType());
 
 	Socket->EnrollCharacterInfo(cp);
 	Socket->StartListen();
