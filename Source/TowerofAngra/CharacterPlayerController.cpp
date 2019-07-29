@@ -312,7 +312,20 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 			CharacterVelocity.Y = info->VY;
 			CharacterVelocity.Z = info->VZ;
 
-
+			// 다른 플레이어 타입
+			EPlayerType OtherPlayerType = EPlayerType(info->clientPlayerType);
+			if (OtherPlayerType == EPlayerType::AXE)
+			{
+				TOA_OtherPlayerClass = AHAxeCharacter::StaticClass();
+			}
+			else if (OtherPlayerType == EPlayerType::WARRIOR)
+			{
+				TOA_OtherPlayerClass = AHWarriorCharacter::StaticClass();
+			}
+			else
+			{
+				TOA_OtherPlayerClass = AHAxeCharacter::StaticClass();
+			}
 			//			SpawnCharacter->CurrentPlayerType = EPlayerType(player.second.clientPlayerType);
 			//			UE_LOG(LogTemp, Log, TEXT("clientPlayerType :: &d"), int(NewPlayer->clientPlayerType));
 
