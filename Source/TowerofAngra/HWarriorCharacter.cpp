@@ -67,6 +67,9 @@ void AHWarriorCharacter::InitCommon()
 	fAttackPower = 50.f;			// 기본 공격력
 	fSkillPower = 100.f;			// 스킬 공격력
 	SkillMP = 20.f;					// 마나 소모
+
+	IsServerSend_Attacking = false;
+	AttackEndComboState();
 }
 
 void AHWarriorCharacter::Tick(float DeltaTime)
@@ -102,6 +105,8 @@ void AHWarriorCharacter::SetupPlayerInputComponent(UInputComponent * PlayerInput
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &AHWarriorCharacter::Attack);
+	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Released, this, &AHWarriorCharacter::NotAttack);
+
 
 	PlayerInputComponent->BindAction(TEXT("Skill"), EInputEvent::IE_Pressed, this, &AHWarriorCharacter::Skill);
 }
@@ -109,7 +114,7 @@ void AHWarriorCharacter::SetupPlayerInputComponent(UInputComponent * PlayerInput
 void AHWarriorCharacter::Attack()
 {
 	Super::Attack();
-
+	IsServerSend_Attacking = true;
 	if (IsSkilling) return;
 
 	if (IsAttacking)
@@ -144,6 +149,11 @@ void AHWarriorCharacter::Skill()
 	SkillCheck();
 
 	IsSkilling = true;
+}
+
+void AHWarriorCharacter::NotAttack()
+{
+	IsServerSend_Attacking = false;
 }
 
 void AHWarriorCharacter::OnAttackMontageEnded(UAnimMontage * Montage, bool bInterrupted)

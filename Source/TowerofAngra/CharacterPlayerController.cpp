@@ -87,7 +87,7 @@ void ACharacterPlayerController::BeginPlay()
 	cp.VY = 0;
 	cp.VZ = 0;
 	cp.IsSkilling = Player->IsSkilling;
-	cp.IsAttacking = Player->IsAttacking;
+	cp.IsAttacking = Player->IsServerSend_Attacking;
 	cp.clientPlayerType = int(Player->CurrentPlayerType);
 
 	Socket->EnrollCharacterInfo(cp);
@@ -201,7 +201,7 @@ void ACharacterPlayerController::SendPlayerInfo()
 	cp.VZ = Velocity.Z;
 
 	cp.IsSkilling = Player->IsSkilling;
-	cp.IsAttacking = Player->IsAttacking;
+	cp.IsAttacking = Player->IsServerSend_Attacking;
 	cp.clientPlayerType = int(Player->CurrentPlayerType);
 
 	Socket->SendCharacterInfo(cp);
@@ -266,7 +266,7 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 
 			SpawnCharacter->SessionId = player.second.ClientID;
 			SpawnCharacter->IsSkilling = player.second.IsSkilling;
-			SpawnCharacter->IsAttacking = player.second.IsAttacking;
+			SpawnCharacter->IsServerSend_Attacking = player.second.IsAttacking;
 
 
 			SpawnCharacter->CurrentPlayerType = EPlayerType(player.second.clientPlayerType);

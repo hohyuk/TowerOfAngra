@@ -40,6 +40,8 @@ public:
 
 	virtual void Attack() override;
 	virtual void Skill() override;
+
+	void NotAttack();
 	FOnSkillEndDelegate OnSkillEnd;
 private:
 	UFUNCTION()
