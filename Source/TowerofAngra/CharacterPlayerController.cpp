@@ -219,7 +219,7 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 
 	TArray<AActor*> SpawnedCharacters;
 
-	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), TOA_PlayerClass, SpawnedCharacters);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), TOA_OtherPlayerClass, SpawnedCharacters);
 
 	if (nPlayers == -1)
 	{
