@@ -32,13 +32,20 @@ void UHMultiSelectUserWidget::NativeConstruct()
 
 void UHMultiSelectUserWidget::OnWorriorButtonClicked()
 {
+	if (IPaddress.Len() <= 0 || IPaddress.Len() > 15) return;
+
 	PlayerType = EPlayerType::WARRIOR;
 	
+	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Stage2"));
 }
 
 void UHMultiSelectUserWidget::OnAxeButtonClicked()
 {
+	if (IPaddress.Len() <= 0 || IPaddress.Len() > 15) return;
+
 	PlayerType = EPlayerType::AXE;
+
+	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Stage2"));
 }
 
 void UHMultiSelectUserWidget::OnBackButtonClicked()
@@ -49,9 +56,4 @@ void UHMultiSelectUserWidget::OnBackButtonClicked()
 void UHMultiSelectUserWidget::OnInputButtonClicked()
 {
 	IPaddress = TextBox->GetText().ToString();
-
-	if (IPaddress.Len() <= 0 || IPaddress.Len() > 15) return;
-	if (PlayerType == EPlayerType::NONE) return;
-
-	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Stage2"));
 }

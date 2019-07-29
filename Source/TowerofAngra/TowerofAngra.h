@@ -24,7 +24,7 @@ enum class EGameMode : uint8
 
 static EPlayerType PlayerType{ EPlayerType::NONE };
 static EGameMode CurrentGameMode{ EGameMode::NONE };
-static FString IPaddress;
+static FString IPaddress{};
 
 DECLARE_LOG_CATEGORY_EXTERN(TowerofAngra, Log, All);
 #define TOALOG_CALLINFO (FString(__FUNCTION__) + TEXT("(") + FString::FromInt(__LINE__) + TEXT(")"))
