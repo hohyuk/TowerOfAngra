@@ -63,6 +63,5 @@ private:
 	void UpdateNewPlayer();
 
 public:
-	TSubclassOf<class ATowerofAngraCharacter> TOA_PlayerClass;
 	TSubclassOf<class ATowerofAngraCharacter> TOA_OtherPlayerClass;
 };

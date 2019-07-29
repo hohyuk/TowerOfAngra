@@ -55,17 +55,14 @@ void ACharacterPlayerController::BeginPlay()
 	if (PlayerType == EPlayerType::KAYA)
 	{
 		Player = Cast<AHKayaCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-		TOA_PlayerClass = AHKayaCharacter::StaticClass();
 	}
 	else if (PlayerType == EPlayerType::AXE)
 	{
 		Player = Cast<AHAxeCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-		TOA_PlayerClass = AHAxeCharacter::StaticClass();
 	}
 	else if (PlayerType == EPlayerType::WARRIOR)
 	{
 		Player = Cast<AHWarriorCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-		TOA_PlayerClass = AHWarriorCharacter::StaticClass();
 	}
 	else
 		return;
@@ -383,11 +380,14 @@ void ACharacterPlayerController::UpdateNewPlayer()
 	SpawnParams.Instigator = Instigator;
 	SpawnParams.Name = FName(*FString(to_string(NewPlayer->ClientID).c_str()));
 
-	if (NewPlayer->clientPlayerType == 1)
+	// 다른 플레이어 타입
+	EPlayerType OtherPlayerType = EPlayerType(NewPlayer->clientPlayerType);
+
+	if (OtherPlayerType == EPlayerType::AXE)
 	{
 		TOA_OtherPlayerClass = AHAxeCharacter::StaticClass();
 	}
-	else if (NewPlayer->clientPlayerType == 2)
+	else if (OtherPlayerType == EPlayerType::WARRIOR)
 	{
 		TOA_OtherPlayerClass = AHWarriorCharacter::StaticClass();
 	}
@@ -395,6 +395,7 @@ void ACharacterPlayerController::UpdateNewPlayer()
 	{
 		TOA_OtherPlayerClass = AHAxeCharacter::StaticClass();
 	}
+
 	ATowerofAngraCharacter* SpawnCharacter = world->SpawnActor<ATowerofAngraCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
 	SpawnCharacter->SpawnDefaultController();
 
