@@ -222,7 +222,7 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 
 	TArray<AActor*> SpawnedCharacters;
 
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), TOA_PlayerClass, SpawnedCharacters);
+	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), TOA_PlayerClass, SpawnedCharacters);
 
 	if (nPlayers == -1)
 	{
@@ -248,12 +248,30 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 			SpawnParams.Instigator = this->Instigator;
 			SpawnParams.Name = FName(*FString(to_string(player.second.ClientID).c_str()));
 
-			ATowerofAngraCharacter* SpawnCharacter = world->SpawnActor<ATowerofAngraCharacter>(TOA_PlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
+			// 다른 플레이어 타입
+			EPlayerType OtherPlayerType = EPlayerType(player.second.clientPlayerType);
+
+			if (OtherPlayerType == EPlayerType::AXE)
+			{
+				TOA_OtherPlayerClass = AHAxeCharacter::StaticClass();
+			}
+			else if (OtherPlayerType == EPlayerType::WARRIOR)
+			{
+				TOA_OtherPlayerClass = AHWarriorCharacter::StaticClass();
+			}
+			else
+			{
+				TOA_OtherPlayerClass = AHAxeCharacter::StaticClass();
+			}
+
+			ATowerofAngraCharacter* SpawnCharacter = world->SpawnActor<ATowerofAngraCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
 			SpawnCharacter->SpawnDefaultController();
 
 			SpawnCharacter->SessionId = player.second.ClientID;
 			SpawnCharacter->IsSkilling = player.second.IsSkilling;
 			SpawnCharacter->IsAttacking = player.second.IsAttacking;
+
+
 			SpawnCharacter->CurrentPlayerType = EPlayerType(player.second.clientPlayerType);
 		}
 		nPlayers = playerinfo->players.size();
@@ -296,6 +314,10 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 			CharacterVelocity.X = info->VX;
 			CharacterVelocity.Y = info->VY;
 			CharacterVelocity.Z = info->VZ;
+
+
+			//			SpawnCharacter->CurrentPlayerType = EPlayerType(player.second.clientPlayerType);
+			//			UE_LOG(LogTemp, Log, TEXT("clientPlayerType :: &d"), int(NewPlayer->clientPlayerType));
 
 			OtherCharacter->AddMovementInput(CharacterVelocity);
 			OtherCharacter->SetActorRotation(CharacterRotation);
@@ -361,7 +383,19 @@ void ACharacterPlayerController::UpdateNewPlayer()
 	SpawnParams.Instigator = Instigator;
 	SpawnParams.Name = FName(*FString(to_string(NewPlayer->ClientID).c_str()));
 
-	ATowerofAngraCharacter* SpawnCharacter = world->SpawnActor<ATowerofAngraCharacter>(TOA_PlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
+	if (NewPlayer->clientPlayerType == 1)
+	{
+		TOA_OtherPlayerClass = AHAxeCharacter::StaticClass();
+	}
+	else if (NewPlayer->clientPlayerType == 2)
+	{
+		TOA_OtherPlayerClass = AHWarriorCharacter::StaticClass();
+	}
+	else
+	{
+		TOA_OtherPlayerClass = AHAxeCharacter::StaticClass();
+	}
+	ATowerofAngraCharacter* SpawnCharacter = world->SpawnActor<ATowerofAngraCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
 	SpawnCharacter->SpawnDefaultController();
 
 	if (SpawnCharacter == nullptr)
@@ -389,6 +423,8 @@ void ACharacterPlayerController::UpdateNewPlayer()
 		player.IsSkilling = NewPlayer->IsSkilling;
 		player.IsAttacking = NewPlayer->IsAttacking;
 		player.clientPlayerType = int(NewPlayer->clientPlayerType);
+
+
 
 		playerinfo->players[NewPlayer->ClientID] = player;
 	}

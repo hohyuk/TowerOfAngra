@@ -7,6 +7,7 @@
 #include "HWarriorCharacter.h"
 #include "CharacterPlayerController.h"
 #include "HSingleGamePlayerController.h"
+
 ATowerofAngraGameMode::ATowerofAngraGameMode()
 {
 	// set set default character class by c++

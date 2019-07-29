@@ -64,4 +64,5 @@ private:
 
 public:
 	TSubclassOf<class ATowerofAngraCharacter> TOA_PlayerClass;
+	TSubclassOf<class ATowerofAngraCharacter> TOA_OtherPlayerClass;
 };

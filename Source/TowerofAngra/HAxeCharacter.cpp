@@ -24,7 +24,7 @@ AHAxeCharacter::AHAxeCharacter()
 		JumpSound = JUMPSOUND.Object;
 
 
-	
+	InitCommon();
 }
 
 void AHAxeCharacter::BeginPlay()
