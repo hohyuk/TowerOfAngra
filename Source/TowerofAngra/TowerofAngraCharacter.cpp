@@ -4,7 +4,8 @@
 #include "HCharaterStateComponent.h"
 #include "Components/WidgetComponent.h"
 #include "HHUDWidget.h"
-#include "HKayaCharacter.h"
+#include "HOtherPlayerHPWidget.h"
+
 
 //////////////////////////////////////////////////////////////////////////
 // ATowerofAngraCharacter
@@ -26,8 +27,7 @@ ATowerofAngraCharacter::ATowerofAngraCharacter()
 	Camera->SetupAttachment(SpringArm);
 
 	SetCamMode(ECAMMode::DYNAMIC_CAM);
-	//InitCommon();
-
+	
 	// 캐릭터 UI 및 상태 =======================
 	// UI
 	UI_Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBARWIDGET"));
@@ -41,6 +41,22 @@ ATowerofAngraCharacter::ATowerofAngraCharacter()
 	CharacterState = CreateDefaultSubobject<UHCharaterStateComponent>(TEXT("CHARACTERSTATE"));	// 캐릭터 상태
 
 	CharacterState->InitHP(100.f);
+
+	// HpUI
+	OtherPlayerHPBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OTHERHPBARWIDGET"));
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_OtherPlayerHPBar(TEXT("/Game/TowerofAngra/UI/UI_PlayerHpBar.UI_PlayerHpBar_C"));
+	if (UI_OtherPlayerHPBar.Succeeded())
+	{
+		OtherPlayerHPBarWidget->SetWidgetClass(UI_OtherPlayerHPBar.Class);
+		OtherPlayerHPBarWidget->SetDrawSize(FVector2D(150.f, 50.f));
+		// UI Pos
+		OtherPlayerHPBarWidget->SetupAttachment(GetMesh());
+		OtherPlayerHPBarWidget->SetRelativeLocation(FVector(0.f, 0.f, 200.f));
+		OtherPlayerHPBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
+		//IsHP_Show = false;
+	}
+	
 	// =========================================
 }
 
@@ -49,7 +65,7 @@ void ATowerofAngraCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	if (!IsPlayerControlled()) return;
-	
+
 	// HUD
 	auto CharacterWidget = Cast<UHHUDWidget>(UI_Widget->GetUserWidgetObject());
 
@@ -58,7 +74,12 @@ void ATowerofAngraCharacter::BeginPlay()
 		CharacterWidget->AddToViewport(1);
 		CharacterWidget->BindCharacterState(CharacterState);
 	}
-	
+
+	auto OtherCharacterWidget = Cast<UHOtherPlayerHPWidget>(OtherPlayerHPBarWidget->GetUserWidgetObject());
+	if (nullptr != OtherCharacterWidget)
+	{
+		OtherCharacterWidget->BindCharacterState(CharacterState);
+	}
 }
 
 void ATowerofAngraCharacter::InitCommon()

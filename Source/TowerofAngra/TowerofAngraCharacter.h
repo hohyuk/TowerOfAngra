@@ -149,6 +149,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = UI)
 	class UWidgetComponent* UI_Widget;
 
+	UPROPERTY(VisibleAnywhere, Category = UI)
+	class UWidgetComponent* OtherPlayerHPBarWidget;
+
 	// Sound
 protected:
 	class USoundBase* HowlSound;
