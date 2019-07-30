@@ -77,15 +77,12 @@ void ACharacterPlayerController::BeginPlay()
 	cPlayer cp;
 
 	cp.ClientID = SessionId;
-	cp.X = MyLocation.X;
-	cp.Y = MyLocation.Y;
-	cp.Z = MyLocation.Z;
-	cp.Yaw = MyRotation.Yaw;
-	cp.Pitch = MyRotation.Pitch;
-	cp.Roll = MyRotation.Roll;
-	cp.VX = 0;
-	cp.VY = 0;
-	cp.VZ = 0;
+	cp.Location = MyLocation;
+	
+	cp.Rotation = MyRotation;
+	
+	cp.Velocity = FVector(0.f, 0.f, 0.f);
+	
 	cp.IsSkilling = Player->IsSkilling;
 	cp.IsAttacking = Player->IsServerSend_Attacking;
 	cp.clientPlayerType = int(Player->CurrentPlayerType);
@@ -187,18 +184,12 @@ void ACharacterPlayerController::SendPlayerInfo()
 
 	cPlayer cp;
 	cp.ClientID = SessionId;
-
-	cp.X = MyLocation.X;
-	cp.Y = MyLocation.Y;
-	cp.Z = MyLocation.Z;
-
-	cp.Yaw = MyRotation.Yaw;
-	cp.Pitch = MyRotation.Pitch;
-	cp.Roll = MyRotation.Roll;
-
-	cp.VX = Velocity.X;
-	cp.VY = Velocity.Y;
-	cp.VZ = Velocity.Z;
+	
+	cp.Location = MyLocation;
+	
+	cp.Rotation = MyRotation;
+	
+	cp.Velocity = Velocity;
 
 	cp.IsSkilling = Player->IsSkilling;
 	cp.IsAttacking = Player->IsServerSend_Attacking;
@@ -228,17 +219,9 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 			if (player.first == SessionId)
 				continue;
 
-			FVector SpawnLocation;
-			SpawnLocation.X = player.second.X;
-			SpawnLocation.Y = player.second.Y;
-			SpawnLocation.Z = player.second.Z;
+			FVector SpawnLocation = player.second.Location;
 
-			FRotator SpawnRotation;
-			SpawnRotation.Yaw = player.second.Yaw;
-			SpawnRotation.Pitch = player.second.Pitch;
-			SpawnRotation.Roll = player.second.Roll;
-
-
+			FRotator SpawnRotation = player.second.Rotation;
 
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.Owner = this;
@@ -297,20 +280,10 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 				OtherCharacter->Attack();
 			}
 
-			FVector CharacterLocation;
-			CharacterLocation.X = info->X;
-			CharacterLocation.Y = info->Y;
-			CharacterLocation.Z = info->Z;
-
-			FRotator CharacterRotation;
-			CharacterRotation.Yaw = info->Yaw;
-			CharacterRotation.Pitch = info->Pitch;
-			CharacterRotation.Roll = info->Roll;
-
-			FVector CharacterVelocity;
-			CharacterVelocity.X = info->VX;
-			CharacterVelocity.Y = info->VY;
-			CharacterVelocity.Z = info->VZ;
+			FVector CharacterLocation = info->Location;
+			FRotator CharacterRotation = info->Rotation;
+		
+			FVector CharacterVelocity = info->Velocity;
 
 			// 다른 플레이어 타입
 			EPlayerType OtherPlayerType = EPlayerType(info->clientPlayerType);
@@ -378,15 +351,8 @@ void ACharacterPlayerController::UpdateNewPlayer()
 		return;
 	}
 
-	FVector SpawnLocation;
-	SpawnLocation.X = NewPlayer->X;
-	SpawnLocation.Y = NewPlayer->Y;
-	SpawnLocation.Z = NewPlayer->Z;
-
-	FRotator SpawnRotation;
-	SpawnRotation.Yaw = NewPlayer->Yaw;
-	SpawnRotation.Pitch = NewPlayer->Pitch;
-	SpawnRotation.Roll = NewPlayer->Roll;
+	FVector SpawnLocation = NewPlayer->Location;
+	FRotator SpawnRotation = NewPlayer->Rotation;
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
@@ -422,17 +388,11 @@ void ACharacterPlayerController::UpdateNewPlayer()
 	{
 		cPlayer player;
 		player.ClientID = NewPlayer->ClientID;
-		player.X = NewPlayer->X;
-		player.Y = NewPlayer->Y;
-		player.Z = NewPlayer->Z;
-
-		player.Yaw = NewPlayer->Yaw;
-		player.Pitch = NewPlayer->Pitch;
-		player.Roll = NewPlayer->Roll;
-
-		player.VX = NewPlayer->VX;
-		player.VY = NewPlayer->VY;
-		player.VZ = NewPlayer->VZ;
+		player.Location = NewPlayer->Location;
+		
+		player.Rotation = NewPlayer->Rotation;
+		
+		player.Velocity = NewPlayer->Velocity;
 
 		player.IsSkilling = NewPlayer->IsSkilling;
 		player.IsAttacking = NewPlayer->IsAttacking;

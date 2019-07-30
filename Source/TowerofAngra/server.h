@@ -57,20 +57,9 @@ public:
 
 	// PlayerType
 	int clientPlayerType = 0;
-
-	// 위치
-	float X;
-	float Y;
-	float Z;
-	// 회전값
-	float Yaw;
-	float Pitch;
-	float Roll;
-
-	// 속도
-	float VX;
-	float VY;
-	float VZ;
+	FVector Location;		// 위치
+	FRotator Rotation;		// 회전
+	FVector Velocity;		// 속도
 
 	bool IsSkilling;
 	bool IsAttacking;
@@ -79,15 +68,18 @@ public:
 	friend ostream& operator<<(ostream &stream, cPlayer& info)
 	{
 		stream << info.ClientID << endl;
-		stream << info.X << endl;
-		stream << info.Y << endl;
-		stream << info.Z << endl;
-		stream << info.VX << endl;
-		stream << info.VY << endl;
-		stream << info.VZ << endl;
-		stream << info.Yaw << endl;
-		stream << info.Pitch << endl;
-		stream << info.Roll << endl;
+		stream << info.Location.X << endl;
+		stream << info.Location.Y << endl;
+		stream << info.Location.Z << endl;
+
+		stream << info.Velocity.X << endl;
+		stream << info.Velocity.Y << endl;
+		stream << info.Velocity.Z << endl;
+
+		stream << info.Rotation.Yaw << endl;
+		stream << info.Rotation.Pitch << endl;
+		stream << info.Rotation.Roll << endl;
+
 		stream << info.IsSkilling << endl;
 		stream << info.IsAttacking << endl;
 		stream << info.clientPlayerType << endl;
@@ -97,15 +89,18 @@ public:
 	friend istream& operator>>(istream& stream, cPlayer& info)
 	{
 		stream >> info.ClientID;
-		stream >> info.X;
-		stream >> info.Y;
-		stream >> info.Z;
-		stream >> info.VX;
-		stream >> info.VY;
-		stream >> info.VZ;
-		stream >> info.Yaw;
-		stream >> info.Pitch;
-		stream >> info.Roll;
+		stream >> info.Location.X;
+		stream >> info.Location.Y;
+		stream >> info.Location.Z;
+
+		stream >> info.Velocity.X;
+		stream >> info.Velocity.Y;
+		stream >> info.Velocity.Z;
+
+		stream >> info.Rotation.Yaw;
+		stream >> info.Rotation.Pitch;
+		stream >> info.Rotation.Roll;
+
 		stream >> info.IsSkilling;
 		stream >> info.IsAttacking;
 		stream >> info.clientPlayerType;
