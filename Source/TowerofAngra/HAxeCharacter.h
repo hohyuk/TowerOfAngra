@@ -6,9 +6,13 @@
 #include "TowerofAngraCharacter.h"
 #include "HAxeCharacter.generated.h"
 
+
 /**
  * 
  */
+
+DECLARE_MULTICAST_DELEGATE(FOnSkillEndDelegate);
+
 UCLASS()
 class TOWEROFANGRA_API AHAxeCharacter : public ATowerofAngraCharacter
 {
@@ -34,9 +38,7 @@ public:
 	virtual void Attack() override;
 	virtual void Skill() override;
 
-public:
-	UPROPERTY()
-	class UHAxeAnimInstance* AxeAnim;
+	FOnSkillEndDelegate OnSkillEnd;
 
 private:
 	UFUNCTION()
@@ -46,4 +48,15 @@ private:
 	void AttackEndComboState();
 
 	void AttackCheck();		// 충돌체크
+
+	// Skill
+	UFUNCTION()
+	void OnSkillMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+public:
+	UPROPERTY()
+	class UHAxeAnimInstance* AxeAnim;
+
+public:
+	void SkillCheck();		// 스킬 충돌체크
 };

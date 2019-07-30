@@ -147,7 +147,7 @@ void AHWarriorCharacter::Skill()
 	SkillEffect->Activate(true);
 	// Effect 위치 다시 받기
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SkillEffect->Template, GetActorLocation(), GetActorRotation());
-	UGameplayStatics::PlaySoundAtLocation(this, HowlSound, GetActorLocation());
+	
 	SkillCheck();
 
 	IsSkilling = true;

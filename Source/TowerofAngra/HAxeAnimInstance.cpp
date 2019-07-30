@@ -12,9 +12,11 @@ UHAxeAnimInstance::UHAxeAnimInstance()
 
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/TowerofAngra/Character/AxeChar/Animations/HAxeAttack_Montage.HAxeAttack_Montage"));
 	if (ATTACK_MONTAGE.Succeeded())
-	{
 		AttackMontage = ATTACK_MONTAGE.Object;
-	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SKILL_MONTAGE(TEXT("/Game/TowerofAngra/Character/AxeChar/Animations/HAxeSkill_Montage.HAxeSkill_Montage"));
+	if (SKILL_MONTAGE.Succeeded())
+		SkillMontage = SKILL_MONTAGE.Object;
 }
 
 void UHAxeAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -41,6 +43,7 @@ void UHAxeAnimInstance::PlayAttackMontage()
 
 void UHAxeAnimInstance::PlaySkillMontage()
 {
+	Montage_Play(SkillMontage, 1.f);
 }
 
 void UHAxeAnimInstance::JumpToAttackMontageSection(int32 NewSection)
@@ -56,6 +59,11 @@ void UHAxeAnimInstance::AnimNotify_AttackHitCheck()
 void UHAxeAnimInstance::AnimNotify_NextAttackCheck()
 {
 	OnNextAttackCheck.Broadcast();
+}
+
+void UHAxeAnimInstance::AnimNotify_SkillHitCheck()
+{
+	OnSkillHitCheck.Broadcast();
 }
 
 FName UHAxeAnimInstance::GetAttackMontageSectionName(int32 Section)

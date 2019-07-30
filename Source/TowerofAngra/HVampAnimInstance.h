@@ -7,7 +7,7 @@
 #include "HVampAnimInstance.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnNextAttackCheckDelegate);
-DECLARE_MULTICAST_DELEGATE(FOnNextAttackHitCheckDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnAttackHitCheckDelegate);
 
 /**
  * 
@@ -25,7 +25,7 @@ public:
 
 public:
 	FOnNextAttackCheckDelegate OnNextAttackCheck;
-	FOnNextAttackHitCheckDelegate OnAttackHitCheck;
+	FOnAttackHitCheckDelegate OnAttackHitCheck;
 	void SetDeadAnim() { IsDead = true; }
 
 private:

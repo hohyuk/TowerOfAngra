@@ -7,8 +7,10 @@
 #include "HAxeAnimInstance.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnNextAttackCheckDelegate);
-DECLARE_MULTICAST_DELEGATE(FOnNextAttackHitCheckDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnAttackHitCheckDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnSkillCheckDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnSkillHitCheckDelegate);			// 스킬 히트부분 체크
+
 /**
  * 
  */
@@ -28,9 +30,9 @@ public:
 
 public:
 	FOnNextAttackCheckDelegate OnNextAttackCheck;
-	FOnNextAttackHitCheckDelegate OnAttackHitCheck;
+	FOnAttackHitCheckDelegate OnAttackHitCheck;
 	FOnSkillCheckDelegate OnSkillCheck;
-
+	FOnSkillHitCheckDelegate OnSkillHitCheck;
 	void SetDeadAnim() { IsDead = true; }
 
 private:
@@ -39,6 +41,9 @@ private:
 
 	UFUNCTION()
 	void AnimNotify_NextAttackCheck();
+
+	UFUNCTION()
+	void AnimNotify_SkillHitCheck();
 
 	FName GetAttackMontageSectionName(int32 Section);
 

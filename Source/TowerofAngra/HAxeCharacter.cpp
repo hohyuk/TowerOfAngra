@@ -2,6 +2,8 @@
 
 #include "HAxeCharacter.h"
 #include "HAxeAnimInstance.h"
+#include "HCharaterStateComponent.h"
+#include "HMonster.h"
 
 AHAxeCharacter::AHAxeCharacter()
 {
@@ -51,6 +53,13 @@ void AHAxeCharacter::InitCommon()
 {
 	Super::InitCommon();
 	MaxCombo = 4;			// 콤보 개수
+
+	fAttackPower = 50.f;			// 기본 공격력
+	fSkillPower = 200.f;			// 스킬 공격력
+	SkillMP = 20.f;					// 마나 소모
+
+	IsServerSend_Attacking = false;
+	AttackEndComboState();
 }
 
 void AHAxeCharacter::Tick(float DeltaTime)
@@ -66,6 +75,7 @@ void AHAxeCharacter::PostInitializeComponents()
 	if (AxeAnim == nullptr) return;
 
 	AxeAnim->OnMontageEnded.AddDynamic(this, &AHAxeCharacter::OnAttackMontageEnded);
+	AxeAnim->OnMontageEnded.AddDynamic(this, &AHAxeCharacter::OnSkillMontageEnded);
 
 	AxeAnim->OnNextAttackCheck.AddLambda([this]() -> void {
 		CanNextCombo = false;
@@ -78,6 +88,7 @@ void AHAxeCharacter::PostInitializeComponents()
 	});
 
 	AxeAnim->OnAttackHitCheck.AddUObject(this, &AHAxeCharacter::AttackCheck);
+	AxeAnim->OnSkillHitCheck.AddUObject(this, &AHAxeCharacter::SkillCheck);
 }
 
 void AHAxeCharacter::SetupPlayerInputComponent(UInputComponent * PlayerInputComponent)
@@ -85,6 +96,8 @@ void AHAxeCharacter::SetupPlayerInputComponent(UInputComponent * PlayerInputComp
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &AHAxeCharacter::Attack);
+
+	PlayerInputComponent->BindAction(TEXT("Skill"), EInputEvent::IE_Pressed, this, &AHAxeCharacter::Skill);
 }
 
 void AHAxeCharacter::Attack()
@@ -110,6 +123,21 @@ void AHAxeCharacter::Attack()
 void AHAxeCharacter::Skill()
 {
 	Super::Skill();
+
+	if (IsSkilling) return;
+	if (IsAttacking) return;
+	if (CharacterState->GetMP() <= SkillMP)return;
+
+	FinalMana += SkillMP;
+
+	AxeAnim->PlaySkillMontage();
+	//SkillEffect->Activate(true);
+	//// Effect 위치 다시 받기
+	//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SkillEffect->Template, GetActorLocation(), GetActorRotation());
+
+	//SkillCheck();
+
+	IsSkilling = true;
 }
 
 void AHAxeCharacter::OnAttackMontageEnded(UAnimMontage * Montage, bool bInterrupted)
@@ -177,6 +205,44 @@ void AHAxeCharacter::AttackCheck()
 		{
 			FDamageEvent DamageEvent;
 			HitResult.Actor->TakeDamage(fAttackPower, DamageEvent, GetController(), this);
+		}
+	}
+}
+
+void AHAxeCharacter::OnSkillMontageEnded(UAnimMontage * Montage, bool bInterrupted)
+{
+	IsSkilling = false;
+
+	OnSkillEnd.Broadcast();
+}
+
+void AHAxeCharacter::SkillCheck()
+{
+	// 충돌체크
+	float AttackRadius = 300.f;
+
+	TArray<FOverlapResult> OverlapResults;
+	FCollisionQueryParams Params(NAME_None, false, this);
+	bool bResult = GetWorld()->OverlapMultiByChannel(
+		OverlapResults,
+		GetActorLocation(),
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel2,
+		FCollisionShape::MakeSphere(AttackRadius),
+		Params
+	);
+
+	if (bResult)
+	{
+		for (auto OverlapResult : OverlapResults)
+		{
+			AHMonster* Monster = Cast<AHMonster>(OverlapResult.GetActor());
+			if (Monster)
+			{
+				FDamageEvent DamageEvent;
+				Monster->DamageAnim();
+				OverlapResult.Actor->TakeDamage(fSkillPower, DamageEvent, GetController(), this);
+			}
 		}
 	}
 }

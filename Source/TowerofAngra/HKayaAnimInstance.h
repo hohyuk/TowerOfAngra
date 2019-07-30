@@ -7,7 +7,7 @@
 #include "HKayaAnimInstance.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnNextAttackCheckDelegate);
-DECLARE_MULTICAST_DELEGATE(FOnNextAttackHitCheckDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnAttackHitCheckDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnSkillCheckDelegate);
 /**
  * 
@@ -28,7 +28,7 @@ public:
 
 public:
 	FOnNextAttackCheckDelegate OnNextAttackCheck;
-	FOnNextAttackHitCheckDelegate OnAttackHitCheck;
+	FOnAttackHitCheckDelegate OnAttackHitCheck;
 	FOnSkillCheckDelegate OnSkillCheck;
 
 	void SetDeadAnim() { IsDead = true; }
