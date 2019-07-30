@@ -12,7 +12,6 @@
 #include "HAxeCharacter.h"
 #include "HWarriorCharacter.h"
 #include "HMonster.h"
-#include "SaveGameInstance.h"
 
 ACharacterPlayerController::ACharacterPlayerController()
 {
@@ -108,8 +107,6 @@ int ACharacterPlayerController::GetSessionId()
 void ACharacterPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	USaveGameInstance* SGI = Cast<USaveGameInstance>(GetWorld());
 
 	if (bNewPlayerEntered)
 		UpdateNewPlayer();
