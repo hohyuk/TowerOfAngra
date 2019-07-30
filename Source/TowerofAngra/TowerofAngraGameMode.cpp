@@ -10,6 +10,12 @@
 
 ATowerofAngraGameMode::ATowerofAngraGameMode()
 {
+	// ¿¬½À¿ë
+	if (PlayerType == EPlayerType::NONE && CurrentGameMode == EGameMode::NONE)
+	{
+		DefaultPawnClass = AHWarriorCharacter::StaticClass();
+		PlayerControllerClass = AHSingleGamePlayerController::StaticClass();
+	}
 	// set set default character class by c++
 	if (PlayerType  == EPlayerType::WARRIOR)
 	{
@@ -19,13 +25,13 @@ ATowerofAngraGameMode::ATowerofAngraGameMode()
 	{
 		DefaultPawnClass = AHAxeCharacter::StaticClass();
 	}
-
+	
 	// set default character controller class by c++
 	if (CurrentGameMode == EGameMode::MULTI_GAME)
 	{
 		PlayerControllerClass = ACharacterPlayerController::StaticClass();
 	}
-	else
+	else if (CurrentGameMode == EGameMode::SINGLE_GAME)
 	{
 		PlayerControllerClass = AHSingleGamePlayerController::StaticClass();
 	}

@@ -9,14 +9,29 @@ AHAxeCharacter::AHAxeCharacter()
 
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -88.f), FRotator(0.f, -90.f, 0.f));
 
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_AXE(TEXT("/Game/TowerofAngra/Character/AxeChar/Axer.Axer"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_AXE(TEXT("/Game/InfinityBladeWarriors/Character/CompleteCharacters/SK_CharM_Ram.SK_CharM_Ram"));
 	if (SK_AXE.Succeeded())
 		GetMesh()->SetSkeletalMesh(SK_AXE.Object);
 
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	static ConstructorHelpers::FClassFinder<UAnimInstance> AXE_ANIM(TEXT("/Game/TowerofAngra/Character/AxeChar/Anim/HAxe_AnimBlueprint.HAxe_AnimBlueprint_C"));
+	static ConstructorHelpers::FClassFinder<UAnimInstance> AXE_ANIM(TEXT("/Game/TowerofAngra/Character/AxeChar/Animations/HAxe_AnimBlueprint.HAxe_AnimBlueprint_C"));
 	if (AXE_ANIM.Succeeded())
 		GetMesh()->SetAnimInstanceClass(AXE_ANIM.Class);
+
+	// Weapon
+	FName WeaponSocket(TEXT("hand_rSocket"));
+	if (GetMesh()->DoesSocketExist(WeaponSocket))
+	{
+		Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WEAPON"));
+		static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_WEAPON(TEXT("/Game/InfinityBladeWeapons/Weapons/Blade/Axes/Blade_FissureBlade/SK_Blade_FissureBlade.SK_Blade_FissureBlade"));
+
+		if (SK_WEAPON.Succeeded())
+		{
+			Weapon->SetSkeletalMesh(SK_WEAPON.Object);
+		}
+
+		Weapon->SetupAttachment(GetMesh(), WeaponSocket);
+	}
 
 	// Sound
 	static ConstructorHelpers::FObjectFinder<USoundBase> JUMPSOUND(TEXT("/Game/HumanVocalizations/HumanMaleB/Wavs/voice_male_b_effort_jump_07.voice_male_b_effort_jump_07"));
@@ -35,7 +50,7 @@ void AHAxeCharacter::BeginPlay()
 void AHAxeCharacter::InitCommon()
 {
 	Super::InitCommon();
-	MaxCombo = 3;			// ÄÞº¸ °³¼ö
+	MaxCombo = 4;			// ÄÞº¸ °³¼ö
 }
 
 void AHAxeCharacter::Tick(float DeltaTime)

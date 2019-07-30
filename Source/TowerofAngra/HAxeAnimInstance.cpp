@@ -10,7 +10,7 @@ UHAxeAnimInstance::UHAxeAnimInstance()
 	IsInAir = false;
 	IsDead = false;
 
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/TowerofAngra/Character/AxeChar/Anim/HAxeAttackMontage.HAxeAttackMontage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/TowerofAngra/Character/AxeChar/Animations/HAxeAttack_Montage.HAxeAttack_Montage"));
 	if (ATTACK_MONTAGE.Succeeded())
 	{
 		AttackMontage = ATTACK_MONTAGE.Object;

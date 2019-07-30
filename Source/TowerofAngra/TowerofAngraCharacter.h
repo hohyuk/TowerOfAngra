@@ -100,9 +100,12 @@ public:
 		class AController* EventInstigator, AActor* DamageCauser) override;
 /* ---------------------- 캐릭터 데미지 함수 ---------------------- */
 
-/* ---------------------- Init 함수 ---------------------- */
+/* ---------------------- 무기 변수 ---------------------- */
+public:
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	USkeletalMeshComponent* Weapon;
 
-/* ---------------------- Init 함수 ---------------------- */
+/* ---------------------- 무기 변수 ---------------------- */
 
 /* ---------------------- Tick 함수 ---------------------- */
 private:
