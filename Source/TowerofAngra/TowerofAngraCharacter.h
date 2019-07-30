@@ -15,7 +15,9 @@ public:
 	ATowerofAngraCharacter();
 	
 /* ================ HoHyuk ================ */
-
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 /* ---------------------- Ä«¸Þ¶ó ---------------------- */
 public:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
@@ -125,9 +127,6 @@ public:
 
 /* ================ HoHyuk ================ */
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

@@ -76,7 +76,7 @@ void ACharacterPlayerController::BeginPlay()
 	
 	cp.Rotation = MyRotation;
 	
-	cp.Velocity = FVector(0.f, 0.f, 0.f);
+	cp.Velocity = FVector::ZeroVector;
 	
 	cp.IsSkilling = Player->IsSkilling;
 	cp.IsAttacking = Player->IsServerSend_Attacking;

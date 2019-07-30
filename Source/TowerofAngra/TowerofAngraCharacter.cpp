@@ -39,8 +39,26 @@ ATowerofAngraCharacter::ATowerofAngraCharacter()
 	}
 
 	CharacterState = CreateDefaultSubobject<UHCharaterStateComponent>(TEXT("CHARACTERSTATE"));	// 캐릭터 상태
+
 	CharacterState->InitHP(100.f);
 	// =========================================
+}
+
+void ATowerofAngraCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (!IsPlayerControlled()) return;
+	
+	// HUD
+	auto CharacterWidget = Cast<UHHUDWidget>(UI_Widget->GetUserWidgetObject());
+
+	if (nullptr != CharacterWidget)
+	{
+		CharacterWidget->AddToViewport(1);
+		CharacterWidget->BindCharacterState(CharacterState);
+	}
+	
 }
 
 void ATowerofAngraCharacter::InitCommon()
@@ -90,14 +108,6 @@ void ATowerofAngraCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	// HUD
-	auto CharacterWidget = Cast<UHHUDWidget>(UI_Widget->GetUserWidgetObject());
-
-	if (nullptr != CharacterWidget)
-	{
-		CharacterWidget->AddToViewport(1);
-		CharacterWidget->BindCharacterState(CharacterState);
-	}
 }
 
 void ATowerofAngraCharacter::SetCamMode(ECAMMode NewCamMode)
@@ -136,7 +146,8 @@ void ATowerofAngraCharacter::SetCamMode(ECAMMode NewCamMode)
 
 float ATowerofAngraCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
 {
-	FinalDamage += Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	if (IsPlayerControlled())
+		FinalDamage += Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
 	return FinalDamage;
 }
@@ -178,7 +189,8 @@ void ATowerofAngraCharacter::StateTick(float DeltaTime)
 		CharacterState->SetDamage(DamageSpeed);
 		FinalDamage -= DamageSpeed;
 	}
-
+	else
+		FinalDamage = 0.f;
 	// 스킬 사용시 마나 감소
 	if (FinalMana > 0.f)
 	{
@@ -186,6 +198,8 @@ void ATowerofAngraCharacter::StateTick(float DeltaTime)
 		CharacterState->SetMP(ManaSpeed);
 		FinalMana -= ManaSpeed;
 	}
+	else
+		FinalMana = 0.f;
 }
 
 void ATowerofAngraCharacter::Attack()
@@ -194,11 +208,6 @@ void ATowerofAngraCharacter::Attack()
 
 void ATowerofAngraCharacter::Skill()
 {
-}
-
-void ATowerofAngraCharacter::BeginPlay()
-{
-	Super::BeginPlay();
 }
 
 void ATowerofAngraCharacter::MoveForward(float NewAxisValue)

@@ -80,7 +80,7 @@ void AHWarriorCharacter::Tick(float DeltaTime)
 void AHWarriorCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-
+	
 	WarriorAnim = Cast<UHWarriorAnimInstance>(GetMesh()->GetAnimInstance());
 	if (WarriorAnim == nullptr) return;
 
@@ -89,11 +89,12 @@ void AHWarriorCharacter::PostInitializeComponents()
 
 	WarriorAnim->OnNextAttackCheck.AddLambda([this]() -> void {
 		CanNextCombo = false;
-
+		
 		if (IsComboInputOn)
 		{
 			AttackStartComboState();
 			WarriorAnim->JumpToAttackMontageSection(CurrentCombo);
+			TOALOG(Warning,TEXT("Combo : %d"),CurrentCombo);
 		}
 	});
 
@@ -106,6 +107,7 @@ void AHWarriorCharacter::SetupPlayerInputComponent(UInputComponent * PlayerInput
 
 	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &AHWarriorCharacter::Attack);
 	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Released, this, &AHWarriorCharacter::NotAttack);
+	//PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &AHWarriorCharacter::EXAttack);
 
 
 	PlayerInputComponent->BindAction(TEXT("Skill"), EInputEvent::IE_Pressed, this, &AHWarriorCharacter::Skill);
@@ -156,6 +158,12 @@ void AHWarriorCharacter::NotAttack()
 	IsServerSend_Attacking = false;
 }
 
+void AHWarriorCharacter::EXAttack()
+{
+	WarriorAnim->JumpToAttackMontageSection(2);
+	WarriorAnim->PlayAttackMontage();
+}
+
 void AHWarriorCharacter::OnAttackMontageEnded(UAnimMontage * Montage, bool bInterrupted)
 {
 	// 공격이 끝나는 모션
@@ -198,25 +206,25 @@ void AHWarriorCharacter::AttackCheck()
 
 #if ENABLE_DRAW_DEBUG
 
-	/*FVector TraceVec = GetActorForwardVector() * FinalAttackRange;
-	FVector Center = GetActorLocation() + TraceVec * 0.5f;
-	float HalfHeight = FinalAttackRange * 0.5f + AttackRadius;
-	FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
-	FColor DrawColor = bResult ? FColor::Green : FColor::Red;
-	float DebugLifeTime = 3.f;
+	//FVector TraceVec = GetActorForwardVector() * FinalAttackRange;
+	//FVector Center = GetActorLocation() + TraceVec * 0.5f;
+	//float HalfHeight = FinalAttackRange * 0.5f + AttackRadius;
+	//FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
+	//FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+	//float DebugLifeTime = 3.f;
 
-	DrawDebugCapsule(GetWorld(),
-		Center,
-		HalfHeight,
-		AttackRadius,
-		CapsuleRot,
-		DrawColor,
-		false,
-		DebugLifeTime);*/
+	//DrawDebugCapsule(GetWorld(),
+	//	Center,
+	//	HalfHeight,
+	//	AttackRadius,
+	//	CapsuleRot,
+	//	DrawColor,
+	//	false,
+	//	DebugLifeTime);
 
 #endif
-
-	if (bResult)
+	AHMonster* Monster = Cast<AHMonster>(HitResult.Actor);
+	if (bResult && Monster)
 	{
 		if (HitResult.Actor.IsValid())
 		{
