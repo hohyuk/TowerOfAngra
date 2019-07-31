@@ -13,7 +13,7 @@ AHVamp::AHVamp()
 	if (SK_CARDBOARD.Succeeded())
 		GetMesh()->SetSkeletalMesh(SK_CARDBOARD.Object);
 
-	GetMesh()->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -88.f), FRotator(0.f, -90.f, 0.f));
+	GetMesh()->SetRelativeLocationAndRotation(FVector(-20.f, 0.f, -88.f), FRotator(0.f, -90.f, 0.f));
 	
 	// Anim
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);

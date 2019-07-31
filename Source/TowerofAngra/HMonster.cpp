@@ -279,7 +279,7 @@ void AHMonster::AttackCheck()
 
 #if ENABLE_DRAW_DEBUG
 
-	/*FVector TraceVec = GetActorForwardVector() * FinalAttackRange;
+	FVector TraceVec = GetActorForwardVector() * FinalAttackRange;
 	FVector Center = GetActorLocation() + TraceVec * 0.5f;
 	float HalfHeight = FinalAttackRange * 0.5f + AttackRadius;
 	FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
@@ -293,7 +293,7 @@ void AHMonster::AttackCheck()
 		CapsuleRot,
 		DrawColor,
 		false,
-		DebugLifeTime);*/
+		DebugLifeTime);
 
 #endif
 
