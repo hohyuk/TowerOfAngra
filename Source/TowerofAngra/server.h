@@ -61,6 +61,7 @@ public:
 	FRotator Rotation;		// 회전
 	FVector Velocity;		// 속도
 
+	float HP{ 0.f };		// player hp 넘겨주기
 	bool IsSkilling;
 	bool IsAttacking;
 
@@ -82,6 +83,7 @@ public:
 
 		stream << info.IsSkilling << endl;
 		stream << info.IsAttacking << endl;
+
 		stream << info.clientPlayerType << endl;
 		return stream;
 	}
@@ -103,6 +105,7 @@ public:
 
 		stream >> info.IsSkilling;
 		stream >> info.IsAttacking;
+
 		stream >> info.clientPlayerType;
 		return stream;
 	}

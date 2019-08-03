@@ -93,6 +93,8 @@ public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	int32 MaxCombo;
 
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = HP, Meta = (AllowPrivateAccess = true))
+	float CurrentHP;
 /* ---------------------- 캐릭터 공통 변수 ---------------------- */
 
 /* ---------------------- 캐릭터 데미지 함수 ---------------------- */
@@ -119,6 +121,7 @@ private:
 public:
 	virtual void InitCommon();
 	virtual void Attack();
+	virtual void OtherPlayerAttack();
 	virtual void Skill();
 /* ---------------------- virtual 함수 ---------------------- */
 

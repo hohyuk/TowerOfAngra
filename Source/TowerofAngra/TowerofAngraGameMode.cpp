@@ -16,6 +16,7 @@ ATowerofAngraGameMode::ATowerofAngraGameMode()
 		DefaultPawnClass = AHWarriorCharacter::StaticClass();
 		PlayerControllerClass = AHSingleGamePlayerController::StaticClass();
 	}
+
 	// set set default character class by c++
 	if (PlayerType  == EPlayerType::WARRIOR)
 	{

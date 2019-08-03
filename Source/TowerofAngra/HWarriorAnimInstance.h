@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "EngineMinimal.h"
+#include "TowerofAngra.h"
 #include "Animation/AnimInstance.h"
 #include "HWarriorAnimInstance.generated.h"
 

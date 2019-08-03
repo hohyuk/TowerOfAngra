@@ -34,6 +34,7 @@ AHGolem::AHGolem()
 	GetCharacterMovement()->MaxWalkSpeed = 100.f;
 
 	DetectRadius = 1500;
-	AttackRadius = 150.f;
+	AttackRadius = 100.f;
+	AttackRange = 150.f;
 	fAttackPower = 25.f;
 }

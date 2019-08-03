@@ -40,7 +40,9 @@ ATowerofAngraCharacter::ATowerofAngraCharacter()
 
 	CharacterState = CreateDefaultSubobject<UHCharaterStateComponent>(TEXT("CHARACTERSTATE"));	// 캐릭터 상태
 
-	CharacterState->InitHP(100.f);
+	CurrentHP = 100.f;
+	CharacterState->InitHP(CurrentHP);
+	TOALOG(Warning,TEXT("HP : %f"),CurrentHP);
 
 	// HpUI
 	OtherPlayerHPBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OTHERHPBARWIDGET"));
@@ -209,6 +211,7 @@ void ATowerofAngraCharacter::StateTick(float DeltaTime)
 		float DamageSpeed = DeltaTime * 40.f;
 		CharacterState->SetDamage(DamageSpeed);
 		FinalDamage -= DamageSpeed;
+		TOALOG(Warning, TEXT("HP : %f"), FinalDamage);
 	}
 	else
 		FinalDamage = 0.f;
@@ -224,6 +227,10 @@ void ATowerofAngraCharacter::StateTick(float DeltaTime)
 }
 
 void ATowerofAngraCharacter::Attack()
+{
+}
+
+void ATowerofAngraCharacter::OtherPlayerAttack()
 {
 }
 

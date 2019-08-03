@@ -120,6 +120,8 @@ void ACharacterPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReaso
 	Socket->LogoutCharacter(SessionId);
 	Socket->CloseSocket();
 	Socket->StopListen();
+
+	TOALOG_S(Warning);
 }
 
 void ACharacterPlayerController::RecvWorldInfo(cPlayerInfo * pi)
@@ -270,7 +272,8 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 			else if (info->IsAttacking)
 			{
 				UE_LOG(LogClass, Log, TEXT("Attacking ANIM"));
-				OtherCharacter->Attack();
+				
+				OtherCharacter->OtherPlayerAttack();
 			}
 
 			FVector CharacterLocation = info->Location;

@@ -261,15 +261,13 @@ void AHMonster::OnAttackMontageEnded(UAnimMontage * Montage, bool bInterrupted)
 
 void AHMonster::AttackCheck()
 {
-	float FinalAttackRange = 100.f;
-	
 	FHitResult HitResult;
 	
 	FCollisionQueryParams Params(NAME_None, false, this);
 	bool bResult = GetWorld()->SweepSingleByChannel(
 		HitResult,
 		GetActorLocation(),
-		GetActorLocation() + GetActorForwardVector() * FinalAttackRange,
+		GetActorLocation() + GetActorForwardVector() * AttackRange,
 		FQuat::Identity,
 		ECollisionChannel::ECC_GameTraceChannel2,
 		FCollisionShape::MakeSphere(AttackRadius),
@@ -279,9 +277,9 @@ void AHMonster::AttackCheck()
 
 #if ENABLE_DRAW_DEBUG
 
-	FVector TraceVec = GetActorForwardVector() * FinalAttackRange;
+	FVector TraceVec = GetActorForwardVector() * AttackRange;
 	FVector Center = GetActorLocation() + TraceVec * 0.5f;
-	float HalfHeight = FinalAttackRange * 0.5f + AttackRadius;
+	float HalfHeight = AttackRange * 0.5f + AttackRadius;
 	FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
 	FColor DrawColor = bResult ? FColor::Green : FColor::Red;
 	float DebugLifeTime = 3.f;

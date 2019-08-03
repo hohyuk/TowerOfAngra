@@ -36,16 +36,6 @@ AHWarriorCharacter::AHWarriorCharacter()
 		Weapon->SetupAttachment(GetMesh(), WeaponSocket);
 	}
 
-	//Set Particle
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> PARTICLE(TEXT("/Game/VFX_Toolkit_V1/ParticleSystems/356Days/Par_KineticForce_01.Par_KineticForce_01"));
-	SkillEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Effect"));
-
-	if (PARTICLE.Succeeded())
-	{
-		SkillEffect->SetTemplate(PARTICLE.Object);
-		SkillEffect->bAutoActivate = false;
-	}
-
 	// Sound
 	static ConstructorHelpers::FObjectFinder<USoundBase> JUMPSOUND(TEXT("/Game/HumanVocalizations/HumanMaleB/Wavs/voice_male_b_effort_jump_07.voice_male_b_effort_jump_07"));
 	if (JUMPSOUND.Succeeded())
@@ -107,8 +97,6 @@ void AHWarriorCharacter::SetupPlayerInputComponent(UInputComponent * PlayerInput
 
 	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &AHWarriorCharacter::Attack);
 	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Released, this, &AHWarriorCharacter::NotAttack);
-	//PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &AHWarriorCharacter::EXAttack);
-
 
 	PlayerInputComponent->BindAction(TEXT("Skill"), EInputEvent::IE_Pressed, this, &AHWarriorCharacter::Skill);
 }
@@ -116,6 +104,7 @@ void AHWarriorCharacter::SetupPlayerInputComponent(UInputComponent * PlayerInput
 void AHWarriorCharacter::Attack()
 {
 	Super::Attack();
+	
 	IsServerSend_Attacking = true;
 	if (IsSkilling) return;
 
@@ -144,13 +133,29 @@ void AHWarriorCharacter::Skill()
 	FinalMana += SkillMP;
 
 	WarriorAnim->PlaySkillMontage();
-	SkillEffect->Activate(true);
-	// Effect 위치 다시 받기
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SkillEffect->Template, GetActorLocation(), GetActorRotation());
-	
+
 	SkillCheck();
 
 	IsSkilling = true;
+}
+
+void AHWarriorCharacter::OtherPlayerAttack()
+{
+	Super::OtherPlayerAttack();
+	
+	if (IsAttacking)
+	{
+		if (CanNextCombo)
+			IsComboInputOn = true;
+	}
+	else
+	{
+		AttackStartComboState();
+		WarriorAnim->PlayAttackMontage();
+		WarriorAnim->JumpToAttackMontageSection(CurrentCombo);
+		IsAttacking = true;
+	}
+
 }
 
 void AHWarriorCharacter::NotAttack()
@@ -158,17 +163,12 @@ void AHWarriorCharacter::NotAttack()
 	IsServerSend_Attacking = false;
 }
 
-void AHWarriorCharacter::EXAttack()
-{
-	WarriorAnim->JumpToAttackMontageSection(2);
-	WarriorAnim->PlayAttackMontage();
-}
-
 void AHWarriorCharacter::OnAttackMontageEnded(UAnimMontage * Montage, bool bInterrupted)
 {
 	// 공격이 끝나는 모션
 	IsAttacking = false;
-
+	IsServerSend_Attacking = false;
+	
 	AttackEndComboState();
 }
 

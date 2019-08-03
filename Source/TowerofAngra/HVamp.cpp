@@ -30,7 +30,8 @@ AHVamp::AHVamp()
 	HPBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
 
 	DetectRadius = 1000.f;
-	AttackRadius = 80.f;
+	AttackRadius = 50.f;
+	AttackRange = 80.f;
 	fAttackPower = 10.f;
 }
 

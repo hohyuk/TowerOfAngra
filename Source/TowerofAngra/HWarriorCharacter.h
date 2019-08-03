@@ -37,9 +37,9 @@ public:
 
 	virtual void Attack() override;
 	virtual void Skill() override;
-
+	virtual void OtherPlayerAttack();
 	void NotAttack();
-	void EXAttack();
+
 	FOnSkillEndDelegate OnSkillEnd;
 private:
 	UFUNCTION()
@@ -58,8 +58,5 @@ public:
 	class UHWarriorAnimInstance* WarriorAnim;
 
 public:
-	UPROPERTY(VisibleAnywhere, Category = Effect)
-	class UParticleSystemComponent* SkillEffect;
-
 	void SkillCheck();		// 스킬 충돌체크
 };
