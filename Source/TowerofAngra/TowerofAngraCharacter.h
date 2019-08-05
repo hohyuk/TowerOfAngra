@@ -121,7 +121,7 @@ private:
 public:
 	virtual void InitCommon();
 	virtual void Attack();
-	virtual void OtherPlayerAttack();
+	virtual void OtherPlayerAttack(int AttackCount);
 	virtual void Skill();
 /* ---------------------- virtual ÇÔ¼ö ---------------------- */
 

@@ -37,7 +37,7 @@ public:
 
 	virtual void Attack() override;
 	virtual void Skill() override;
-	virtual void OtherPlayerAttack();
+	virtual void OtherPlayerAttack(int AttackCount) override;
 	void NotAttack();
 
 	FOnSkillEndDelegate OnSkillEnd;

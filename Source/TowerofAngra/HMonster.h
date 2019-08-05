@@ -113,4 +113,5 @@ public:
 
 	float GetAttackRange()const { return AttackRange; }
 
+	void MoveToLocation(const FVector& dest);
 };

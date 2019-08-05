@@ -8,6 +8,7 @@
 #include "HAxeCharacter.h"
 #include "HWarriorCharacter.h"
 #include "HMonster.h"
+#include"HGolem.h"
 
 ACharacterPlayerController::ACharacterPlayerController()
 {
@@ -27,7 +28,7 @@ ACharacterPlayerController::ACharacterPlayerController()
 	nPlayers = -1;
 	MonsterNum = -1;
 	MonsterSpawn = false;
-
+	DesMonster = false;
 	PrimaryActorTick.bCanEverTick = true;
 }
 
@@ -73,13 +74,15 @@ void ACharacterPlayerController::BeginPlay()
 
 	cp.ClientID = SessionId;
 	cp.Location = MyLocation;
-	
+
 	cp.Rotation = MyRotation;
-	
+
 	cp.Velocity = FVector::ZeroVector;
-	
+
+	//	cp.Hp = Player->FinalDamage;
 	cp.IsSkilling = Player->IsSkilling;
 	cp.IsAttacking = Player->IsServerSend_Attacking;
+	cp.AttackCombo = Player->CurrentCombo;
 	cp.clientPlayerType = int(Player->CurrentPlayerType);
 
 	Socket->EnrollCharacterInfo(cp);
@@ -110,6 +113,10 @@ void ACharacterPlayerController::Tick(float DeltaTime)
 	if (MonsterSpawn)
 		SpawnMonster();
 
+	/*if (DesMonster)
+		dest();*/
+
+
 	UpdateWorldInfo();
 	UpdateMonster();
 }
@@ -120,8 +127,6 @@ void ACharacterPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReaso
 	Socket->LogoutCharacter(SessionId);
 	Socket->CloseSocket();
 	Socket->StopListen();
-
-	TOALOG_S(Warning);
 }
 
 void ACharacterPlayerController::RecvWorldInfo(cPlayerInfo * pi)
@@ -152,6 +157,16 @@ void ACharacterPlayerController::RecvSpawnMonster(Monster* m)
 		MonsterSpawn = true;
 	}
 }
+
+void ACharacterPlayerController::RecvDestroyMonster(Monster*m)
+{
+	if (m != nullptr)
+	{
+		TOAMonster = m;
+		MonsterSpawn = true;
+	}
+}
+
 void ACharacterPlayerController::SendPlayerInfo()
 {
 	ATowerofAngraCharacter* Player = nullptr;
@@ -179,15 +194,17 @@ void ACharacterPlayerController::SendPlayerInfo()
 
 	cPlayer cp;
 	cp.ClientID = SessionId;
-	
+
 	cp.Location = MyLocation;
-	
+
 	cp.Rotation = MyRotation;
-	
+
 	cp.Velocity = Velocity;
 
+	//	cp.Hp = Player->FinalDamage;
 	cp.IsSkilling = Player->IsSkilling;
 	cp.IsAttacking = Player->IsServerSend_Attacking;
+	cp.AttackCombo = int(Player->CurrentCombo);
 	cp.clientPlayerType = int(Player->CurrentPlayerType);
 
 	Socket->SendCharacterInfo(cp);
@@ -242,10 +259,11 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 			ATowerofAngraCharacter* SpawnCharacter = world->SpawnActor<ATowerofAngraCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
 			SpawnCharacter->SpawnDefaultController();
 
+			//			SpawnCharacter->FinalDamage = player.second.Hp;
+
 			SpawnCharacter->SessionId = player.second.ClientID;
 			SpawnCharacter->IsSkilling = player.second.IsSkilling;
 			SpawnCharacter->IsServerSend_Attacking = player.second.IsAttacking;
-
 
 			SpawnCharacter->CurrentPlayerType = EPlayerType(player.second.clientPlayerType);
 		}
@@ -264,21 +282,23 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 
 			cPlayer * info = &playerinfo->players[OtherCharacter->SessionId];
 
+			//			OtherCharacter->FinalDamage = info->Hp;
+
 			if (info->IsSkilling)
 			{
 				UE_LOG(LogClass, Log, TEXT("Skilling ANIM"));
 				OtherCharacter->Skill();
 			}
-			else if (info->IsAttacking)
+			if (info->AttackCombo > 0)
 			{
 				UE_LOG(LogClass, Log, TEXT("Attacking ANIM"));
-				
-				OtherCharacter->OtherPlayerAttack();
+				TOALOG(Warning, TEXT("Attack : %d"), info->AttackCombo);
+				OtherCharacter->OtherPlayerAttack(info->AttackCombo);
 			}
 
 			FVector CharacterLocation = info->Location;
 			FRotator CharacterRotation = info->Rotation;
-		
+
 			FVector CharacterVelocity = info->Velocity;
 
 			// 다른 플레이어 타입
@@ -334,6 +354,7 @@ void ACharacterPlayerController::UpdatePlayerInfo(const cPlayer & info)
 
 	//향후 체력이나 다른플레이어 체력 등등 업뎃
 
+//	Player->FinalDamage = info.Hp;
 }
 
 void ACharacterPlayerController::UpdateNewPlayer()
@@ -379,19 +400,21 @@ void ACharacterPlayerController::UpdateNewPlayer()
 		UE_LOG(LogTemp, Log, TEXT("! Failed to spawn AprojectlevelCharacter Pawn."));
 	}
 	SpawnCharacter->SessionId = NewPlayer->ClientID;
-
+	//	SpawnCharacter->FinalDamage = NewPlayer->Hp;
 	if (playerinfo != nullptr)
 	{
 		cPlayer player;
 		player.ClientID = NewPlayer->ClientID;
 		player.Location = NewPlayer->Location;
-		
+
 		player.Rotation = NewPlayer->Rotation;
-		
+
 		player.Velocity = NewPlayer->Velocity;
 
+		//		player.Hp = NewPlayer->Hp;
 		player.IsSkilling = NewPlayer->IsSkilling;
 		player.IsAttacking = NewPlayer->IsAttacking;
+		player.AttackCombo = NewPlayer->AttackCombo;
 		player.clientPlayerType = int(NewPlayer->clientPlayerType);
 
 
@@ -427,12 +450,18 @@ void ACharacterPlayerController::SpawnMonster()
 		SpawnParams.Instigator = Instigator;
 		SpawnParams.Name = FName(*FString(to_string(TOAMonster->MonsterID).c_str()));
 
-		AHMonster* SpawnMonster = world->SpawnActor<AHMonster>(AHMonster::StaticClass(), SpawnLocation, MonsterRotation, SpawnParams);
-
+		AHGolem* SpawnMonster = world->SpawnActor<AHGolem>(AHGolem::StaticClass(), SpawnLocation, MonsterRotation, SpawnParams);
+		if (SpawnMonster)
+		{
+			SpawnMonster->SpawnDefaultController();
+			SpawnMonster->MonsterID = TOAMonster->MonsterID;
+			//SpawnMonster->HP = TOAMonster->HP;
+		}
 		TOAMonster = nullptr;
 		MonsterSpawn = false;
 	}
 }
+
 void ACharacterPlayerController::UpdateMonster()
 {
 	if (TOAMonsterset == nullptr)
@@ -442,7 +471,7 @@ void ACharacterPlayerController::UpdateMonster()
 	if (world)
 	{
 		TArray<AActor*> SpawnedMonsters;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHMonster::StaticClass(), SpawnedMonsters);
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHGolem::StaticClass(), SpawnedMonsters);
 
 		if (MonsterNum == -1)
 		{
@@ -463,11 +492,12 @@ void ACharacterPlayerController::UpdateMonster()
 				SpawnParams.Instigator = Instigator;
 				SpawnParams.Name = FName(*FString(to_string(monster->MonsterID).c_str()));
 
-				AHMonster* SpawnMonster = world->SpawnActor<AHMonster>(AHMonster::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+				AHGolem* SpawnMonster = world->SpawnActor<AHGolem>(AHGolem::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 				if (SpawnMonster)
 				{
+					SpawnMonster->SpawnDefaultController();
 					SpawnMonster->MonsterID = monster->MonsterID;
-
+					//SpawnMonster->HP = monster->HP;
 				}
 			}
 		}
@@ -475,7 +505,7 @@ void ACharacterPlayerController::UpdateMonster()
 		{
 			for (auto actor : SpawnedMonsters)
 			{
-				AHMonster * monster = Cast<AHMonster>(actor);
+				AHGolem * monster = Cast<AHGolem>(actor);
 				if (monster)
 				{
 					const Monster * MonsterInfo = &TOAMonsterset->monsters[monster->MonsterID];
@@ -485,7 +515,7 @@ void ACharacterPlayerController::UpdateMonster()
 					Location.Y = MonsterInfo->Y;
 					Location.Z = MonsterInfo->Z;
 
-
+					monster->MoveToLocation(Location);
 
 					if (MonsterInfo->IsAttacking)
 					{

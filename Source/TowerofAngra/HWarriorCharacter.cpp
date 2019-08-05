@@ -139,9 +139,9 @@ void AHWarriorCharacter::Skill()
 	IsSkilling = true;
 }
 
-void AHWarriorCharacter::OtherPlayerAttack()
+void AHWarriorCharacter::OtherPlayerAttack(int AttackCount)
 {
-	Super::OtherPlayerAttack();
+	Super::OtherPlayerAttack(AttackCount);
 	
 	if (IsAttacking)
 	{

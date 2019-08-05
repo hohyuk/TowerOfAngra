@@ -8,8 +8,6 @@
 #include "RunnableThread.h"
 #include<algorithm>
 #include<string>
-//#include"projectlevelCharacter.h"
-//#include"MainPlayerController.h"
 #include"CharacterPlayerController.h"
 
 
@@ -230,18 +228,21 @@ uint32 server::Run()
 				Controller->RecvNewPlayer(RecvNewPlayer(RecvStream));
 			}
 			break;
-			case PacketType::ENTER_NEW_MONSTER:
-			{
-				Controller->RecvNewMonster(RecvMonsterSet(RecvStream));
-			}
-			break;
 			case PacketType::SPAWN_MONSTER:
 			{
 				Controller->RecvSpawnMonster(RecvMonster(RecvStream));
 			}
 			break;
-
-
+			case PacketType::SYNCRO_MONSTER:
+			{
+				Controller->RecvNewMonster(RecvMonsterSet(RecvStream));
+			}
+			break;
+			case PacketType::DESTROY_MONSTER:
+			{
+				Controller->RecvDestroyMonster(RecvMonster(RecvStream));
+			}
+			break;
 
 			default:
 				break;

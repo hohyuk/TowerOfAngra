@@ -73,7 +73,9 @@ void AHMonster::BeginPlay()
 
 	MonsterAIController = Cast<AHMonsterAIController>(GetController());
 
-	MonsterAIController->RunAI();
+
+	if (CurrentGameMode == EGameMode::SINGLE_GAME)
+		MonsterAIController->RunAI();
 }
 
 void AHMonster::DieOn()
@@ -335,6 +337,15 @@ void AHMonster::SkillCheck()
 				OverlapResult.Actor->TakeDamage(fAttackPower, DamageEvent, GetController(), this);
 			}
 		}
+	}
+}
+
+void AHMonster::MoveToLocation(const FVector & dest)
+{
+	AHMonsterAIController* Controller = Cast<AHMonsterAIController>(GetController());
+	if (Controller)
+	{
+		Controller->MoveToLocation(dest);
 	}
 }
 

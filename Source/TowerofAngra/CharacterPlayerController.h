@@ -8,7 +8,7 @@
 #include "CharacterPlayerController.generated.h"
 
 /**
- * 
+ *
  */
 
 UCLASS()
@@ -18,7 +18,7 @@ class TOWEROFANGRA_API ACharacterPlayerController : public APlayerController
 
 public:
 	ACharacterPlayerController();
-	
+
 	virtual void PostInitializeComponents() override;
 	virtual void Possess(APawn* aPawn) override;
 
@@ -40,6 +40,7 @@ public:
 	void RecvSpawnMonster(Monster*);
 	void SpawnMonster();
 	void UpdateMonster();
+	void RecvDestroyMonster(Monster*);
 private:
 	MonsterSet * TOAMonsterset;
 	int MonsterNum;
@@ -49,6 +50,8 @@ private:
 	bool				bIsConnected;	// 서버와 접속 유무
 	int					SessionId;		// 캐릭터의 세션 고유 아이디 (랜덤값)
 	cPlayerInfo *		playerinfo;	// 다른 캐릭터의 정보
+
+	bool DesMonster;
 
 	void SendPlayerInfo();		// 플레이어 위치 송신
 	bool UpdateWorldInfo();		// 월드 동기화

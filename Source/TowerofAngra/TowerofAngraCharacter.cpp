@@ -53,7 +53,7 @@ ATowerofAngraCharacter::ATowerofAngraCharacter()
 		OtherPlayerHPBarWidget->SetDrawSize(FVector2D(150.f, 50.f));
 		// UI Pos
 		OtherPlayerHPBarWidget->SetupAttachment(GetMesh());
-		OtherPlayerHPBarWidget->SetRelativeLocation(FVector(0.f, 0.f, 200.f));
+		OtherPlayerHPBarWidget->SetRelativeLocation(FVector(0.f, 0.f, 180.f));
 		OtherPlayerHPBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
 		//IsHP_Show = false;
 	}
@@ -228,7 +228,7 @@ void ATowerofAngraCharacter::Attack()
 {
 }
 
-void ATowerofAngraCharacter::OtherPlayerAttack()
+void ATowerofAngraCharacter::OtherPlayerAttack(int AttackCount)
 {
 }
 

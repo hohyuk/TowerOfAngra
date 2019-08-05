@@ -38,8 +38,11 @@ enum PacketType
 	RECV_CHARACTER,
 	ENTER_NEW_PLAYER,
 	LOGOUT_CHARACTER,
-	ENTER_NEW_MONSTER,
-	SPAWN_MONSTER
+	SPAWN_MONSTER,
+	HIT_PLAYER,
+	HIT_MONSTER,
+	SYNCRO_MONSTER,
+	DESTROY_MONSTER
 };
 
 class cPlayer
@@ -61,9 +64,11 @@ public:
 	FRotator Rotation;		// 회전
 	FVector Velocity;		// 속도
 
-	float HP{ 0.f };		// player hp 넘겨주기
+	float Hp;
 	bool IsSkilling;
 	bool IsAttacking;
+	bool IsAliving;
+	int AttackCombo = 0;
 
 	//패킷 직렬화 역직렬화
 	friend ostream& operator<<(ostream &stream, cPlayer& info)
@@ -81,10 +86,13 @@ public:
 		stream << info.Rotation.Pitch << endl;
 		stream << info.Rotation.Roll << endl;
 
+		stream << info.Hp << endl;
+
 		stream << info.IsSkilling << endl;
 		stream << info.IsAttacking << endl;
-
 		stream << info.clientPlayerType << endl;
+		stream << info.AttackCombo << endl;
+		stream << info.IsAliving << endl;
 		return stream;
 	}
 
@@ -103,10 +111,13 @@ public:
 		stream >> info.Rotation.Pitch;
 		stream >> info.Rotation.Roll;
 
+		stream >> info.Hp;
+
 		stream >> info.IsSkilling;
 		stream >> info.IsAttacking;
-
 		stream >> info.clientPlayerType;
+		stream >> info.AttackCombo;
+		stream >> info.IsAliving;
 		return stream;
 	}
 };
@@ -163,6 +174,11 @@ public:
 	bool IsAliving;
 	float HP;
 
+	// MonsterTYPE
+	int MonsterType = 0;
+
+
+
 	friend ostream& operator<<(ostream &stream, Monster& info)
 	{
 		stream << info.X << endl;
@@ -172,6 +188,7 @@ public:
 		stream << info.IsAttacking << endl;
 		stream << info.IsAliving << endl;
 		stream << info.HP << endl;
+		stream << info.MonsterType << endl;
 
 		return stream;
 	}
@@ -185,6 +202,7 @@ public:
 		stream >> info.IsAttacking;
 		stream >> info.IsAliving;
 		stream >> info.HP;
+		stream >> info.MonsterType;
 
 		return stream;
 	}
