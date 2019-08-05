@@ -35,11 +35,9 @@ AHDropItem::AHDropItem()
 	
 	Item->SetRelativeScale3D(FVector(2.f, 2.f, 2.f));
 	Item->SetRelativeLocation(FVector(0.f, 0.f, -30.f));
-	//Item->SetEnableGravity(true);
-
+	
 	Trigger->SetCollisionProfileName(TEXT("Item"));
 	Item->SetCollisionProfileName(TEXT("NoCollision"));
-
 }
 
 // Called when the game starts or when spawned

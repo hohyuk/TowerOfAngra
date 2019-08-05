@@ -106,6 +106,9 @@ protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Damage, Meta = (AllowPrivateAccess = true))
 	float FinalDamage;
 
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Body, Meta = (AllowPrivateAccess = true))
+	float BodyCenter;
+
 public:
 	void SetHpShow(bool HpShow) { IsHP_Show = HpShow; }
 

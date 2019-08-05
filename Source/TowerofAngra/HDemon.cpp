@@ -7,12 +7,12 @@
 AHDemon::AHDemon()
 {
 	CurrentMonsterName = EMonsterName::DEMON;
-
+	BodyCenter = 88.f;
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_CARDBOARD(TEXT("/Game/TowerofAngra/Demon/demon.demon"));
 	if (SK_CARDBOARD.Succeeded())
 		GetMesh()->SetSkeletalMesh(SK_CARDBOARD.Object);
 
-	GetMesh()->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -88.f), FRotator(0.f, -90.f, 0.f));
+	GetMesh()->SetRelativeLocationAndRotation(FVector(0.f, 0.f, - BodyCenter), FRotator(0.f, -90.f, 0.f));
 
 	// Anim
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);

@@ -8,11 +8,12 @@ AHLizard::AHLizard()
 {
 	CurrentMonsterName = EMonsterName::LIZARD;
 
+	BodyCenter = 70.f;
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_CARDBOARD(TEXT("/Game/TowerofAngra/Monster/LizardBeast/Meshes/SK_LizardBeast.SK_LizardBeast"));
 	if (SK_CARDBOARD.Succeeded())
 		GetMesh()->SetSkeletalMesh(SK_CARDBOARD.Object);
-
-	GetMesh()->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -88.f), FRotator(0.f, -90.f, 0.f));
+	GetCapsuleComponent()->SetCapsuleSize(50.f, BodyCenter, true);
+	GetMesh()->SetRelativeLocationAndRotation(FVector(0.f, 0.f, - BodyCenter), FRotator(0.f, -90.f, 0.f));
 
 	// Anim
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);

@@ -76,6 +76,8 @@ void AHMonster::BeginPlay()
 
 	if (CurrentGameMode == EGameMode::SINGLE_GAME)
 		MonsterAIController->RunAI();
+
+	TOALOG(Warning, TEXT("PosZ : %f"), GetActorLocation().Z);
 }
 
 void AHMonster::DieOn()
@@ -85,8 +87,18 @@ void AHMonster::DieOn()
 	HPBarWidget->SetHiddenInGame(false);
 	MonsterAIController->StopAI();
 
+	//GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]()->void {
+	//	GetWorld()->SpawnActor<AHDropItem>(GetActorLocation() /*- FVector(0.f, 0.f, GetActorLocation().Z / 2.f)*/, FRotator::ZeroRotator);
+	//		Destroy();
+	//}), DeadTimer, false);
+
+	
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]()->void {
-		GetWorld()->SpawnActor<AHDropItem>(GetActorLocation() /*- FVector(0.f, 0.f, GetActorLocation().Z / 2.f)*/, FRotator::ZeroRotator);
+
+		float PosZ = GetActorLocation().Z;
+		PosZ = (PosZ - BodyCenter) + 30; // 30 item z Å©±â
+
+		GetWorld()->SpawnActor<AHDropItem>(FVector(GetActorLocation().X, GetActorLocation().Y, PosZ), FRotator::ZeroRotator);
 			Destroy();
 	}), DeadTimer, false);
 }

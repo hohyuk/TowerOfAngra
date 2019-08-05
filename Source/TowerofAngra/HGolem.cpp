@@ -8,13 +8,15 @@
 AHGolem::AHGolem()
 {
 	CurrentMonsterName = EMonsterName::GOLEM;
+
+	BodyCenter = 170.f;
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_CARDBOARD(TEXT("/Game/TowerofAngra/Monster/Golem/Mesh/SK_Golem.SK_Golem"));
 	if (SK_CARDBOARD.Succeeded())
 		GetMesh()->SetSkeletalMesh(SK_CARDBOARD.Object);
 
 	
-	GetCapsuleComponent()->SetCapsuleSize(100.f, 170.f, true);
-	GetMesh()->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -170.f), FRotator(0.f, -90.f, 0.f));
+	GetCapsuleComponent()->SetCapsuleSize(100.f, BodyCenter, true);
+	GetMesh()->SetRelativeLocationAndRotation(FVector(0.f, 0.f, - BodyCenter), FRotator(0.f, -90.f, 0.f));
 
 	// Anim
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);

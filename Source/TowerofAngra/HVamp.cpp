@@ -9,11 +9,12 @@ AHVamp::AHVamp()
 {
 	CurrentMonsterName = EMonsterName::VAMP;
 
+	BodyCenter = 88.f;
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_CARDBOARD(TEXT("/Game/TowerofAngra/Monster/Vamp/vampire_a_lusth.vampire_a_lusth"));
 	if (SK_CARDBOARD.Succeeded())
 		GetMesh()->SetSkeletalMesh(SK_CARDBOARD.Object);
 
-	GetMesh()->SetRelativeLocationAndRotation(FVector(-20.f, 0.f, -88.f), FRotator(0.f, -90.f, 0.f));
+	GetMesh()->SetRelativeLocationAndRotation(FVector(-20.f, 0.f, - BodyCenter), FRotator(0.f, -90.f, 0.f));
 	
 	// Anim
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);

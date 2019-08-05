@@ -36,6 +36,8 @@ ATowerofAngraGameMode::ATowerofAngraGameMode()
 	{
 		PlayerControllerClass = AHSingleGamePlayerController::StaticClass();
 	}
+
+	TOALOG(Warning, TEXT("CurrentGameMode : %d"), int(CurrentGameMode));
 }
 
 void ATowerofAngraGameMode::PostInitializeComponents()
