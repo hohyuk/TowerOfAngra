@@ -292,7 +292,6 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 			if (info->AttackCombo > 0)
 			{
 				UE_LOG(LogClass, Log, TEXT("Attacking ANIM"));
-				TOALOG(Warning, TEXT("Attack : %d"), info->AttackCombo);
 				OtherCharacter->OtherPlayerAttack(info->AttackCombo);
 			}
 
