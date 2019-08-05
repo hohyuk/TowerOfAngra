@@ -111,6 +111,6 @@ public:
 
 	float GetDetectRadius()const { return DetectRadius; }
 
-	float GetAttackRadius()const { return AttackRadius; }
+	float GetAttackRange()const { return AttackRange; }
 
 };

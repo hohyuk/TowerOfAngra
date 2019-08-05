@@ -104,6 +104,7 @@ void AHMonster::Tick(float DeltaTime)
 		CharacterState->SetDamage(DamageSpeed);
 		FinalDamage -= DamageSpeed;
 	}
+
 }
 
 void AHMonster::PostInitializeComponents()
@@ -273,7 +274,6 @@ void AHMonster::AttackCheck()
 		FCollisionShape::MakeSphere(AttackRadius),
 		Params
 	);
-
 
 #if ENABLE_DRAW_DEBUG
 

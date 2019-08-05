@@ -26,7 +26,9 @@ bool UHBTDecorator_IsInAttackRange::CalculateRawConditionValue(UBehaviorTreeComp
 	if (nullptr == Target)
 		return false;
 
-	bResult = (Target->GetDistanceTo(ControllingPawn) <= ControllingPawn->GetAttackRadius());
+	//bResult = (Target->GetDistanceTo(ControllingPawn) <= ControllingPawn->GetAttackRange());				// 3D 거리
+	bResult = (Target->GetHorizontalDistanceTo(ControllingPawn) <= ControllingPawn->GetAttackRange());		// 2D 거리
+	
 	return bResult;
 }
 

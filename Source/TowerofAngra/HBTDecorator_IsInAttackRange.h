@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "TowerofAngra.h"
 #include "BehaviorTree/BTDecorator.h"
 #include "HBTDecorator_IsInAttackRange.generated.h"
 
@@ -20,5 +20,4 @@ public:
 protected:
 	virtual bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const override;
 
-	
 };
