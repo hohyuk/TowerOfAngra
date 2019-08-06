@@ -14,7 +14,6 @@ ACharacterPlayerController::ACharacterPlayerController()
 {
 	SessionId = FMath::RandRange(0, 100);
 
-	// 서버와 연결
 	Socket = server::GetSingleton();
 	Socket->InitSock();
 	const char* ip = TCHAR_TO_ANSI(*IPaddress);
@@ -82,7 +81,6 @@ void ACharacterPlayerController::BeginPlay()
 	//	cp.Hp = Player->FinalDamage;
 	cp.IsSkilling = Player->IsSkilling;
 	cp.IsAttacking = Player->IsServerSend_Attacking;
-	
 	cp.clientPlayerType = int(Player->CurrentPlayerType);
 
 	Socket->EnrollCharacterInfo(cp);
@@ -108,16 +106,17 @@ void ACharacterPlayerController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	if (bNewPlayerEntered)
+	{
 		UpdateNewPlayer();
-
-	if (MonsterSpawn)
-		SpawnMonster();
-
-	/*if (DesMonster)
-		dest();*/
-
+	}
 
 	UpdateWorldInfo();
+
+	if (MonsterSpawn)
+	{
+		SpawnMonster();
+	}
+
 	UpdateMonster();
 }
 
@@ -204,7 +203,6 @@ void ACharacterPlayerController::SendPlayerInfo()
 	//	cp.Hp = Player->FinalDamage;
 	cp.IsSkilling = Player->IsSkilling;
 	cp.IsAttacking = Player->IsServerSend_Attacking;
-	
 	cp.clientPlayerType = int(Player->CurrentPlayerType);
 
 	Socket->SendCharacterInfo(cp);
@@ -265,6 +263,7 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 			SpawnCharacter->IsSkilling = player.second.IsSkilling;
 			SpawnCharacter->IsServerSend_Attacking = player.second.IsAttacking;
 
+
 			SpawnCharacter->CurrentPlayerType = EPlayerType(player.second.clientPlayerType);
 		}
 		nPlayers = playerinfo->players.size();
@@ -289,10 +288,10 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 				UE_LOG(LogClass, Log, TEXT("Skilling ANIM"));
 				OtherCharacter->Skill();
 			}
-			if (info->IsAttacking)
+			else if (info->IsAttacking)
 			{
 				UE_LOG(LogClass, Log, TEXT("Attacking ANIM"));
-				OtherCharacter->OtherPlayerAttack(0);
+				OtherCharacter->Attack();
 			}
 
 			FVector CharacterLocation = info->Location;
@@ -413,7 +412,6 @@ void ACharacterPlayerController::UpdateNewPlayer()
 		//		player.Hp = NewPlayer->Hp;
 		player.IsSkilling = NewPlayer->IsSkilling;
 		player.IsAttacking = NewPlayer->IsAttacking;
-		
 		player.clientPlayerType = int(NewPlayer->clientPlayerType);
 
 
@@ -454,29 +452,32 @@ void ACharacterPlayerController::SpawnMonster()
 		{
 			SpawnMonster->SpawnDefaultController();
 			SpawnMonster->MonsterID = TOAMonster->MonsterID;
-			//SpawnMonster->HP = TOAMonster->HP;
+			SpawnMonster->HP = TOAMonster->HP;
 		}
 		TOAMonster = nullptr;
 		MonsterSpawn = false;
 	}
 }
-
+//-------------------------------2019-08-05작업 진행중..
 void ACharacterPlayerController::UpdateMonster()
 {
 	if (TOAMonsterset == nullptr)
 		return;
 
 	UWorld* const world = GetWorld();
+
+	TArray<AActor*> SpawnedMonsters;
+
+
 	if (world)
 	{
-		TArray<AActor*> SpawnedMonsters;
+
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHGolem::StaticClass(), SpawnedMonsters);
 
 		if (MonsterNum == -1)
 		{
-			MonsterNum = TOAMonsterset->monsters.size();
 
-			for (const auto& kvp : TOAMonsterset->monsters)
+			for (auto& kvp : TOAMonsterset->monsters)
 			{
 				const Monster * monster = &kvp.second;
 				FVector SpawnLocation;
@@ -496,12 +497,17 @@ void ACharacterPlayerController::UpdateMonster()
 				{
 					SpawnMonster->SpawnDefaultController();
 					SpawnMonster->MonsterID = monster->MonsterID;
-					//SpawnMonster->HP = monster->HP;
+					SpawnMonster->HP = monster->HP;
 				}
+
+
 			}
+
+			MonsterNum = TOAMonsterset->monsters.size();
 		}
 		else
 		{
+
 			for (auto actor : SpawnedMonsters)
 			{
 				AHGolem * monster = Cast<AHGolem>(actor);
@@ -509,19 +515,47 @@ void ACharacterPlayerController::UpdateMonster()
 				{
 					const Monster * MonsterInfo = &TOAMonsterset->monsters[monster->MonsterID];
 
-					FVector Location;
-					Location.X = MonsterInfo->X;
-					Location.Y = MonsterInfo->Y;
-					Location.Z = MonsterInfo->Z;
 
-					monster->MoveToLocation(Location);
+					FVector MonsterLocation;
+					MonsterLocation.X = MonsterInfo->X;
+					MonsterLocation.Y = MonsterInfo->Y;
+					MonsterLocation.Z = MonsterInfo->Z;
+
+					//monster->MoveToLocation(MonsterLocation);
+
+
+					monster->SetActorLocation(MonsterLocation);
+					//					UE_LOG(LogClass, Log, TEXT("Move to Location!"));
 
 					if (MonsterInfo->IsAttacking)
 					{
-
+						UE_LOG(LogClass, Log, TEXT("Monster Attacking ANIM"));
 					}
+					//monster->AddMovementInput(MonsterVelocity);
+					//monster->SetActorRotation(MonsterRotation);
+					//monster->SetActorLocation(MonsterLocation);
+
 				}
+
+
+
 			}
 		}
 	}
+}
+//-------------------------------2019-08-05작업 진행중..
+
+
+void ACharacterPlayerController::HitCharacter(const int & SessionId)
+{
+	//	UE_LOG(LogClass, Log, TEXT("Player Hit Called %d"), SessionId);
+
+	Socket->HitPlayer(SessionId);
+}
+
+void ACharacterPlayerController::HitMonster(const int & MonsterId)
+{
+	//	UE_LOG(LogClass, Log, TEXT("Monster Hit Called %d"), MonsterId);
+
+	Socket->HitMonster(MonsterId);
 }

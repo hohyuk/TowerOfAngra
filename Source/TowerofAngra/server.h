@@ -68,7 +68,6 @@ public:
 	bool IsSkilling;
 	bool IsAttacking;
 	bool IsAliving;
-	
 	//패킷 직렬화 역직렬화
 	friend ostream& operator<<(ostream &stream, cPlayer& info)
 	{
@@ -90,7 +89,6 @@ public:
 		stream << info.IsSkilling << endl;
 		stream << info.IsAttacking << endl;
 		stream << info.clientPlayerType << endl;
-	
 		stream << info.IsAliving << endl;
 		return stream;
 	}
@@ -115,7 +113,6 @@ public:
 		stream >> info.IsSkilling;
 		stream >> info.IsAttacking;
 		stream >> info.clientPlayerType;
-		
 		stream >> info.IsAliving;
 		return stream;
 	}
@@ -296,6 +293,10 @@ public:
 	// 플레이어 컨트롤러 세팅
 	void SetPlayerController(ACharacterPlayerController*);
 
+	//-----------------------------------------------08-03
+	void HitMonster(const int&);
+	void HitPlayer(const int&);
+	//-----------------------------------------------
 	static server* GetSingleton()
 	{
 		static server ins;

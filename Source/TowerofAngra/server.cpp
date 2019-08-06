@@ -283,3 +283,35 @@ void server::SetPlayerController(ACharacterPlayerController* PlayerController)
 		Controller = PlayerController;
 	}
 }
+//=====================================================2019-08-03
+void server::HitMonster(const int & MonsterID)
+{
+	// 서버에게 데미지를 준 몬스터 정보 전송
+	stringstream SendStream;
+	SendStream << PacketType::HIT_MONSTER << endl;
+	SendStream << MonsterID << endl;
+
+	int nSendLen = send
+	(
+		Sock,
+		(CHAR*)SendStream.str().c_str(),
+		SendStream.str().length(),
+		0
+	);
+}
+void server::HitPlayer(const int& SessionId)
+{
+	// 서버에게 데미지를 준 캐릭터 정보 전송
+	stringstream SendStream;
+	SendStream << PacketType::HIT_PLAYER << endl;
+	SendStream << SessionId << endl;
+
+	int nSendLen = send
+	(
+		Sock,
+		(CHAR*)SendStream.str().c_str(),
+		SendStream.str().length(),
+		0
+	);
+}
+//=====================================================2019-08-03

@@ -33,6 +33,7 @@ protected:
 	void DieOn();
 public:	
 	int MonsterID;
+	float HP;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
