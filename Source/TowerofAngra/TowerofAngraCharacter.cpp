@@ -141,10 +141,10 @@ void ATowerofAngraCharacter::SetCamMode(ECAMMode NewCamMode)
 		ArmLengthTo = 500.f;
 		ArmRotationTo = FRotator(-15.f, 0.f, 0.f);
 		SpringArm->bUsePawnControlRotation = true;
-		SpringArm->bInheritPitch = false;
+		SpringArm->bInheritPitch = true;		// 고정하려면 : false
 		SpringArm->bInheritRoll = true;
 		SpringArm->bInheritYaw = true;
-		SpringArm->bDoCollisionTest = false;
+		SpringArm->bDoCollisionTest = true;
 		bUseControllerRotationYaw = false;
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 		GetCharacterMovement()->bUseControllerDesiredRotation = false;
@@ -176,7 +176,7 @@ float ATowerofAngraCharacter::TakeDamage(float DamageAmount, FDamageEvent const 
 
 void ATowerofAngraCharacter::SpringArmTick(float DeltaTime)
 {
-	SpringArm->TargetArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, ArmLengthTo, DeltaTime, ArmLengthSpeed);
+	/*SpringArm->TargetArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, ArmLengthTo, DeltaTime, ArmLengthSpeed);
 
 	switch (CurrentCamMode)
 	{
@@ -190,6 +190,26 @@ void ATowerofAngraCharacter::SpringArmTick(float DeltaTime)
 	{
 	case ECAMMode::DYNAMIC_CAM:
 	case ECAMMode::STATIC_CAM:
+		if (DirectionToMove.SizeSquared() > 0.f)
+		{
+			GetController()->SetControlRotation(FRotationMatrix::MakeFromX(DirectionToMove).Rotator());
+			AddMovementInput(DirectionToMove);
+		}
+		break;
+	}*/
+
+	SpringArm->TargetArmLength = FMath::FInterpTo(SpringArm->TargetArmLength, ArmLengthTo, DeltaTime, ArmLengthSpeed);
+
+	switch (CurrentCamMode)
+	{
+	case  ECAMMode::STATIC_CAM:
+		SpringArm->RelativeRotation = FMath::RInterpTo(SpringArm->RelativeRotation, ArmRotationTo, DeltaTime, ArmRotationSpeed);
+		break;
+	}
+
+	switch (CurrentCamMode)
+	{
+	case  ECAMMode::STATIC_CAM:
 		if (DirectionToMove.SizeSquared() > 0.f)
 		{
 			GetController()->SetControlRotation(FRotationMatrix::MakeFromX(DirectionToMove).Rotator());
@@ -268,12 +288,12 @@ void ATowerofAngraCharacter::MoveRight(float NewAxisValue)
 
 void ATowerofAngraCharacter::LookUp(float NewAxisValue)
 {
-	//switch (CurrentCamMode)
-	//{
-	//case ECAMMode::DYNAMIC_CAM:
-	//	//AddControllerPitchInput(NewAxisValue);
-	//	break;
-	//}
+	switch (CurrentCamMode)
+	{
+	case ECAMMode::DYNAMIC_CAM:
+		AddControllerPitchInput(NewAxisValue);
+		break;
+	}
 }
 
 void ATowerofAngraCharacter::Turn(float NewAxisValue)

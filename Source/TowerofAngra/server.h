@@ -68,8 +68,7 @@ public:
 	bool IsSkilling;
 	bool IsAttacking;
 	bool IsAliving;
-	int AttackCombo = 0;
-
+	
 	//패킷 직렬화 역직렬화
 	friend ostream& operator<<(ostream &stream, cPlayer& info)
 	{
@@ -91,7 +90,7 @@ public:
 		stream << info.IsSkilling << endl;
 		stream << info.IsAttacking << endl;
 		stream << info.clientPlayerType << endl;
-		stream << info.AttackCombo << endl;
+	
 		stream << info.IsAliving << endl;
 		return stream;
 	}
@@ -116,7 +115,7 @@ public:
 		stream >> info.IsSkilling;
 		stream >> info.IsAttacking;
 		stream >> info.clientPlayerType;
-		stream >> info.AttackCombo;
+		
 		stream >> info.IsAliving;
 		return stream;
 	}

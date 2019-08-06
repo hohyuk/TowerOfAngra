@@ -82,7 +82,7 @@ void ACharacterPlayerController::BeginPlay()
 	//	cp.Hp = Player->FinalDamage;
 	cp.IsSkilling = Player->IsSkilling;
 	cp.IsAttacking = Player->IsServerSend_Attacking;
-	cp.AttackCombo = Player->CurrentCombo;
+	
 	cp.clientPlayerType = int(Player->CurrentPlayerType);
 
 	Socket->EnrollCharacterInfo(cp);
@@ -204,7 +204,7 @@ void ACharacterPlayerController::SendPlayerInfo()
 	//	cp.Hp = Player->FinalDamage;
 	cp.IsSkilling = Player->IsSkilling;
 	cp.IsAttacking = Player->IsServerSend_Attacking;
-	cp.AttackCombo = int(Player->CurrentCombo);
+	
 	cp.clientPlayerType = int(Player->CurrentPlayerType);
 
 	Socket->SendCharacterInfo(cp);
@@ -289,10 +289,10 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 				UE_LOG(LogClass, Log, TEXT("Skilling ANIM"));
 				OtherCharacter->Skill();
 			}
-			if (info->AttackCombo > 0)
+			if (info->IsAttacking)
 			{
 				UE_LOG(LogClass, Log, TEXT("Attacking ANIM"));
-				OtherCharacter->OtherPlayerAttack(info->AttackCombo);
+				OtherCharacter->OtherPlayerAttack(0);
 			}
 
 			FVector CharacterLocation = info->Location;
@@ -413,7 +413,7 @@ void ACharacterPlayerController::UpdateNewPlayer()
 		//		player.Hp = NewPlayer->Hp;
 		player.IsSkilling = NewPlayer->IsSkilling;
 		player.IsAttacking = NewPlayer->IsAttacking;
-		player.AttackCombo = NewPlayer->AttackCombo;
+		
 		player.clientPlayerType = int(NewPlayer->clientPlayerType);
 
 

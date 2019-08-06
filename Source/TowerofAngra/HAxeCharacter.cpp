@@ -140,6 +140,24 @@ void AHAxeCharacter::Skill()
 	IsSkilling = true;
 }
 
+void AHAxeCharacter::OtherPlayerAttack(int AttackCount)
+{
+	Super::OtherPlayerAttack(AttackCount);
+
+	if (IsAttacking)
+	{
+		if (CanNextCombo)
+			IsComboInputOn = true;
+	}
+	else
+	{
+		AttackStartComboState();
+		AxeAnim->PlayAttackMontage();
+		AxeAnim->JumpToAttackMontageSection(CurrentCombo);
+		IsAttacking = true;
+	}
+}
+
 void AHAxeCharacter::OnAttackMontageEnded(UAnimMontage * Montage, bool bInterrupted)
 {
 	IsAttacking = false;
