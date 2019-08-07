@@ -83,8 +83,6 @@ void AHMonster::BeginPlay()
 
 	if (CurrentGameMode == EGameMode::SINGLE_GAME)
 		MonsterAIController->RunAI();
-
-	TOALOG(Warning, TEXT("PosZ : %f"), GetActorLocation().Z);
 }
 
 void AHMonster::DieOn()
@@ -93,12 +91,6 @@ void AHMonster::DieOn()
 	SetActorHiddenInGame(false);
 	HPBarWidget->SetHiddenInGame(false);
 	MonsterAIController->StopAI();
-
-	//GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]()->void {
-	//	GetWorld()->SpawnActor<AHDropItem>(GetActorLocation() /*- FVector(0.f, 0.f, GetActorLocation().Z / 2.f)*/, FRotator::ZeroRotator);
-	//		Destroy();
-	//}), DeadTimer, false);
-
 	
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]()->void {
 
@@ -125,7 +117,6 @@ void AHMonster::Tick(float DeltaTime)
 		CharacterState->SetDamage(DamageSpeed);
 		FinalDamage -= DamageSpeed;
 	}
-
 }
 
 void AHMonster::PostInitializeComponents()
@@ -222,7 +213,6 @@ void AHMonster::PossessedBy(AController * NewController)
 void AHMonster::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
 void AHMonster::Attack()
