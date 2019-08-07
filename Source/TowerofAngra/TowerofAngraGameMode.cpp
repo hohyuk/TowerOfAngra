@@ -45,6 +45,8 @@ ATowerofAngraGameMode::ATowerofAngraGameMode()
 void ATowerofAngraGameMode::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+
+	TOAGameState = Cast<AHTOAGameState>(GameState);
 }
 
 void ATowerofAngraGameMode::PostLogin(APlayerController * NewPlayer)

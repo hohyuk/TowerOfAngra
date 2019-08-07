@@ -14,6 +14,9 @@ class TOWEROFANGRA_API ATowerofAngraGameMode : public AGameModeBase
 	ATowerofAngraGameMode();
 public:
 
+private:
+	UPROPERTY()
+	class AHTOAGameState* TOAGameState;
 public:
 	virtual void PostInitializeComponents() override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
