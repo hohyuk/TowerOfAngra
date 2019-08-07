@@ -7,6 +7,7 @@
 #include "HWarriorCharacter.h"
 #include "CharacterPlayerController.h"
 #include "HSingleGamePlayerController.h"
+#include "HTOAGameState.h"
 
 ATowerofAngraGameMode::ATowerofAngraGameMode()
 {
@@ -37,6 +38,7 @@ ATowerofAngraGameMode::ATowerofAngraGameMode()
 		PlayerControllerClass = AHSingleGamePlayerController::StaticClass();
 	}
 
+	GameStateClass = AHTOAGameState::StaticClass();
 	TOALOG(Warning, TEXT("CurrentGameMode : %d"), int(CurrentGameMode));
 }
 
