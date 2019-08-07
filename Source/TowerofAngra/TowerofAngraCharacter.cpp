@@ -59,12 +59,16 @@ ATowerofAngraCharacter::ATowerofAngraCharacter()
 	}
 	
 	// =========================================
+
+	// 플레이어 카메라 무시
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 }
 
 void ATowerofAngraCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	if (!IsPlayerControlled()) return;
 
 	// HUD
@@ -145,6 +149,7 @@ void ATowerofAngraCharacter::SetCamMode(ECAMMode NewCamMode)
 		SpringArm->bInheritRoll = true;
 		SpringArm->bInheritYaw = true;
 		SpringArm->bDoCollisionTest = true;
+		
 		bUseControllerRotationYaw = false;
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 		GetCharacterMovement()->bUseControllerDesiredRotation = false;

@@ -64,6 +64,13 @@ AHMonster::AHMonster()
 		AttackDamageEffect->SetTemplate(PARTICLE2.Object);
 		AttackDamageEffect->bAutoActivate = false;
 	}
+
+	//GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	//GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Block);
+
+	// 플레이어 카메라 무시
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 }
 
 // Called when the game starts or when spawned

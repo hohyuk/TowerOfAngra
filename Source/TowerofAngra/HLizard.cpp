@@ -36,4 +36,6 @@ AHLizard::AHLizard()
 	AttackRadius = 80.f;
 	AttackRange = 80.f;
 	fAttackPower = 15.f;
+
+	
 }
