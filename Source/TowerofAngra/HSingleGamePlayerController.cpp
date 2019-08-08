@@ -1,11 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "HSingleGamePlayerController.h"
-
+#include "HTOAGameState.h"
+#include "HResultUserWidget.h"
 
 AHSingleGamePlayerController::AHSingleGamePlayerController()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	//PrimaryActorTick.bCanEverTick = true;
+	static ConstructorHelpers::FClassFinder<UHResultUserWidget> UI_RESULT_C(TEXT("/Game/TowerofAngra/UI/UI_Result.UI_Result_C"));
+	if (UI_RESULT_C.Succeeded())
+		ResultWidgetClass = UI_RESULT_C.Class;
 }
 
 void AHSingleGamePlayerController::PostInitializeComponents()

@@ -26,4 +26,15 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	virtual void SetupInputComponent() override;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = UI)
+	TSubclassOf<class UHResultUserWidget> ResultWidgetClass;
+
+private:
+	UPROPERTY()
+	class AHTOAGameState* TOAPlayerState;
+
+	UPROPERTY()
+	class UHResultUserWidget* ResultWidget;
 };

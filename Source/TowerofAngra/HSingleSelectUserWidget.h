@@ -36,6 +36,4 @@ private:
 
 	UFUNCTION()
 	void OnBackButtonClicked();
-	
-	
 };
