@@ -22,16 +22,22 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-		USceneComponent* Root;
 	UPROPERTY(VisibleAnywhere, Category = Door)
-		UStaticMeshComponent* DoorLeft;
+	UStaticMeshComponent* DoorLeft;
 	UPROPERTY(VisibleAnywhere, Category = Door)
-		UStaticMeshComponent* DoorRight;
+	UStaticMeshComponent* DoorRight;
 	UPROPERTY(VisibleAnywhere, Category = Door)
-		UStaticMeshComponent* DoorFrame;
+	UStaticMeshComponent* DoorFrame;
 	UPROPERTY(VisibleAnywhere, Category = Door)
-		class UBoxComponent* OverlapVolume;
-	bool OpenDoor;
+	class UBoxComponent* OverlapVolume;
+
 	UFUNCTION()
-		void OverlapBegins(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int32 OtherbodyIdx, bool bFromSweep, const FHitResult & SweepHit);
+	void OverlapBegins(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int32 OtherbodyIdx, bool bFromSweep, const FHitResult & SweepHit);
+
+private:
+	UPROPERTY(EditAnywhere, Category = State, Meta = (AllowPrivateAccess = true))
+	bool OpenDoor;
+
+	UPROPERTY(EditAnywhere, Category = State, Meta = (AllowPrivateAccess = true))
+	float CurrentAngle;
 };

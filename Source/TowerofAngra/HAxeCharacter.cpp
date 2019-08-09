@@ -103,7 +103,7 @@ void AHAxeCharacter::SetupPlayerInputComponent(UInputComponent * PlayerInputComp
 void AHAxeCharacter::Attack()
 {
 	Super::Attack();
-
+	IsServerSend_Attacking = true;
 	if (IsSkilling) return;
 
 	if (IsAttacking)
@@ -158,10 +158,15 @@ void AHAxeCharacter::OtherPlayerAttack(int AttackCount)
 	}
 }
 
+void AHAxeCharacter::NotAttack()
+{
+	IsServerSend_Attacking = false;
+}
+
 void AHAxeCharacter::OnAttackMontageEnded(UAnimMontage * Montage, bool bInterrupted)
 {
 	IsAttacking = false;
-
+	IsServerSend_Attacking = false;
 	AttackEndComboState();
 }
 
