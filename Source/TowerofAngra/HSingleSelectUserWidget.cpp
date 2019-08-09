@@ -24,14 +24,14 @@ void UHSingleSelectUserWidget::NativeConstruct()
 
 void UHSingleSelectUserWidget::OnWorriorButtonClicked()
 {
-	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Stage2"));
+	UGameplayStatics::OpenLevel(GetWorld(), TEXT("TOA_Stage"));
 
 	PlayerType = EPlayerType::WARRIOR;
 }
 
 void UHSingleSelectUserWidget::OnAxeButtonClicked()
 {
-	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Stage2"));
+	UGameplayStatics::OpenLevel(GetWorld(), TEXT("TOA_Stage"));
 
 	PlayerType = EPlayerType::AXE;
 }
