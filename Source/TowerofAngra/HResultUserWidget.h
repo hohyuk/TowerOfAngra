@@ -14,7 +14,12 @@ class TOWEROFANGRA_API UHResultUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
+public:
+	void BindGameState(class AHTOAGameState* GameState);
+
 protected:
 	virtual void NativeConstruct() override;
 	
+private:
+	TWeakObjectPtr<class AHTOAGameState> CurrentGameState;
 };

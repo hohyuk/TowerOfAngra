@@ -53,3 +53,20 @@ void ATowerofAngraGameMode::PostLogin(APlayerController * NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
 }
+
+void ATowerofAngraGameMode::AddScore()
+{
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		const auto PlayerController = Cast<AHSingleGamePlayerController>(It->Get());
+		if (nullptr != PlayerController)
+		{
+			PlayerController->ShowResultUI();
+		}
+	}
+}
+
+int32 ATowerofAngraGameMode::GetScore() const
+{
+	return TOAGameState->GetTotalGameScore();
+}

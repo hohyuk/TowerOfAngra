@@ -22,6 +22,15 @@ void AHSingleGamePlayerController::Possess(APawn * aPawn)
 	Super::Possess(aPawn);
 }
 
+void AHSingleGamePlayerController::ShowResultUI()
+{
+	auto TOAGameState = Cast<AHTOAGameState>(UGameplayStatics::GetGameState(this));
+	ResultWidget->BindGameState(TOAGameState);
+
+	ResultWidget->AddToViewport();
+	//ChangeInputMode(false);
+}
+
 void AHSingleGamePlayerController::BeginPlay()
 {
 	Super::BeginPlay();

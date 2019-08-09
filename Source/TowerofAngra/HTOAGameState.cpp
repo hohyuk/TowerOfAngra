@@ -3,10 +3,20 @@
 #include "HTOAGameState.h"
 
 
-
 AHTOAGameState::AHTOAGameState()
 {
+	TotalGameScore = 0;
 	bGameCleared = false;
+}
+
+int32 AHTOAGameState::GetTotalGameScore() const
+{
+	return TotalGameScore;
+}
+
+void AHTOAGameState::AddGameScore()
+{
+	++TotalGameScore;
 }
 
 void AHTOAGameState::SetGameCleared()

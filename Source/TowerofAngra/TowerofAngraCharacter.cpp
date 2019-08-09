@@ -5,7 +5,7 @@
 #include "Components/WidgetComponent.h"
 #include "HHUDWidget.h"
 #include "HOtherPlayerHPWidget.h"
-
+#include "TowerofAngraGameMode.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ATowerofAngraCharacter
@@ -331,4 +331,8 @@ void ATowerofAngraCharacter::ViewChange()
 		SetCamMode(ECAMMode::DYNAMIC_CAM);
 		break;
 	}
+
+	auto GameMode = Cast<ATowerofAngraGameMode>(GetWorld()->GetAuthGameMode());
+
+	GameMode->AddScore();
 }

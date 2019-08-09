@@ -20,6 +20,7 @@ public:
 	virtual void PostInitializeComponents() override;
 	virtual void Possess(APawn* aPawn) override;
 	
+	void ShowResultUI();
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;

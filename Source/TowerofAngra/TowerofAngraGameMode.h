@@ -12,14 +12,19 @@ class TOWEROFANGRA_API ATowerofAngraGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 	ATowerofAngraGameMode();
+
 public:
+	virtual void PostInitializeComponents() override;
+	virtual void PostLogin(APlayerController* NewPlayer) override;
+	void AddScore();
+	int32 GetScore() const;
 
 private:
 	UPROPERTY()
 	class AHTOAGameState* TOAGameState;
-public:
-	virtual void PostInitializeComponents() override;
-	virtual void PostLogin(APlayerController* NewPlayer) override;
+
+	UPROPERTY()
+	int32 ScoreToClear;
 };
 
 
