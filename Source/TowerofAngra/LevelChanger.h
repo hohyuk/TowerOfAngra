@@ -27,15 +27,14 @@ public:
 		void OverlapBegins(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 			UPrimitiveComponent* OtherComponent, int32 OtherbodyIdx, bool bFromSweep, const FHitResult& SweepHit);
 	UPROPERTY(EditAnywhere)
-		FName LoadLevelName;
+	FName LoadLevelName;
 	UPROPERTY(EditAnywhere)
-		FName OpenLevelName;
+	FName OpenLevelName;
+
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* MileStone;
-	UPROPERTY(EditAnywhere)
-		class AGameModeBase* GameMode;
+	class AGameModeBase* GameMode;
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		class UBoxComponent* OverlapVolume;
+	class UBoxComponent* OverlapVolume;
 	
 };
