@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "TowerofAngra.h"
 #include "GameFramework/Actor.h"
 #include "LevelChanger.generated.h"
 
@@ -24,7 +24,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-		void OverlapBegins(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	void OverlapBegins(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 			UPrimitiveComponent* OtherComponent, int32 OtherbodyIdx, bool bFromSweep, const FHitResult& SweepHit);
 	UPROPERTY(EditAnywhere)
 	FName LoadLevelName;
@@ -34,7 +34,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	class AGameModeBase* GameMode;
 private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Meta = (AllowPrivateAccess = true))
 	class UBoxComponent* OverlapVolume;
 	
 };

@@ -37,6 +37,8 @@ void ALevelChanger::OverlapBegins(UPrimitiveComponent * OverlappedComponent, AAc
 		FLatentActionInfo ActionInfo;
 
 		UGameplayStatics::LoadStreamLevel(this, LoadLevelName, true, true, ActionInfo);
+		++CurrentStageLevel;
+		TOALOG(Warning, TEXT("CurrentStageLevel : %d"), CurrentStageLevel);
 	}
 
 	if (OtherActor == MyChar && OpenLevelName != "")

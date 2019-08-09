@@ -36,6 +36,7 @@ void AHSingleGamePlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	ResultWidget = CreateWidget<UHResultUserWidget>(this, ResultWidgetClass);
+
 }
 
 void AHSingleGamePlayerController::Tick(float DeltaTime)
