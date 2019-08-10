@@ -155,7 +155,6 @@ void AHWarriorCharacter::OtherPlayerAttack(int AttackCount)
 		WarriorAnim->JumpToAttackMontageSection(CurrentCombo);
 		IsAttacking = true;
 	}
-
 }
 
 void AHWarriorCharacter::NotAttack()

@@ -117,6 +117,8 @@ void AHMonster::Tick(float DeltaTime)
 		CharacterState->SetDamage(DamageSpeed);
 		FinalDamage -= DamageSpeed;
 	}
+
+	CurrentHP = CharacterState->GetHP();
 }
 
 void AHMonster::PostInitializeComponents()

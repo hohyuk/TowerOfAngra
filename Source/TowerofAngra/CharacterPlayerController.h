@@ -73,4 +73,5 @@ private:
 
 public:
 	TSubclassOf<class ATowerofAngraCharacter> TOA_OtherPlayerClass;
+	TSubclassOf<class AHMonster> TOA_OtherMonsterClass;
 };

@@ -23,7 +23,8 @@ AHVamp::AHVamp()
 	if (GOLEM_ANIM.Succeeded())
 		GetMesh()->SetAnimInstanceClass(GOLEM_ANIM.Class);
 
-	CharacterState->InitHP(100.f);
+	CurrentHP = 100.f;
+	CharacterState->InitHP(CurrentHP);
 
 	// UI Pos
 	HPBarWidget->SetupAttachment(GetMesh());

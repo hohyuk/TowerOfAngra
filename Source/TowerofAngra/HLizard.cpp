@@ -22,7 +22,8 @@ AHLizard::AHLizard()
 	if (LIZARD_ANIM.Succeeded())
 		GetMesh()->SetAnimInstanceClass(LIZARD_ANIM.Class);
 
-	CharacterState->InitHP(300.f);
+	CurrentHP = 300.f;
+	CharacterState->InitHP(CurrentHP);
 
 	// UI Pos
 	HPBarWidget->SetupAttachment(GetMesh());

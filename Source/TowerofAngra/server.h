@@ -42,7 +42,8 @@ enum PacketType
 	HIT_PLAYER,
 	HIT_MONSTER,
 	SYNCRO_MONSTER,
-	DESTROY_MONSTER
+	DESTROY_MONSTER,
+	NEXT_LEVEL_STAGE_SPAWN_MONSTER
 };
 
 class cPlayer
@@ -84,7 +85,7 @@ public:
 		stream << info.Rotation.Pitch << endl;
 		stream << info.Rotation.Roll << endl;
 
-		stream << info.Hp << endl;
+		//	stream << info.Hp << endl;
 
 		stream << info.IsSkilling << endl;
 		stream << info.IsAttacking << endl;
@@ -108,7 +109,7 @@ public:
 		stream >> info.Rotation.Pitch;
 		stream >> info.Rotation.Roll;
 
-		stream >> info.Hp;
+		//	stream >> info.Hp;
 
 		stream >> info.IsSkilling;
 		stream >> info.IsAttacking;
@@ -183,7 +184,7 @@ public:
 		stream << info.MonsterID << endl;
 		stream << info.IsAttacking << endl;
 		stream << info.IsAliving << endl;
-		stream << info.HP << endl;
+		//stream << info.HP << endl;
 		stream << info.MonsterType << endl;
 
 		return stream;
@@ -197,7 +198,7 @@ public:
 		stream >> info.MonsterID;
 		stream >> info.IsAttacking;
 		stream >> info.IsAliving;
-		stream >> info.HP;
+		//stream >> info.HP;
 		stream >> info.MonsterType;
 
 		return stream;

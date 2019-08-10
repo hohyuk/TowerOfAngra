@@ -128,6 +128,9 @@ void ATowerofAngraCharacter::Tick(float DeltaTime)
 	SpringArmTick(DeltaTime);
 
 	StateTick(DeltaTime);
+
+	CurrentHP = CharacterState->GetHP();
+	TOALOG(Warning, TEXT("CurrentHP : %f"), CurrentHP);
 }
 
 void ATowerofAngraCharacter::PostInitializeComponents()

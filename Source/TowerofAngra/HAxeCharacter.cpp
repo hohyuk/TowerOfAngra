@@ -96,6 +96,7 @@ void AHAxeCharacter::SetupPlayerInputComponent(UInputComponent * PlayerInputComp
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &AHAxeCharacter::Attack);
+	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Released, this, &AHAxeCharacter::NotAttack);
 
 	PlayerInputComponent->BindAction(TEXT("Skill"), EInputEvent::IE_Pressed, this, &AHAxeCharacter::Skill);
 }

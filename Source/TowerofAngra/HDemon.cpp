@@ -21,7 +21,8 @@ AHDemon::AHDemon()
 	if (DEMON_ANIM.Succeeded())
 		GetMesh()->SetAnimInstanceClass(DEMON_ANIM.Class);
 
-	CharacterState->InitHP(300.f);
+	CurrentHP = 300.f;
+	CharacterState->InitHP(CurrentHP);
 
 	// UI Pos
 	HPBarWidget->SetupAttachment(GetMesh());

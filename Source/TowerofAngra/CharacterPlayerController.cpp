@@ -8,6 +8,7 @@
 #include "HAxeCharacter.h"
 #include "HWarriorCharacter.h"
 #include "HMonster.h"
+#include "HVamp.h"
 #include "HGolem.h"
 
 ACharacterPlayerController::ACharacterPlayerController()
@@ -94,7 +95,6 @@ void ACharacterPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 }
-
 
 int ACharacterPlayerController::GetSessionId()
 {
@@ -447,35 +447,43 @@ void ACharacterPlayerController::SpawnMonster()
 		SpawnParams.Instigator = Instigator;
 		SpawnParams.Name = FName(*FString(to_string(TOAMonster->MonsterID).c_str()));
 
-		AHGolem* SpawnMonster = world->SpawnActor<AHGolem>(AHGolem::StaticClass(), SpawnLocation, MonsterRotation, SpawnParams);
-		if (SpawnMonster)
+		if (TOAMonster->MonsterType == 1)
 		{
+			AHGolem* SpawnMonster = world->SpawnActor<AHGolem>(AHGolem::StaticClass(), SpawnLocation, MonsterRotation, SpawnParams);
 			SpawnMonster->SpawnDefaultController();
 			SpawnMonster->MonsterID = TOAMonster->MonsterID;
-			SpawnMonster->HP = TOAMonster->HP;
+			TOAMonster->MonsterType = (int)SpawnMonster->CurrentMonsterType;
 		}
+		else
+		{
+			AHVamp* SpawnMonster = world->SpawnActor<AHVamp>(AHVamp::StaticClass(), SpawnLocation, MonsterRotation, SpawnParams);
+			SpawnMonster->SpawnDefaultController();
+			SpawnMonster->MonsterID = TOAMonster->MonsterID;
+			TOAMonster->MonsterType = (int)SpawnMonster->CurrentMonsterType;
+
+		}
+
 		TOAMonster = nullptr;
 		MonsterSpawn = false;
 	}
 }
-//-------------------------------2019-08-05작업 진행중..
+
 void ACharacterPlayerController::UpdateMonster()
 {
 	if (TOAMonsterset == nullptr)
 		return;
 
 	UWorld* const world = GetWorld();
-
 	TArray<AActor*> SpawnedMonsters;
-
+	int TYPE = 0;
 
 	if (world)
 	{
-
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHGolem::StaticClass(), SpawnedMonsters);
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHMonster::StaticClass(), SpawnedMonsters);
 
 		if (MonsterNum == -1)
 		{
+			MonsterNum = TOAMonsterset->monsters.size();
 
 			for (auto& kvp : TOAMonsterset->monsters)
 			{
@@ -491,53 +499,73 @@ void ACharacterPlayerController::UpdateMonster()
 				SpawnParams.Owner = this;
 				SpawnParams.Instigator = Instigator;
 				SpawnParams.Name = FName(*FString(to_string(monster->MonsterID).c_str()));
+				TYPE = monster->MonsterType;
 
-				AHGolem* SpawnMonster = world->SpawnActor<AHGolem>(AHGolem::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
-				if (SpawnMonster)
+				if (TYPE == 0)
 				{
+					AHGolem* SpawnMonster = world->SpawnActor<AHGolem>(AHGolem::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 					SpawnMonster->SpawnDefaultController();
 					SpawnMonster->MonsterID = monster->MonsterID;
-					SpawnMonster->HP = monster->HP;
+					SpawnMonster->CurrentMonsterType = (EMonsterName)monster->MonsterType;
+				}
+				else
+				{
+					AHVamp* SpawnMonster = world->SpawnActor<AHVamp>(AHVamp::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+					SpawnMonster->SpawnDefaultController();
+					SpawnMonster->MonsterID = monster->MonsterID;
+					SpawnMonster->CurrentMonsterType = (EMonsterName)monster->MonsterType;
 				}
 
-
 			}
-
-			MonsterNum = TOAMonsterset->monsters.size();
 		}
 		else
 		{
-
 			for (auto actor : SpawnedMonsters)
 			{
-				AHGolem * monster = Cast<AHGolem>(actor);
-				if (monster)
+				if (TYPE == 1)
 				{
-					const Monster * MonsterInfo = &TOAMonsterset->monsters[monster->MonsterID];
+					AHVamp * monster = Cast<AHVamp>(actor);
 
-
-					FVector MonsterLocation;
-					MonsterLocation.X = MonsterInfo->X;
-					MonsterLocation.Y = MonsterInfo->Y;
-					MonsterLocation.Z = MonsterInfo->Z;
-
-					//monster->MoveToLocation(MonsterLocation);
-
-
-					monster->SetActorLocation(MonsterLocation);
-					//					UE_LOG(LogClass, Log, TEXT("Move to Location!"));
-
-					if (MonsterInfo->IsAttacking)
+					if (monster)
 					{
-						UE_LOG(LogClass, Log, TEXT("Monster Attacking ANIM"));
+						const Monster * MonsterInfo = &TOAMonsterset->monsters[monster->MonsterID];
+
+						FVector MonsterLocation;
+						MonsterLocation.X = MonsterInfo->X;
+						MonsterLocation.Y = MonsterInfo->Y;
+						MonsterLocation.Z = MonsterInfo->Z;
+
+
+						monster->MoveToLocation(MonsterLocation);
+
+						if (MonsterInfo->IsAttacking)
+						{
+							UE_LOG(LogClass, Log, TEXT("Monster Attacking ANIM"));
+						}
 					}
-					//monster->AddMovementInput(MonsterVelocity);
-					//monster->SetActorRotation(MonsterRotation);
-					//monster->SetActorLocation(MonsterLocation);
-
 				}
+				else
+				{
+					AHGolem * monster = Cast<AHGolem>(actor);
+
+					if (monster)
+					{
+						const Monster * MonsterInfo = &TOAMonsterset->monsters[monster->MonsterID];
+
+						FVector MonsterLocation;
+						MonsterLocation.X = MonsterInfo->X;
+						MonsterLocation.Y = MonsterInfo->Y;
+						MonsterLocation.Z = MonsterInfo->Z;
 
 
+						monster->MoveToLocation(MonsterLocation);
+
+						if (MonsterInfo->IsAttacking)
+						{
+							UE_LOG(LogClass, Log, TEXT("Monster Attacking ANIM"));
+						}
+					}
+				}
 
 			}
 		}

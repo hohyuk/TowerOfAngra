@@ -25,8 +25,8 @@ AHGolem::AHGolem()
 	if (GOLEM_ANIM.Succeeded())
 		GetMesh()->SetAnimInstanceClass(GOLEM_ANIM.Class);
 
-	CharacterState->InitHP(200.f);
-
+	CurrentHP = 200.f;
+	CharacterState->InitHP(CurrentHP);
 	// UI Pos
 	HPBarWidget->SetupAttachment(GetMesh());
 	HPBarWidget->SetRelativeLocation(FVector(0.f, 0.f, 300.f));

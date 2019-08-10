@@ -34,6 +34,7 @@ protected:
 public:	
 	int MonsterID;
 	float HP;
+	EMonsterName CurrentMonsterType;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -110,6 +111,9 @@ protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Body, Meta = (AllowPrivateAccess = true))
 	float BodyCenter;
 
+public:
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = HP, Meta = (AllowPrivateAccess = true))
+	float CurrentHP;
 public:
 	void SetHpShow(bool HpShow) { IsHP_Show = HpShow; }
 
