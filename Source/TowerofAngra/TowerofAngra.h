@@ -26,7 +26,7 @@ static EPlayerType PlayerType{ EPlayerType::NONE };
 static EGameMode CurrentGameMode{ EGameMode::NONE };
 static FString IPaddress{};
 static int CurrentStageLevel = 0;		// 현재 맵 스테이지 레벨 
-
+static int CurrentScore = 0;			// 현재 점수
 DECLARE_LOG_CATEGORY_EXTERN(TowerofAngra, Log, All);
 #define TOALOG_CALLINFO (FString(__FUNCTION__) + TEXT("(") + FString::FromInt(__LINE__) + TEXT(")"))
 #define TOALOG_S(Verbosity) UE_LOG(TowerofAngra, Verbosity, TEXT("%s"), *TOALOG_CALLINFO)

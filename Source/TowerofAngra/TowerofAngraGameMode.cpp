@@ -11,6 +11,10 @@
 
 ATowerofAngraGameMode::ATowerofAngraGameMode()
 {
+	// 초기화
+	CurrentStageLevel = 0;
+	CurrentScore = 0;
+
 	// 연습용
 	if (PlayerType == EPlayerType::NONE && CurrentGameMode == EGameMode::NONE)
 	{

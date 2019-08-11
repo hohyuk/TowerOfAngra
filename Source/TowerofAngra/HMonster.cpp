@@ -91,7 +91,7 @@ void AHMonster::DieOn()
 	SetActorHiddenInGame(false);
 	HPBarWidget->SetHiddenInGame(false);
 	MonsterAIController->StopAI();
-	
+	CurrentScore += 10;
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]()->void {
 
 		float PosZ = GetActorLocation().Z;
@@ -400,4 +400,3 @@ void AHMonster::MoveToLocation(const FVector & dest)
 		Controller->MoveToLocation(dest);
 	}
 }
-

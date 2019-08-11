@@ -19,7 +19,9 @@ void UHResultUserWidget::NativeConstruct()
 
 	auto TotalScore = Cast<UTextBlock>(GetWidgetFromName(TEXT("txtTotalScore")));
 	
-	//TotalScore->SetText(FText::FromString(FString::FromInt(CurrentGameState->GetTotalGameScore())));
+	TotalScore->SetText(FText::FromString(FString::FromInt(CurrentGameState->GetTotalGameScore())));
 
-	TotalScore->SetText(FText::FromString(FString::FromInt(GetWorld()->GetTimeSeconds())));
+
+	auto TotalTime = Cast<UTextBlock>(GetWidgetFromName(TEXT("txtTotalTime")));
+	TotalTime->SetText(FText::FromString(FString::FromInt(GetWorld()->GetTimeSeconds())));
 }

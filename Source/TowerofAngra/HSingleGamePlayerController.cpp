@@ -39,6 +39,9 @@ void AHSingleGamePlayerController::ChangeInputMode(bool bGameMode)
 void AHSingleGamePlayerController::ShowResultUI()
 {
 	auto TOAGameState = Cast<AHTOAGameState>(UGameplayStatics::GetGameState(this));
+
+	TOAGameState->AddGameScore(CurrentScore);
+	
 	ResultWidget->BindGameState(TOAGameState);
 
 	ResultWidget->AddToViewport();
