@@ -99,6 +99,8 @@ void ATowerofAngraCharacter::InitCommon()
 	IsAttacking = false;
 	IsSkilling = false;
 	fAttackPower = 50.f;			// 기본 공격력
+	IsFillHP = false;				// 체력 채우는 판단
+	FillHP_Limit = 0.f;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -250,6 +252,29 @@ void ATowerofAngraCharacter::StateTick(float DeltaTime)
 	}
 	else
 		FinalMana = 0.f;
+
+	if (IsFillHP)
+	{
+		float fillSpeed = DeltaTime * 90.f;
+		CharacterState->SetHP_FILL(fillSpeed);
+
+		FillHP_Limit += fillSpeed;
+		TOALOG(Warning, TEXT("FillHP_Limit : %f"), FillHP_Limit);
+
+		if (CurrentHP >= 100.f)
+		{
+			FillHP_Limit = 0.f;
+			IsFillHP = false;
+			CurrentHP = 100.f;
+			CharacterState->SetHP(CurrentHP);
+		}
+		else if (FillHP_Limit >= 20.f)
+		{
+			FillHP_Limit = 0.f;
+			IsFillHP = false;
+		}
+		TOALOG(Warning, TEXT("FillHP_Limit : %f"), FillHP_Limit);
+	}
 }
 
 void ATowerofAngraCharacter::Attack()

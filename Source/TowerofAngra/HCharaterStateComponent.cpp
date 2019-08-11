@@ -63,6 +63,14 @@ void UHCharaterStateComponent::SetMP(float NewMP)
 	OnMPChanged.Broadcast();
 }
 
+void UHCharaterStateComponent::SetHP_FILL(float NewHP)
+{
+	if (CurrentHP >= MaxHp)
+		return;
+	CurrentHP += NewHP;
+	OnHPChanged.Broadcast();
+}
+
 void UHCharaterStateComponent::SetMP_FILL(float NewMP)
 {
 	if (CurrentMP >= MaxMp)

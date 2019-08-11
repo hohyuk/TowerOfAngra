@@ -31,7 +31,7 @@ AHVamp::AHVamp()
 	HPBarWidget->SetRelativeLocation(FVector(0.f, 0.f, 180.f));
 	HPBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
 
-	DetectRadius = 1000.f;
+	DetectRadius = 800.f;
 	AttackRadius = 50.f;
 	AttackRange = 80.f;
 	fAttackPower = 10.f;

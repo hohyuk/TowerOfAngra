@@ -36,7 +36,7 @@ void UHMultiSelectUserWidget::OnWorriorButtonClicked()
 
 	PlayerType = EPlayerType::WARRIOR;
 	
-	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Stage2"));
+	UGameplayStatics::OpenLevel(GetWorld(), TEXT("MTOA_Stage"));
 }
 
 void UHMultiSelectUserWidget::OnAxeButtonClicked()
@@ -45,7 +45,7 @@ void UHMultiSelectUserWidget::OnAxeButtonClicked()
 
 	PlayerType = EPlayerType::AXE;
 
-	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Stage2"));
+	UGameplayStatics::OpenLevel(GetWorld(), TEXT("MTOA_Stage"));
 }
 
 void UHMultiSelectUserWidget::OnBackButtonClicked()

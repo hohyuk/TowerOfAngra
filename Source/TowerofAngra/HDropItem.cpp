@@ -70,6 +70,7 @@ void AHDropItem::OnCharacterOverlap(UPrimitiveComponent * OverlappedComp, AActor
 		Item->SetHiddenInGame(true, true);
 		SetActorEnableCollision(false);
 		Effect->OnSystemFinished.AddDynamic(this, &AHDropItem::OnEffectFinished);
+		Player->IsFillHP = true;
 	}
 }
 

@@ -34,6 +34,7 @@ public:
 	void SetDamage(float NewDamage);
 	void SetHP(float NewHP);
 	void SetMP(float NewMP);
+	void SetHP_FILL(float NewHP);
 	void SetMP_FILL(float NewMP);
 	float GetHPRatio() const;
 	float GetMPRatio() const;

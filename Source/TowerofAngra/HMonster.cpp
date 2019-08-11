@@ -113,7 +113,7 @@ void AHMonster::Tick(float DeltaTime)
 	// HP µ¥¹ÌÁö
 	if (FinalDamage > 0.f)
 	{
-		float DamageSpeed = DeltaTime * 100.f;
+		float DamageSpeed = DeltaTime * 150.f;
 		CharacterState->SetDamage(DamageSpeed);
 		FinalDamage -= DamageSpeed;
 	}
