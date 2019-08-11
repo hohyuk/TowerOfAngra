@@ -541,6 +541,7 @@ void ACharacterPlayerController::UpdateMonster()
 						if (MonsterInfo->IsAttacking)
 						{
 							UE_LOG(LogClass, Log, TEXT("Monster Attacking ANIM"));
+							monster->ServerAttack(EMonsterName::VAMP);
 						}
 					}
 				}
@@ -563,6 +564,7 @@ void ACharacterPlayerController::UpdateMonster()
 						if (MonsterInfo->IsAttacking)
 						{
 							UE_LOG(LogClass, Log, TEXT("Monster Attacking ANIM"));
+							monster->ServerAttack(EMonsterName::GOLEM);
 						}
 					}
 				}

@@ -13,8 +13,9 @@ enum class EMonsterName : uint8
 {
 	GOLEM,
 	VAMP,
+	LIZARD,
 	DEMON,
-	LIZARD
+	NONE
 };
 
 UCLASS()
@@ -50,6 +51,7 @@ public:
 
 public:
 	void Attack();
+	void ServerAttack(EMonsterName MonsterType);
 	FOnAttackEndDelegate OnAttackEnd;
 
 	void DamageAnim();

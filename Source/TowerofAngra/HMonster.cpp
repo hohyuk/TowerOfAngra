@@ -262,6 +262,47 @@ void AHMonster::Attack()
 	IsAttacking = true;
 }
 
+void AHMonster::ServerAttack(EMonsterName MonsterType)
+{
+	switch (MonsterType)
+	{
+	case EMonsterName::GOLEM:
+	{
+		AnimInstance = Cast<UHGolemAnimInstance>(GetMesh()->GetAnimInstance());
+		if (nullptr == AnimInstance)return;
+
+		dynamic_cast<UHGolemAnimInstance*>(AnimInstance)->PlayAttackMontage();
+	}
+	break;
+	case EMonsterName::VAMP:
+	{
+		AnimInstance = Cast<UHVampAnimInstance>(GetMesh()->GetAnimInstance());
+		if (nullptr == AnimInstance)return;
+
+		dynamic_cast<UHVampAnimInstance*>(AnimInstance)->PlayAttackMontage();
+	}
+	break;
+	case EMonsterName::DEMON:
+	{
+		AnimInstance = Cast<UHDemonAnimInstance>(GetMesh()->GetAnimInstance());
+		if (nullptr == AnimInstance)return;
+
+		dynamic_cast<UHDemonAnimInstance*>(AnimInstance)->PlayAttackMontage();
+	}
+	break;
+	case EMonsterName::LIZARD:
+	{
+		AnimInstance = Cast<UHLizardAnimInstance>(GetMesh()->GetAnimInstance());
+		if (nullptr == AnimInstance)return;
+
+		dynamic_cast<UHLizardAnimInstance*>(AnimInstance)->PlayAttackMontage();
+	}
+	break;
+	default:
+		break;
+	}
+}
+
 void AHMonster::DamageAnim()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DamageEffect->Template, GetActorLocation(), GetActorRotation());
