@@ -19,7 +19,8 @@ public:
 
 	virtual void PostInitializeComponents() override;
 	virtual void Possess(APawn* aPawn) override;
-	
+
+	void ChangeInputMode(bool bGameMode = true);
 	void ShowResultUI();
 protected:
 	virtual void BeginPlay() override;
@@ -38,4 +39,7 @@ private:
 
 	UPROPERTY()
 	class UHResultUserWidget* ResultWidget;
+
+	FInputModeGameOnly GameInputMode;
+	FInputModeUIOnly UIInputMode;
 };

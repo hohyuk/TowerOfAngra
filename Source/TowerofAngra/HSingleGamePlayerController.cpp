@@ -22,18 +22,34 @@ void AHSingleGamePlayerController::Possess(APawn * aPawn)
 	Super::Possess(aPawn);
 }
 
+void AHSingleGamePlayerController::ChangeInputMode(bool bGameMode)
+{
+	if (bGameMode)
+	{
+		SetInputMode(GameInputMode);
+		bShowMouseCursor = false;
+	}
+	else
+	{
+		SetInputMode(UIInputMode);
+		bShowMouseCursor = true;
+	}
+}
+
 void AHSingleGamePlayerController::ShowResultUI()
 {
 	auto TOAGameState = Cast<AHTOAGameState>(UGameplayStatics::GetGameState(this));
 	ResultWidget->BindGameState(TOAGameState);
 
 	ResultWidget->AddToViewport();
-	//ChangeInputMode(false);
+	ChangeInputMode(false);
 }
 
 void AHSingleGamePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	ChangeInputMode(true);
 
 	ResultWidget = CreateWidget<UHResultUserWidget>(this, ResultWidgetClass);
 
