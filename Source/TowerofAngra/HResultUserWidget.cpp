@@ -15,9 +15,11 @@ void UHResultUserWidget::NativeConstruct()
 
 	auto Result = Cast<UTextBlock>(GetWidgetFromName(TEXT("txtResult")));
 	
-	Result->SetText(FText::FromString(CurrentGameState->IsGameCleared() ? TEXT("Mission Complete") : TEXT("Mission Failed")));
+	Result->SetText(FText::FromString(CurrentGameState->IsGameCleared() ? TEXT("Mission Complete") : TEXT("Mission Complete")));
 
 	auto TotalScore = Cast<UTextBlock>(GetWidgetFromName(TEXT("txtTotalScore")));
 	
-	TotalScore->SetText(FText::FromString(FString::FromInt(CurrentGameState->GetTotalGameScore())));
+	//TotalScore->SetText(FText::FromString(FString::FromInt(CurrentGameState->GetTotalGameScore())));
+
+	TotalScore->SetText(FText::FromString(FString::FromInt(GetWorld()->GetTimeSeconds())));
 }

@@ -26,7 +26,6 @@ void UHMultiSelectUserWidget::NativeConstruct()
 
 	InputButton->OnClicked.AddDynamic(this, &UHMultiSelectUserWidget::OnInputButtonClicked);
 
-	
 	CurrentGameMode = EGameMode::MULTI_GAME;
 }
 

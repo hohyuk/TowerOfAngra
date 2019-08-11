@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "TowerofAngra.h"
 #include "Blueprint/UserWidget.h"
 #include "HHUDWidget.generated.h"
 
@@ -22,12 +22,9 @@ protected:
 
 	void UpdateCharacterHPState();
 	void UpdateCharacterMPState();
-
-	void UpdatePlayerState();
-	
 private:
 	TWeakObjectPtr<class UHCharaterStateComponent> CurrentCharacterState;
-
+	
 	UPROPERTY()
 	class UProgressBar* HPBar;
 

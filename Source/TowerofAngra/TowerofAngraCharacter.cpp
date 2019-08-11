@@ -132,7 +132,7 @@ void ATowerofAngraCharacter::Tick(float DeltaTime)
 	StateTick(DeltaTime);
 
 	CurrentHP = CharacterState->GetHP();
-	TOALOG(Warning, TEXT("CurrentHP : %f"), CurrentHP);
+	//TOALOG(Warning, TEXT("CurrentHP : %f"), CurrentHP);
 }
 
 void ATowerofAngraCharacter::PostInitializeComponents()
@@ -259,8 +259,7 @@ void ATowerofAngraCharacter::StateTick(float DeltaTime)
 		CharacterState->SetHP_FILL(fillSpeed);
 
 		FillHP_Limit += fillSpeed;
-		TOALOG(Warning, TEXT("FillHP_Limit : %f"), FillHP_Limit);
-
+		
 		if (CurrentHP >= 100.f)
 		{
 			FillHP_Limit = 0.f;
@@ -273,7 +272,7 @@ void ATowerofAngraCharacter::StateTick(float DeltaTime)
 			FillHP_Limit = 0.f;
 			IsFillHP = false;
 		}
-		TOALOG(Warning, TEXT("FillHP_Limit : %f"), FillHP_Limit);
+		//TOALOG(Warning, TEXT("FillHP_Limit : %f"), FillHP_Limit);
 	}
 }
 

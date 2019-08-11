@@ -19,7 +19,7 @@ public:
 	
 public:
 	int32 GetTotalGameScore() const;
-	void AddGameScore();
+	void AddGameScore(int32 Score);
 	void SetGameCleared();
 	bool IsGameCleared() const;
 

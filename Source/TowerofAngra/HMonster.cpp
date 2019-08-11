@@ -11,7 +11,7 @@
 #include "HDropItem.h"
 #include "TowerofAngraCharacter.h"
 #include "Components/WidgetComponent.h"
-
+#include "HTOAGameState.h"
 // Sets default values
 AHMonster::AHMonster()
 {

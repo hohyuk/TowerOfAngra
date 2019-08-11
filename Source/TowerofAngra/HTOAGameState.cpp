@@ -14,9 +14,9 @@ int32 AHTOAGameState::GetTotalGameScore() const
 	return TotalGameScore;
 }
 
-void AHTOAGameState::AddGameScore()
+void AHTOAGameState::AddGameScore(int32 Score)
 {
-	++TotalGameScore;
+	TotalGameScore += Score;
 }
 
 void AHTOAGameState::SetGameCleared()

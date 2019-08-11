@@ -29,7 +29,3 @@ void UHHUDWidget::UpdateCharacterMPState()
 {
 	MPBar->SetPercent(CurrentCharacterState->GetMPRatio());
 }
-
-void UHHUDWidget::UpdatePlayerState()
-{
-}

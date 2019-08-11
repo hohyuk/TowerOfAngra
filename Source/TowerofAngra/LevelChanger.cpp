@@ -39,6 +39,13 @@ void ALevelChanger::OverlapBegins(UPrimitiveComponent * OverlappedComponent, AAc
 		UGameplayStatics::LoadStreamLevel(this, LoadLevelName, true, true, ActionInfo);
 		++CurrentStageLevel;
 		TOALOG(Warning, TEXT("CurrentStageLevel : %d"), CurrentStageLevel);
+
+		if (CurrentStageLevel == 2)
+		{
+			auto GameMode = Cast<ATowerofAngraGameMode>(GetWorld()->GetAuthGameMode());
+
+			GameMode->AddScore();
+		}
 	}
 
 	if (OtherActor == MyChar && OpenLevelName != "")
