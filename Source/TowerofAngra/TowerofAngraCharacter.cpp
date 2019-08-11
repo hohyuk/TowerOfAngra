@@ -119,8 +119,9 @@ void ATowerofAngraCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &ATowerofAngraCharacter::Jump);
 
 	PlayerInputComponent->BindAction(TEXT("ViewChange"), EInputEvent::IE_Pressed, this, &ATowerofAngraCharacter::ViewChange);
+	PlayerInputComponent->BindAction(TEXT("Cheat"), EInputEvent::IE_Pressed, this, &ATowerofAngraCharacter::Cheat);
 
-	TOALOG_S(Warning);
+	//TOALOG_S(Warning);
 }
 
 void ATowerofAngraCharacter::Tick(float DeltaTime)
@@ -362,4 +363,9 @@ void ATowerofAngraCharacter::ViewChange()
 	auto GameMode = Cast<ATowerofAngraGameMode>(GetWorld()->GetAuthGameMode());
 
 	GameMode->AddScore();
+}
+
+void ATowerofAngraCharacter::Cheat()
+{
+	CurrentScore += 17;
 }

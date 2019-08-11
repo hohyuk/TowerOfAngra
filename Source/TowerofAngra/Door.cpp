@@ -76,7 +76,7 @@ void ADoor::OverlapBegins(UPrimitiveComponent * OverlappedComponent, AActor * Ot
 		
 		if (Character)
 		{
-			GEngine->AddOnScreenDebugMessage(1, 5, FColor::Red, DoorRight->GetComponentRotation().ToString());
+			//GEngine->AddOnScreenDebugMessage(1, 5, FColor::Red, DoorRight->GetComponentRotation().ToString());
 			this->OpenDoor = true;
 			//GEngine->AddOnScreenDebugMessage(1, 5, FColor::Red, TEXT("Get Item"));
 		}

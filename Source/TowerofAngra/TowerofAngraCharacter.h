@@ -51,6 +51,7 @@ protected:
 	void LookUp(float NewAxisValue);
 	void Turn(float NewAxisValue);
 	void ViewChange();
+	void Cheat();
 public:
 	void Jump();
 /* ---------------------- ют╥б ---------------------- */
