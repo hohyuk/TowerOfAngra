@@ -22,6 +22,9 @@ public:
 	virtual void PostInitializeComponents() override;
 	virtual void Possess(APawn* aPawn) override;
 
+	void ChangeInputMode(bool bGameMode = true);
+	void ShowResultUI();
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -74,4 +77,19 @@ private:
 public:
 	TSubclassOf<class ATowerofAngraCharacter> TOA_OtherPlayerClass;
 	TSubclassOf<class AHMonster> TOA_OtherMonsterClass;
+
+
+	/*°á°úÃ¢ UI*/
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = UI)
+		TSubclassOf<class UHResultUserWidget> ResultWidgetClass;
+private:
+	UPROPERTY()
+		class AHTOAGameState* TOAPlayerState;
+
+	UPROPERTY()
+		class UHResultUserWidget* ResultWidget;
+
+	FInputModeGameOnly GameInputMode;
+	FInputModeUIOnly UIInputMode;
 };

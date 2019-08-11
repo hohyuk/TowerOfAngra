@@ -10,6 +10,8 @@
 #include "HMonster.h"
 #include "HVamp.h"
 #include "HGolem.h"
+#include "HTOAGameState.h"
+#include "HResultUserWidget.h"
 
 ACharacterPlayerController::ACharacterPlayerController()
 {
@@ -30,6 +32,11 @@ ACharacterPlayerController::ACharacterPlayerController()
 	MonsterSpawn = false;
 	DesMonster = false;
 	PrimaryActorTick.bCanEverTick = true;
+
+	// UI
+	static ConstructorHelpers::FClassFinder<UHResultUserWidget> UI_RESULT_C(TEXT("/Game/TowerofAngra/UI/UI_Result.UI_Result_C"));
+	if (UI_RESULT_C.Succeeded())
+		ResultWidgetClass = UI_RESULT_C.Class;
 }
 
 void ACharacterPlayerController::PostInitializeComponents()
@@ -42,9 +49,36 @@ void ACharacterPlayerController::Possess(APawn * aPawn)
 	Super::Possess(aPawn);
 }
 
+void ACharacterPlayerController::ChangeInputMode(bool bGameMode)
+{
+	if (bGameMode)
+	{
+		SetInputMode(GameInputMode);
+		bShowMouseCursor = false;
+	}
+	else
+	{
+		SetInputMode(UIInputMode);
+		bShowMouseCursor = true;
+	}
+}
+
+void ACharacterPlayerController::ShowResultUI()
+{
+	auto TOAGameState = Cast<AHTOAGameState>(UGameplayStatics::GetGameState(this));
+	ResultWidget->BindGameState(TOAGameState);
+
+	ResultWidget->AddToViewport();
+	ChangeInputMode(false);
+}
+
 void ACharacterPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	ChangeInputMode(true);
+
+	ResultWidget = CreateWidget<UHResultUserWidget>(this, ResultWidgetClass);
 
 	// 캐릭터 등록
 	ATowerofAngraCharacter* Player = nullptr;

@@ -58,10 +58,16 @@ void ATowerofAngraGameMode::AddScore()
 {
 	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 	{
-		const auto PlayerController = Cast<AHSingleGamePlayerController>(It->Get());
-		if (nullptr != PlayerController)
+		const auto PlayerController1 = Cast<AHSingleGamePlayerController>(It->Get());
+		if (nullptr != PlayerController1)
 		{
-			PlayerController->ShowResultUI();
+			PlayerController1->ShowResultUI();
+		}
+
+		const auto PlayerController2 = Cast<ACharacterPlayerController>(It->Get());
+		if (nullptr != PlayerController2)
+		{
+			PlayerController2->ShowResultUI();
 		}
 	}
 }
