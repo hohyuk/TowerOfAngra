@@ -48,7 +48,7 @@ public:
 	//------------------------------------2019-08-03
 	void HitCharacter(const int&);
 	void HitMonster(const int&);
-
+	int TYPE;
 	//------------------------------------
 private:
 	MonsterSet * TOAMonsterset;

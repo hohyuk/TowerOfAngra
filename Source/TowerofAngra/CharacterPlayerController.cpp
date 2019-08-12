@@ -32,7 +32,7 @@ ACharacterPlayerController::ACharacterPlayerController()
 	MonsterSpawn = false;
 	DesMonster = false;
 	PrimaryActorTick.bCanEverTick = true;
-
+	TYPE = 1;
 	// UI
 	static ConstructorHelpers::FClassFinder<UHResultUserWidget> UI_RESULT_C(TEXT("/Game/TowerofAngra/UI/UI_Result.UI_Result_C"));
 	if (UI_RESULT_C.Succeeded())
@@ -556,53 +556,23 @@ void ACharacterPlayerController::UpdateMonster()
 		{
 			for (auto actor : SpawnedMonsters)
 			{
-				if (TYPE == 1)
+				AHMonster * monster = Cast<AHVamp>(actor);
+
+				if (monster)
 				{
-					AHVamp * monster = Cast<AHVamp>(actor);
+					const Monster * MonsterInfo = &TOAMonsterset->monsters[monster->MonsterID];
 
-					if (monster)
+					FVector MonsterLocation;
+					MonsterLocation.X = MonsterInfo->X;
+					MonsterLocation.Y = MonsterInfo->Y;
+					MonsterLocation.Z = MonsterInfo->Z;
+
+					monster->MoveToLocation(MonsterLocation);
+					if (MonsterInfo->IsAttacking)
 					{
-						const Monster * MonsterInfo = &TOAMonsterset->monsters[monster->MonsterID];
-
-						FVector MonsterLocation;
-						MonsterLocation.X = MonsterInfo->X;
-						MonsterLocation.Y = MonsterInfo->Y;
-						MonsterLocation.Z = MonsterInfo->Z;
-
-
-						monster->MoveToLocation(MonsterLocation);
-
-						if (MonsterInfo->IsAttacking)
-						{
-							UE_LOG(LogClass, Log, TEXT("Monster Attacking ANIM"));
-							monster->ServerAttack(EMonsterName::VAMP);
-						}
+						monster->ServerAttack(EMonsterName::VAMP);
 					}
 				}
-				else
-				{
-					AHGolem * monster = Cast<AHGolem>(actor);
-
-					if (monster)
-					{
-						const Monster * MonsterInfo = &TOAMonsterset->monsters[monster->MonsterID];
-
-						FVector MonsterLocation;
-						MonsterLocation.X = MonsterInfo->X;
-						MonsterLocation.Y = MonsterInfo->Y;
-						MonsterLocation.Z = MonsterInfo->Z;
-
-
-						monster->MoveToLocation(MonsterLocation);
-
-						if (MonsterInfo->IsAttacking)
-						{
-							UE_LOG(LogClass, Log, TEXT("Monster Attacking ANIM"));
-							monster->ServerAttack(EMonsterName::GOLEM);
-						}
-					}
-				}
-
 			}
 		}
 	}
