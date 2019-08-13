@@ -64,7 +64,7 @@ void ADoor::Tick(float DeltaTime)
 		++CurrentAngle;
 		DoorRight->AddWorldRotation(FRotator(0, -1, 0));
 		DoorLeft->AddWorldRotation(FRotator(0, 1, 0));
-		//GEngine->AddOnScreenDebugMessage(10, 35, FColor::Green, DoorRight->GetComponentRotation().ToString());
+		//GEngine->AddOnScreenDebugMessage(1, 3, FColor::Green, DoorRight->GetComponentRotation().ToString());
 	}
 }
 
