@@ -70,17 +70,11 @@ void ADoor::Tick(float DeltaTime)
 
 void ADoor::OverlapBegins(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int32 OtherbodyIdx, bool bFromSweep, const FHitResult & SweepHit)
 {
-	ATowerofAngraCharacter * Character = Cast<ATowerofAngraCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComponent != nullptr) && (OtherActor == Character))
-	{
-		
-		if (Character)
-		{
-			//GEngine->AddOnScreenDebugMessage(1, 5, FColor::Red, DoorRight->GetComponentRotation().ToString());
-			this->OpenDoor = true;
-			//GEngine->AddOnScreenDebugMessage(1, 5, FColor::Red, TEXT("Get Item"));
-		}
-	}
+	ATowerofAngraCharacter* Character = Cast<ATowerofAngraCharacter>(OtherActor);
 
+	if (Character)
+	{
+		this->OpenDoor = true;
+	}
 }
 
