@@ -69,6 +69,8 @@ public:
 	bool IsSkilling;
 	bool IsAttacking;
 	bool IsAliving;
+
+	int StageLevel;
 	//패킷 직렬화 역직렬화
 	friend ostream& operator<<(ostream &stream, cPlayer& info)
 	{
@@ -86,7 +88,7 @@ public:
 		stream << info.Rotation.Roll << endl;
 
 		//	stream << info.Hp << endl;
-
+		stream << info.StageLevel << endl;
 		stream << info.IsSkilling << endl;
 		stream << info.IsAttacking << endl;
 		stream << info.clientPlayerType << endl;
@@ -110,7 +112,7 @@ public:
 		stream >> info.Rotation.Roll;
 
 		//	stream >> info.Hp;
-
+		stream >> info.StageLevel;
 		stream >> info.IsSkilling;
 		stream >> info.IsAttacking;
 		stream >> info.clientPlayerType;
@@ -184,7 +186,7 @@ public:
 		stream << info.MonsterID << endl;
 		stream << info.IsAttacking << endl;
 		stream << info.IsAliving << endl;
-		//stream << info.HP << endl;
+		stream << info.HP << endl;
 		stream << info.MonsterType << endl;
 
 		return stream;
@@ -198,7 +200,7 @@ public:
 		stream >> info.MonsterID;
 		stream >> info.IsAttacking;
 		stream >> info.IsAliving;
-		//stream >> info.HP;
+		stream >> info.HP;
 		stream >> info.MonsterType;
 
 		return stream;

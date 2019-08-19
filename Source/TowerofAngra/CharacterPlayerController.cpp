@@ -23,7 +23,6 @@ ACharacterPlayerController::ACharacterPlayerController()
 	bIsConnected = Socket->Connect(ip, 9000);
 	if (bIsConnected)
 	{
-		UE_LOG(LogClass, Log, TEXT("IOCP Server connect success!"));
 		Socket->SetPlayerController(this);
 	}
 	bNewPlayerEntered = false;
@@ -33,6 +32,11 @@ ACharacterPlayerController::ACharacterPlayerController()
 	DesMonster = false;
 	PrimaryActorTick.bCanEverTick = true;
 	TYPE = 1;
+
+	MonsterDestroy = false;
+
+
+
 	// UI
 	static ConstructorHelpers::FClassFinder<UHResultUserWidget> UI_RESULT_C(TEXT("/Game/TowerofAngra/UI/UI_Result.UI_Result_C"));
 	if (UI_RESULT_C.Succeeded())
@@ -115,6 +119,7 @@ void ACharacterPlayerController::BeginPlay()
 	cp.Rotation = MyRotation;
 
 	cp.Velocity = FVector::ZeroVector;
+	cp.StageLevel = CurrentStageLevel;
 
 	//	cp.Hp = Player->FinalDamage;
 	cp.IsSkilling = Player->IsSkilling;
@@ -153,6 +158,10 @@ void ACharacterPlayerController::Tick(float DeltaTime)
 	{
 		SpawnMonster();
 	}
+	// 몬스터 파괴
+	if (MonsterDestroy)
+		DesTroyMonster();
+
 
 	UpdateMonster();
 }
@@ -167,7 +176,10 @@ void ACharacterPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReaso
 
 void ACharacterPlayerController::RecvWorldInfo(cPlayerInfo * pi)
 {
-	playerinfo = pi;
+	if (pi != nullptr)
+	{
+		playerinfo = pi;
+	}
 }
 
 void ACharacterPlayerController::RecvNewPlayer(cPlayer * NewPlayer_)
@@ -183,6 +195,7 @@ void ACharacterPlayerController::RecvNewMonster(MonsterSet* NewMonster_)
 	if (NewMonster_ != nullptr)
 	{
 		TOAMonsterset = NewMonster_;
+
 	}
 }
 void ACharacterPlayerController::RecvSpawnMonster(Monster* m)
@@ -199,7 +212,7 @@ void ACharacterPlayerController::RecvDestroyMonster(Monster*m)
 	if (m != nullptr)
 	{
 		TOAMonster = m;
-		MonsterSpawn = true;
+		MonsterDestroy = true;
 	}
 }
 
@@ -236,6 +249,7 @@ void ACharacterPlayerController::SendPlayerInfo()
 	cp.Rotation = MyRotation;
 
 	cp.Velocity = Velocity;
+	cp.StageLevel = CurrentStageLevel;
 
 	//	cp.Hp = Player->FinalDamage;
 	cp.IsSkilling = Player->IsSkilling;
@@ -253,11 +267,13 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 	if (playerinfo == nullptr)
 		return false;
 
-	UpdatePlayerInfo(playerinfo->players[SessionId]);
+	//	UpdatePlayerInfo(playerinfo->players[SessionId]);
 
 	TArray<AActor*> SpawnedCharacters;
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), TOA_OtherPlayerClass, SpawnedCharacters);
+	int StageLevel = -1;
+
 
 	if (nPlayers == -1)
 	{
@@ -294,11 +310,14 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 			ATowerofAngraCharacter* SpawnCharacter = world->SpawnActor<ATowerofAngraCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
 			SpawnCharacter->SpawnDefaultController();
 
-			//			SpawnCharacter->FinalDamage = player.second.Hp;
+			//SpawnCharacter->FinalDamage = player.second.Hp;
 
 			SpawnCharacter->SessionId = player.second.ClientID;
 			SpawnCharacter->IsSkilling = player.second.IsSkilling;
 			SpawnCharacter->IsServerSend_Attacking = player.second.IsAttacking;
+
+			//StageLevel = CurrentStageLevel;
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("StageLevel : %d"), StageLevel));
 
 
 			SpawnCharacter->CurrentPlayerType = EPlayerType(player.second.clientPlayerType);
@@ -318,7 +337,8 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 
 			cPlayer * info = &playerinfo->players[OtherCharacter->SessionId];
 
-			//			OtherCharacter->FinalDamage = info->Hp;
+			//OtherCharacter->FinalDamage = info->Hp;
+			info->StageLevel = CurrentStageLevel;
 
 			if (info->IsSkilling)
 			{
@@ -446,7 +466,7 @@ void ACharacterPlayerController::UpdateNewPlayer()
 
 		player.Velocity = NewPlayer->Velocity;
 
-		//		player.Hp = NewPlayer->Hp;
+		//player.Hp = NewPlayer->Hp;
 		player.IsSkilling = NewPlayer->IsSkilling;
 		player.IsAttacking = NewPlayer->IsAttacking;
 		player.clientPlayerType = int(NewPlayer->clientPlayerType);
@@ -552,6 +572,7 @@ void ACharacterPlayerController::UpdateMonster()
 					SpawnMonster->MonsterID = monster->MonsterID;
 					SpawnMonster->CurrentMonsterType = (EMonsterName)monster->MonsterType;
 				}
+				//				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("TYPE %d"), monster->MonsterType));
 
 			}
 		}
@@ -559,7 +580,7 @@ void ACharacterPlayerController::UpdateMonster()
 		{
 			for (auto actor : SpawnedMonsters)
 			{
-				AHMonster * monster = Cast<AHVamp>(actor);
+				AHMonster * monster = Cast<AHMonster>(actor);
 
 				if (monster)
 				{
@@ -571,17 +592,55 @@ void ACharacterPlayerController::UpdateMonster()
 					MonsterLocation.Z = MonsterInfo->Z;
 
 					monster->MoveToLocation(MonsterLocation);
+
+					TYPE = MonsterInfo->MonsterType;
+
+
 					if (MonsterInfo->IsAttacking)
 					{
-						monster->ServerAttack(EMonsterName::VAMP);
+						if (TYPE == 0)
+						{
+							monster->ServerAttack(EMonsterName::GOLEM);
+						}
+
+						else
+						{
+							monster->ServerAttack(EMonsterName::VAMP);
+						}
+
 					}
 				}
 			}
 		}
+
 	}
 }
-//-------------------------------2019-08-05작업 진행중..
 
+void ACharacterPlayerController::DesTroyMonster()
+{
+	UWorld* const world = GetWorld();
+	if (world)
+	{
+		// 스폰된 몬스터에서 찾아 파괴
+		TArray<AActor*> SpawnedMonsters;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHMonster::StaticClass(), SpawnedMonsters);
+
+		for (auto Actor : SpawnedMonsters)
+		{
+			AHMonster * Monster = Cast<AHMonster>(Actor);
+			if (Monster && Monster->MonsterID == TOAMonster->MonsterID)
+			{
+				Monster->DieOn();
+				break;
+			}
+		}
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("DieOn()")));
+
+		// 업데이트 후 초기화
+		TOAMonster = nullptr;
+		MonsterDestroy = false;
+	}
+}
 
 void ACharacterPlayerController::HitCharacter(const int & SessionId)
 {

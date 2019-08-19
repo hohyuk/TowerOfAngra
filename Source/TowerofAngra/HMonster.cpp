@@ -83,6 +83,8 @@ void AHMonster::BeginPlay()
 
 	if (CurrentGameMode == EGameMode::SINGLE_GAME)
 		MonsterAIController->RunAI();
+
+	TOALOG(Warning, TEXT("Location X : %.3f"), GetActorLocation().X);
 }
 
 void AHMonster::DieOn()
@@ -119,6 +121,7 @@ void AHMonster::Tick(float DeltaTime)
 	}
 
 	CurrentHP = CharacterState->GetHP();
+
 }
 
 void AHMonster::PostInitializeComponents()

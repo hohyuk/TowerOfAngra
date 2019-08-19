@@ -44,7 +44,7 @@ public:
 	void SpawnMonster();
 	void UpdateMonster();
 	void RecvDestroyMonster(Monster*);
-
+	void DesTroyMonster();
 	//------------------------------------2019-08-03
 	void HitCharacter(const int&);
 	void HitMonster(const int&);
@@ -59,7 +59,7 @@ private:
 	bool				bIsConnected;	// 서버와 접속 유무
 	int					SessionId;		// 캐릭터의 세션 고유 아이디 (랜덤값)
 	cPlayerInfo *		playerinfo;	// 다른 캐릭터의 정보
-
+	bool MonsterDestroy;
 	bool DesMonster;
 
 	void SendPlayerInfo();		// 플레이어 위치 송신
