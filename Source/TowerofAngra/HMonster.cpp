@@ -81,8 +81,8 @@ void AHMonster::BeginPlay()
 	MonsterAIController = Cast<AHMonsterAIController>(GetController());
 
 
-	//if (CurrentGameMode == EGameMode::SINGLE_GAME)
-	MonsterAIController->RunAI();
+	if (CurrentGameMode == EGameMode::SINGLE_GAME)
+		MonsterAIController->RunAI();
 }
 
 void AHMonster::DieOn()
