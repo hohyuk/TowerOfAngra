@@ -40,7 +40,6 @@ AHAxeCharacter::AHAxeCharacter()
 	if (JUMPSOUND.Succeeded())
 		JumpSound = JUMPSOUND.Object;
 
-
 	InitCommon();
 }
 

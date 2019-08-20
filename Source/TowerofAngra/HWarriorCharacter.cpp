@@ -41,6 +41,10 @@ AHWarriorCharacter::AHWarriorCharacter()
 	if (JUMPSOUND.Succeeded())
 		JumpSound = JUMPSOUND.Object;
 
+	// Camera Shake
+	static ConstructorHelpers::FClassFinder<UCameraShake> SHAKE(TEXT("/Script/TowerofAngra.HPlayerCameraShake"));
+	if (SHAKE.Succeeded())
+		CameraShake = SHAKE.Class;
 	InitCommon();
 }
 
@@ -130,6 +134,8 @@ void AHWarriorCharacter::Skill()
 	if (IsAttacking) return;
 	if (CharacterState->GetMP() <= SkillMP)return;
 
+	if (CameraShake != NULL)
+		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(CameraShake, 1.f);
 	FinalMana += SkillMP;
 
 	WarriorAnim->PlaySkillMontage();
