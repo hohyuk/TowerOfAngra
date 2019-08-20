@@ -12,13 +12,14 @@ ATreasureChest::ATreasureChest()
 	EmptyBody = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EMPTYBODY"));
 	Body = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BODY"));
 	Cover = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cover"));
-	OverlapVolume1 = CreateDefaultSubobject<UBoxComponent>(TEXT("OVERLAPVOLUME1"));
-	OverlapVolume2 = CreateDefaultSubobject<UBoxComponent>(TEXT("OVERLAPVOLUME2"));
+	OverlapVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("OVERLAPVOLUME"));
+	Effect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("EFFECT"));
 
 	RootComponent = Body;
+	EmptyBody->SetupAttachment(Body);
 	Cover->SetupAttachment(Body);
-	OverlapVolume1->SetupAttachment(Body);
-	OverlapVolume2->SetupAttachment(Body);
+	OverlapVolume->SetupAttachment(Body);
+	Effect->SetupAttachment(RootComponent);
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_EMPTYBODY(TEXT("/Game/MultistoryDungeons/Meshes/Props/Treasure_Chest_Base_01.Treasure_Chest_Base_01"));
 	if (SM_EMPTYBODY.Succeeded())
@@ -32,15 +33,20 @@ ATreasureChest::ATreasureChest()
 	if (SM_COVER.Succeeded())
 		Cover->SetStaticMesh(SM_COVER.Object);
 
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_CHESTOPEN(TEXT("/Game/InfinityBladeGrassLands/Effects/FX_Treasure/Chest/P_TreasureChest_Open_Mesh.P_TreasureChest_Open_Mesh"));
+	if (P_CHESTOPEN.Succeeded())
+	{
+		Effect->SetTemplate(P_CHESTOPEN.Object);
+		Effect->bAutoActivate = false;
+	}
+
 	Cover->SetRelativeLocation(FVector(0, -34, 45));
 
-	OverlapVolume1->SetRelativeLocation(FVector(0, 120, 100));
-	OverlapVolume1->SetBoxExtent(FVector(100, 150, 100));
-	OverlapVolume1->OnComponentBeginOverlap.AddDynamic(this, &ATreasureChest::OverlapBegins);
-
-	/*OverlapVolume2->SetRelativeLocation(FVector(0, 40, 100));
-	OverlapVolume2->SetBoxExtent(FVector(100, 70, 100));
-	OverlapVolume2->OnComponentBeginOverlap.AddDynamic(this, &ATreasureChest::OverlapBegins);*/
+	OverlapVolume->SetRelativeLocation(FVector(0, 120, 100));
+	OverlapVolume->SetBoxExtent(FVector(100, 150, 100));
+	OverlapVolume->OnComponentBeginOverlap.AddDynamic(this, &ATreasureChest::OverlapBegins);
+	
+	Effect->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
 	IsOpen = false;
 	IsHave = false;
 }
@@ -72,15 +78,25 @@ void ATreasureChest::OverlapBegins(UPrimitiveComponent * OverlappedComponent, AA
 	if (Character&& !IsOpen)
 	{
 		IsOpen = true;
-		OverlapVolume1->SetRelativeLocation(FVector(0, 40, 100));
-		OverlapVolume1->SetBoxExtent(FVector(100, 70, 100));
+		OverlapVolume->SetRelativeLocation(FVector(0, 40, 100));
+		OverlapVolume->SetBoxExtent(FVector(100, 70, 100));
 	}
 	
 	if (IsHave)
+	{
+		Effect->Activate(true);
 		Body->SetStaticMesh(EmptyBody->GetStaticMesh());
+		Effect->OnSystemFinished.AddDynamic(this, &ATreasureChest::OnEffectFinished);
+	}
+		
 }
 
 void ATreasureChest::OnOverlapEnd(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
 {
+}
+
+void ATreasureChest::OnEffectFinished(UParticleSystemComponent * PSystem)
+{
+	Destroy();
 }
 

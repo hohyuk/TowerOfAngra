@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "TowerofAngra.h"
 #include "GameFramework/Actor.h"
 #include "TreasureChest.generated.h"
 
@@ -30,15 +30,19 @@ public:
 	UPROPERTY(EditAnywhere, Category = TreasureChest)
 	UStaticMeshComponent* Cover;
 	UPROPERTY(EditAnywhere, Category = TreasureChest)
-	class UBoxComponent* OverlapVolume1;
-	UPROPERTY(EditAnywhere, Category = TreasureChest)
-	class UBoxComponent* OverlapVolume2;
+	class UBoxComponent* OverlapVolume;
+
+	UPROPERTY(VisibleAnywhere, CAtegory = Effect)
+	UParticleSystemComponent* Effect;
 
 	UFUNCTION()
 	void OverlapBegins(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor,
 			UPrimitiveComponent * OtherComponent, int32 OtherbodyIdx, bool bFromSweep, const FHitResult & SweepHit);
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+	void OnEffectFinished(class UParticleSystemComponent* PSystem);
 
 	bool IsOpen;
 	bool IsHave;
