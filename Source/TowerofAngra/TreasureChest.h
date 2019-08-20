@@ -46,4 +46,5 @@ public:
 
 	bool IsOpen;
 	bool IsHave;
+	bool IsEmpty;
 };

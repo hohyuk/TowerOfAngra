@@ -49,6 +49,7 @@ ATreasureChest::ATreasureChest()
 	Effect->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
 	IsOpen = false;
 	IsHave = false;
+	IsEmpty = false;
 }
 
 // Called when the game starts or when spawned
@@ -82,11 +83,12 @@ void ATreasureChest::OverlapBegins(UPrimitiveComponent * OverlappedComponent, AA
 		OverlapVolume->SetBoxExtent(FVector(100, 70, 100));
 	}
 	
-	if (IsHave)
+	if (IsHave && !IsEmpty)
 	{
 		Effect->Activate(true);
 		Body->SetStaticMesh(EmptyBody->GetStaticMesh());
-		Effect->OnSystemFinished.AddDynamic(this, &ATreasureChest::OnEffectFinished);
+		IsEmpty = true;
+		//Effect->OnSystemFinished.AddDynamic(this, &ATreasureChest::OnEffectFinished);
 	}
 		
 }
