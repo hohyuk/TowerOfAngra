@@ -37,15 +37,19 @@ void ALevelChanger::OverlapBegins(UPrimitiveComponent * OverlappedComponent, AAc
 		FLatentActionInfo ActionInfo;
 
 		UGameplayStatics::LoadStreamLevel(this, LoadLevelName, true, true, ActionInfo);
-		++CurrentStageLevel;
-		TOALOG(Warning, TEXT("CurrentStageLevel : %d"), CurrentStageLevel);
 
-		if (CurrentStageLevel == 2)
+		if (LoadLevelName == "TOA_Stage2" || LoadLevelName == "MTOA_Stage2")
 		{
+			CurrentStageLevel = 2;
 			auto GameMode = Cast<ATowerofAngraGameMode>(GetWorld()->GetAuthGameMode());
 
 			GameMode->AddScore();
 		}
+		else if (LoadLevelName == "TOA_Stage1" || LoadLevelName == "MTOA_Stage1")
+		{
+			CurrentStageLevel = 1;
+		}
+		TOALOG(Warning, TEXT("LoadLevelName : %s"), *LoadLevelName.ToString());
 	}
 
 	if (OtherActor == MyChar && OpenLevelName != "")

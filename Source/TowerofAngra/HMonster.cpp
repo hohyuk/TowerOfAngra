@@ -84,7 +84,7 @@ void AHMonster::BeginPlay()
 	if (CurrentGameMode == EGameMode::SINGLE_GAME)
 		MonsterAIController->RunAI();
 
-	TOALOG(Warning, TEXT("Location X : %.3f"), GetActorLocation().X);
+	//TOALOG(Warning, TEXT("Location X : %.3f"), GetActorLocation().X);
 }
 
 void AHMonster::DieOn()
