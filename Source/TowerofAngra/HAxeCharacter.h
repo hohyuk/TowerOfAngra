@@ -61,4 +61,8 @@ public:
 
 public:
 	void SkillCheck();		// 스킬 충돌체크
+
+	/*UCameraShake*/
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UCameraShake> CameraShake;
 };

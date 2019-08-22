@@ -20,12 +20,12 @@ AHBigFence::AHBigFence()
 		Fence->SetStaticMesh(SM_FENCE.Object);
 
 	OverlapVolume->SetRelativeLocation(FVector(0, 0, 200));
-	OverlapVolume->InitBoxExtent(FVector(160, 250, 200));
+	OverlapVolume->InitBoxExtent(FVector(160, 350, 200));
 	OverlapVolume->OnComponentBeginOverlap.AddDynamic(this, &AHBigFence::OverlapBegins);
 	OverlapVolume->OnComponentEndOverlap.AddDynamic(this, &AHBigFence::OnOverlapEnd);
 	IsOpenFence = false;
 	IsCloseFence = true;
-	fZPos = 250.f;
+	fZPos = 300.f;
 }
 
 // Called when the game starts or when spawned
@@ -40,13 +40,13 @@ void AHBigFence::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (IsOpenFence && fZPos < 250.f)
+	if (IsOpenFence && fZPos < 300.f)
 	{
 		fZPos += 5.f;
 		Fence->AddWorldOffset(FVector(0.f, 0.f, 5.f));
 		OverlapVolume->AddWorldOffset(FVector(0.f, 0.f, -5.f));
 	}
-	else if (IsCloseFence && fZPos < 250.f)
+	else if (IsCloseFence && fZPos < 300.f)
 	{
 		fZPos += 5.f;
 		Fence->AddWorldOffset(FVector(0.f, 0.f, -5.f));
@@ -58,7 +58,7 @@ void AHBigFence::OverlapBegins(UPrimitiveComponent * OverlappedComponent, AActor
 {
 	ATowerofAngraCharacter* Character = Cast<ATowerofAngraCharacter>(OtherActor);
 
-	if (Character && fZPos == 250 && IsCloseFence)
+	if (Character && fZPos == 300.f && IsCloseFence)
 	{
 		IsOpenFence = true;
 		IsCloseFence = false;
@@ -68,7 +68,7 @@ void AHBigFence::OverlapBegins(UPrimitiveComponent * OverlappedComponent, AActor
 
 void AHBigFence::OnOverlapEnd(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
 {
-	if (fZPos == 250 && IsOpenFence)
+	if (fZPos == 300.f && IsOpenFence)
 	{
 		IsOpenFence = false;
 		IsCloseFence = true;

@@ -45,6 +45,7 @@ AHWarriorCharacter::AHWarriorCharacter()
 	static ConstructorHelpers::FClassFinder<UCameraShake> SHAKE(TEXT("/Script/TowerofAngra.HPlayerCameraShake"));
 	if (SHAKE.Succeeded())
 		CameraShake = SHAKE.Class;
+
 	InitCommon();
 }
 

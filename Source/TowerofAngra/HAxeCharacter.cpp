@@ -40,6 +40,11 @@ AHAxeCharacter::AHAxeCharacter()
 	if (JUMPSOUND.Succeeded())
 		JumpSound = JUMPSOUND.Object;
 
+	// Camera Shake
+	static ConstructorHelpers::FClassFinder<UCameraShake> SHAKE(TEXT("/Script/TowerofAngra.HPlayerCameraShake"));
+	if (SHAKE.Succeeded())
+		CameraShake = SHAKE.Class;
+
 	InitCommon();
 }
 
@@ -128,14 +133,14 @@ void AHAxeCharacter::Skill()
 	if (IsAttacking) return;
 	if (CharacterState->GetMP() <= SkillMP)return;
 
+	if (CameraShake != NULL)
+		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(CameraShake, 2.f);
+
 	FinalMana += SkillMP;
 
 	AxeAnim->PlaySkillMontage();
-	//SkillEffect->Activate(true);
-	//// Effect 위치 다시 받기
-	//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SkillEffect->Template, GetActorLocation(), GetActorRotation());
-
-	//SkillCheck();
+	
+	SkillCheck();
 
 	IsSkilling = true;
 }
