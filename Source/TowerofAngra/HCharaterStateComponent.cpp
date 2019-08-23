@@ -63,6 +63,16 @@ void UHCharaterStateComponent::SetMP(float NewMP)
 	OnMPChanged.Broadcast();
 }
 
+void UHCharaterStateComponent::SetMPChange(float NewMP)
+{
+	CurrentMP = NewMP;
+	OnMPChanged.Broadcast();
+	if (CurrentMP < KINDA_SMALL_NUMBER)
+	{
+		CurrentMP = 0.f;
+	}
+}
+
 void UHCharaterStateComponent::SetHP_FILL(float NewHP)
 {
 	if (CurrentHP >= MaxHp)

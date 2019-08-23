@@ -101,7 +101,13 @@ public:
 	bool IsFillHP;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = HP, Meta = (AllowPrivateAccess = true))
+	bool IsFillMP;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = HP, Meta = (AllowPrivateAccess = true))
 	float FillHP_Limit;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = HP, Meta = (AllowPrivateAccess = true))
+	float FillMP_Limit;
 /* ---------------------- 캐릭터 공통 변수 ---------------------- */
 
 /* ---------------------- 캐릭터 데미지 함수 ---------------------- */
