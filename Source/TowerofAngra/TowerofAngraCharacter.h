@@ -6,6 +6,13 @@
 #include "GameFramework/Character.h"
 #include "TowerofAngraCharacter.generated.h"
 
+UENUM(BlueprintType)
+enum class ESkillType : uint8
+{
+	NONE,
+	COMMONSKILL,
+	SKILL,
+};
 
 UCLASS(config=Game)
 class ATowerofAngraCharacter : public ACharacter
@@ -80,7 +87,16 @@ public:
 	float fSkillPower;		// 스킬 공격력
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))
+	float fCommonSkillPower;		// 공통스킬 공격력
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))
+	float CommonSkillMP;		// 공통스킬 마나소모
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))
 	float SkillMP;		// 스킬 마나소모
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))
+	ESkillType SKILL_TYPE;		// 서버로 보내주는 스킬 타입
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool CanNextCombo;
@@ -136,6 +152,9 @@ public:
 	virtual void Attack();
 	virtual void OtherPlayerAttack(int AttackCount);
 	virtual void Skill();
+	virtual void CommonSkill();
+	virtual void CommonSkillCheck();		// 스킬 충돌체크
+	virtual void SeverRecvSkillCheck(ESkillType skill_type);
 /* ---------------------- virtual 함수 ---------------------- */
 
 /* ---------------------- 현재 나의 캐릭터 함수 ---------------------- */
@@ -145,6 +164,11 @@ public:
 
 /* ---------------------- 현재 나의 캐릭터 함수 ---------------------- */
 
+/* ---------------------- UCameraShake ---------------------- */
+public:
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UCameraShake> CameraShake;
+/* ---------------------- UCameraShake ---------------------- */
 /* ================ HoHyuk ================ */
 
 protected:

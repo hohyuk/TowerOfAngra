@@ -16,6 +16,10 @@ UHWarriorAnimInstance::UHWarriorAnimInstance()
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> SKILL_MONTAGE(TEXT("/Game/TowerofAngra/Character/Warrior/Animations/HWarriorSkill_Montage.HWarriorSkill_Montage"));
 	if (SKILL_MONTAGE.Succeeded())
 		SkillMontage = SKILL_MONTAGE.Object;
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SKILL_COMMON_MONTAGE(TEXT("/Game/TowerofAngra/Character/Warrior/Animations/HWarriorSkill3_Montage.HWarriorSkill3_Montage"));
+	if (SKILL_COMMON_MONTAGE.Succeeded())
+		CommonSkillMontage = SKILL_COMMON_MONTAGE.Object;
 }
 
 void UHWarriorAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -45,6 +49,11 @@ void UHWarriorAnimInstance::PlaySkillMontage()
 	Montage_Play(SkillMontage, 1.5f);
 }
 
+void UHWarriorAnimInstance::PlayCommonSkillMontage()
+{
+	Montage_Play(CommonSkillMontage, 1.5f);
+}
+
 void UHWarriorAnimInstance::JumpToAttackMontageSection(int32 NewSection)
 {
 	Montage_JumpToSection(GetAttackMontageSectionName(NewSection), AttackMontage);
@@ -58,6 +67,11 @@ void UHWarriorAnimInstance::AnimNotify_AttackHitCheck()
 void UHWarriorAnimInstance::AnimNotify_NextAttackCheck()
 {
 	OnNextAttackCheck.Broadcast();
+}
+
+void UHWarriorAnimInstance::AnimNotify_CommonSkillCheck()
+{
+	OnCommonSkillCheck.Broadcast();
 }
 
 FName UHWarriorAnimInstance::GetAttackMontageSectionName(int32 Section)

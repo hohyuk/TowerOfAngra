@@ -69,6 +69,8 @@ public:
 	bool IsSkilling;
 	bool IsAttacking;
 	bool IsAliving;
+	// SkillTYPE
+	int SkillType = 0; // 0 - None 1 - CommonSkill 2 - Skill
 
 	int StageLevel;
 	//패킷 직렬화 역직렬화
@@ -88,7 +90,9 @@ public:
 		stream << info.Rotation.Roll << endl;
 
 		//	stream << info.Hp << endl;
+		stream << info.SkillType << endl;
 		stream << info.StageLevel << endl;
+
 		stream << info.IsSkilling << endl;
 		stream << info.IsAttacking << endl;
 		stream << info.clientPlayerType << endl;
@@ -112,6 +116,7 @@ public:
 		stream >> info.Rotation.Roll;
 
 		//	stream >> info.Hp;
+		stream >> info.SkillType;
 		stream >> info.StageLevel;
 		stream >> info.IsSkilling;
 		stream >> info.IsAttacking;

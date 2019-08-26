@@ -6,6 +6,7 @@
 #include "HHUDWidget.h"
 #include "HOtherPlayerHPWidget.h"
 #include "TowerofAngraGameMode.h"
+#include "HMonster.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ATowerofAngraCharacter
@@ -63,6 +64,12 @@ ATowerofAngraCharacter::ATowerofAngraCharacter()
 	// 플레이어 카메라 무시
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+
+
+	// Camera Shake
+	static ConstructorHelpers::FClassFinder<UCameraShake> SHAKE(TEXT("/Script/TowerofAngra.HPlayerCameraShake"));
+	if (SHAKE.Succeeded())
+		CameraShake = SHAKE.Class;
 }
 
 void ATowerofAngraCharacter::BeginPlay()
@@ -99,10 +106,13 @@ void ATowerofAngraCharacter::InitCommon()
 	IsAttacking = false;
 	IsSkilling = false;
 	fAttackPower = 50.f;			// 기본 공격력
+	fCommonSkillPower = 80.f;		// 공통 스킬공격력
+	CommonSkillMP = 20.f;			// 공통 스킬 마나
 	IsFillHP = false;				// 체력 채우는 판단
 	IsFillMP = false;
 	FillHP_Limit = 0.f;
 	FillMP_Limit = 0.f;
+	SKILL_TYPE = ESkillType::NONE;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -310,6 +320,60 @@ void ATowerofAngraCharacter::OtherPlayerAttack(int AttackCount)
 
 void ATowerofAngraCharacter::Skill()
 {
+	SKILL_TYPE = ESkillType::SKILL;
+}
+
+void ATowerofAngraCharacter::CommonSkill()
+{
+	if (IsSkilling) return;
+	if (IsAttacking) return;
+	if (CharacterState->GetMP() <= CommonSkillMP)return;
+
+	FinalMana += CommonSkillMP;
+	SKILL_TYPE = ESkillType::COMMONSKILL;
+	IsSkilling = true;
+}
+
+void ATowerofAngraCharacter::CommonSkillCheck()
+{
+	if (CameraShake != NULL)
+		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(CameraShake, 1.f);
+
+	// 충돌체크
+	float AttackRadius = 500.f;
+
+	TArray<FOverlapResult> OverlapResults;
+	FCollisionQueryParams Params(NAME_None, false, this);
+	bool bResult = GetWorld()->OverlapMultiByChannel(
+		OverlapResults,
+		GetActorLocation(),
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel2,
+		FCollisionShape::MakeSphere(AttackRadius),
+		Params
+	);
+
+	if (bResult)
+	{
+		for (auto OverlapResult : OverlapResults)
+		{
+			AHMonster* Monster = Cast<AHMonster>(OverlapResult.GetActor());
+			if (Monster)
+			{
+				FDamageEvent DamageEvent;
+				Monster->DamageAnim();
+				OverlapResult.Actor->TakeDamage(fCommonSkillPower, DamageEvent, GetController(), this);
+			}
+		}
+	}
+}
+
+void ATowerofAngraCharacter::SeverRecvSkillCheck(ESkillType skill_type)
+{
+	if (skill_type == ESkillType::COMMONSKILL)
+		CommonSkill();
+	else if (skill_type == ESkillType::SKILL)
+		Skill();
 }
 
 void ATowerofAngraCharacter::MoveForward(float NewAxisValue)

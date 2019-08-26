@@ -41,11 +41,6 @@ AHWarriorCharacter::AHWarriorCharacter()
 	if (JUMPSOUND.Succeeded())
 		JumpSound = JUMPSOUND.Object;
 
-	// Camera Shake
-	static ConstructorHelpers::FClassFinder<UCameraShake> SHAKE(TEXT("/Script/TowerofAngra.HPlayerCameraShake"));
-	if (SHAKE.Succeeded())
-		CameraShake = SHAKE.Class;
-
 	InitCommon();
 }
 
@@ -60,8 +55,8 @@ void AHWarriorCharacter::InitCommon()
 
 	MaxCombo = 4;			// 콤보 개수
 	fAttackPower = 50.f;			// 기본 공격력
-	fSkillPower = 100.f;			// 스킬 공격력
-	SkillMP = 20.f;					// 마나 소모
+	fSkillPower = 110.f;			// 스킬 공격력
+	SkillMP = 30.f;					// 마나 소모
 
 	IsServerSend_Attacking = false;
 	AttackEndComboState();
@@ -94,6 +89,7 @@ void AHWarriorCharacter::PostInitializeComponents()
 	});
 
 	WarriorAnim->OnAttackHitCheck.AddUObject(this, &AHWarriorCharacter::AttackCheck);
+	WarriorAnim->OnCommonSkillCheck.AddUObject(this, &AHWarriorCharacter::CommonSkillCheck);
 }
 
 void AHWarriorCharacter::SetupPlayerInputComponent(UInputComponent * PlayerInputComponent)
@@ -104,6 +100,7 @@ void AHWarriorCharacter::SetupPlayerInputComponent(UInputComponent * PlayerInput
 	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Released, this, &AHWarriorCharacter::NotAttack);
 
 	PlayerInputComponent->BindAction(TEXT("Skill"), EInputEvent::IE_Pressed, this, &AHWarriorCharacter::Skill);
+	PlayerInputComponent->BindAction(TEXT("CommonSkill"), EInputEvent::IE_Pressed, this, &AHWarriorCharacter::CommonSkill);
 }
 
 void AHWarriorCharacter::Attack()
@@ -144,6 +141,13 @@ void AHWarriorCharacter::Skill()
 	SkillCheck();
 
 	IsSkilling = true;
+}
+
+void AHWarriorCharacter::CommonSkill()
+{
+	Super::CommonSkill();
+
+	WarriorAnim->PlayCommonSkillMontage();
 }
 
 void AHWarriorCharacter::OtherPlayerAttack(int AttackCount)
@@ -243,7 +247,7 @@ void AHWarriorCharacter::AttackCheck()
 void AHWarriorCharacter::OnSkillMontageEnded(UAnimMontage * Montage, bool bInterrupted)
 {
 	IsSkilling = false;
-
+	SKILL_TYPE = ESkillType::NONE;
 	OnSkillEnd.Broadcast();
 }
 

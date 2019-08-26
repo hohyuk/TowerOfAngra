@@ -12,6 +12,7 @@
 
 DECLARE_MULTICAST_DELEGATE(FOnSkillEndDelegate);
 
+
 UCLASS()
 class TOWEROFANGRA_API AHWarriorCharacter : public ATowerofAngraCharacter
 {
@@ -37,6 +38,7 @@ public:
 
 	virtual void Attack() override;
 	virtual void Skill() override;
+	virtual void CommonSkill() override;
 	virtual void OtherPlayerAttack(int AttackCount) override;
 	void NotAttack();
 
@@ -59,8 +61,4 @@ public:
 
 public:
 	void SkillCheck();		// 스킬 충돌체크
-
-	/*UCameraShake*/
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<UCameraShake> CameraShake;
 };

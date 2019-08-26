@@ -17,6 +17,10 @@ UHAxeAnimInstance::UHAxeAnimInstance()
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> SKILL_MONTAGE(TEXT("/Game/TowerofAngra/Character/AxeChar/Animations/HAxeSkill_Montage.HAxeSkill_Montage"));
 	if (SKILL_MONTAGE.Succeeded())
 		SkillMontage = SKILL_MONTAGE.Object;
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SKILL_COMMON_MONTAGE(TEXT("/Game/TowerofAngra/Character/Warrior/Animations/HWarriorSkill3_Montage.HWarriorSkill3_Montage"));
+	if (SKILL_COMMON_MONTAGE.Succeeded())
+		CommonSkillMontage = SKILL_COMMON_MONTAGE.Object;
 }
 
 void UHAxeAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -46,6 +50,11 @@ void UHAxeAnimInstance::PlaySkillMontage()
 	Montage_Play(SkillMontage, 1.f);
 }
 
+void UHAxeAnimInstance::PlayCommonSkillMontage()
+{
+	Montage_Play(CommonSkillMontage, 1.5f);
+}
+
 void UHAxeAnimInstance::JumpToAttackMontageSection(int32 NewSection)
 {
 	Montage_JumpToSection(GetAttackMontageSectionName(NewSection), AttackMontage);
@@ -64,6 +73,11 @@ void UHAxeAnimInstance::AnimNotify_NextAttackCheck()
 void UHAxeAnimInstance::AnimNotify_SkillHitCheck()
 {
 	OnSkillHitCheck.Broadcast();
+}
+
+void UHAxeAnimInstance::AnimNotify_CommonSkillCheck()
+{
+	OnCommonSkillCheck.Broadcast();
 }
 
 FName UHAxeAnimInstance::GetAttackMontageSectionName(int32 Section)

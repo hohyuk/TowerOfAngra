@@ -40,11 +40,6 @@ AHAxeCharacter::AHAxeCharacter()
 	if (JUMPSOUND.Succeeded())
 		JumpSound = JUMPSOUND.Object;
 
-	// Camera Shake
-	static ConstructorHelpers::FClassFinder<UCameraShake> SHAKE(TEXT("/Script/TowerofAngra.HPlayerCameraShake"));
-	if (SHAKE.Succeeded())
-		CameraShake = SHAKE.Class;
-
 	InitCommon();
 }
 
@@ -59,8 +54,8 @@ void AHAxeCharacter::InitCommon()
 	MaxCombo = 4;			// 콤보 개수
 
 	fAttackPower = 50.f;			// 기본 공격력
-	fSkillPower = 200.f;			// 스킬 공격력
-	SkillMP = 20.f;					// 마나 소모
+	fSkillPower = 150.f;			// 스킬 공격력
+	SkillMP = 30.f;					// 마나 소모
 
 	IsServerSend_Attacking = false;
 	AttackEndComboState();
@@ -93,6 +88,7 @@ void AHAxeCharacter::PostInitializeComponents()
 
 	AxeAnim->OnAttackHitCheck.AddUObject(this, &AHAxeCharacter::AttackCheck);
 	AxeAnim->OnSkillHitCheck.AddUObject(this, &AHAxeCharacter::SkillCheck);
+	AxeAnim->OnCommonSkillCheck.AddUObject(this, &AHAxeCharacter::CommonSkillCheck);
 }
 
 void AHAxeCharacter::SetupPlayerInputComponent(UInputComponent * PlayerInputComponent)
@@ -103,6 +99,7 @@ void AHAxeCharacter::SetupPlayerInputComponent(UInputComponent * PlayerInputComp
 	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Released, this, &AHAxeCharacter::NotAttack);
 
 	PlayerInputComponent->BindAction(TEXT("Skill"), EInputEvent::IE_Pressed, this, &AHAxeCharacter::Skill);
+	PlayerInputComponent->BindAction(TEXT("CommonSkill"), EInputEvent::IE_Pressed, this, &AHAxeCharacter::CommonSkill);
 }
 
 void AHAxeCharacter::Attack()
@@ -133,16 +130,18 @@ void AHAxeCharacter::Skill()
 	if (IsAttacking) return;
 	if (CharacterState->GetMP() <= SkillMP)return;
 
-	if (CameraShake != NULL)
-		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(CameraShake, 2.f);
-
 	FinalMana += SkillMP;
 
 	AxeAnim->PlaySkillMontage();
 	
-	SkillCheck();
-
 	IsSkilling = true;
+}
+
+void AHAxeCharacter::CommonSkill()
+{
+	Super::CommonSkill();
+
+	AxeAnim->PlayCommonSkillMontage();
 }
 
 void AHAxeCharacter::OtherPlayerAttack(int AttackCount)
@@ -240,12 +239,15 @@ void AHAxeCharacter::AttackCheck()
 void AHAxeCharacter::OnSkillMontageEnded(UAnimMontage * Montage, bool bInterrupted)
 {
 	IsSkilling = false;
-
+	SKILL_TYPE = ESkillType::NONE;
 	OnSkillEnd.Broadcast();
 }
 
 void AHAxeCharacter::SkillCheck()
 {
+	if (CameraShake != NULL)
+		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(CameraShake, 1.f);
+
 	// 충돌체크
 	float AttackRadius = 300.f;
 

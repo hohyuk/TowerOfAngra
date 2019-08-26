@@ -35,8 +35,6 @@ ACharacterPlayerController::ACharacterPlayerController()
 
 	MonsterDestroy = false;
 
-
-
 	// UI
 	static ConstructorHelpers::FClassFinder<UHResultUserWidget> UI_RESULT_C(TEXT("/Game/TowerofAngra/UI/UI_Result.UI_Result_C"));
 	if (UI_RESULT_C.Succeeded())
@@ -123,6 +121,7 @@ void ACharacterPlayerController::BeginPlay()
 
 	//	cp.Hp = Player->FinalDamage;
 	cp.IsSkilling = Player->IsSkilling;
+	cp.SkillType = int(Player->SKILL_TYPE);
 	cp.IsAttacking = Player->IsServerSend_Attacking;
 	cp.clientPlayerType = int(Player->CurrentPlayerType);
 
@@ -252,6 +251,7 @@ void ACharacterPlayerController::SendPlayerInfo()
 	cp.StageLevel = CurrentStageLevel;
 
 	//	cp.Hp = Player->FinalDamage;
+	cp.SkillType = int(Player->SKILL_TYPE);
 	cp.IsSkilling = Player->IsSkilling;
 	cp.IsAttacking = Player->IsServerSend_Attacking;
 	cp.clientPlayerType = int(Player->CurrentPlayerType);
@@ -313,6 +313,7 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 			//SpawnCharacter->FinalDamage = player.second.Hp;
 
 			SpawnCharacter->SessionId = player.second.ClientID;
+			SpawnCharacter->SKILL_TYPE = ESkillType(player.second.SkillType);
 			SpawnCharacter->IsSkilling = player.second.IsSkilling;
 			SpawnCharacter->IsServerSend_Attacking = player.second.IsAttacking;
 
@@ -343,7 +344,7 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 			if (info->IsSkilling)
 			{
 				UE_LOG(LogClass, Log, TEXT("Skilling ANIM"));
-				OtherCharacter->Skill();
+				OtherCharacter->SeverRecvSkillCheck(ESkillType(info->SkillType));
 			}
 			else if (info->IsAttacking)
 			{
@@ -467,6 +468,7 @@ void ACharacterPlayerController::UpdateNewPlayer()
 		player.Velocity = NewPlayer->Velocity;
 
 		//player.Hp = NewPlayer->Hp;
+		player.SkillType = int(NewPlayer->SkillType);
 		player.IsSkilling = NewPlayer->IsSkilling;
 		player.IsAttacking = NewPlayer->IsAttacking;
 		player.clientPlayerType = int(NewPlayer->clientPlayerType);
@@ -534,7 +536,7 @@ void ACharacterPlayerController::UpdateMonster()
 	TArray<AActor*> SpawnedMonsters;
 	int TYPE = 0;
 
-	if (world)
+	if (world && CurrentStageLevel == 0)
 	{
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHMonster::StaticClass(), SpawnedMonsters);
 
@@ -573,6 +575,87 @@ void ACharacterPlayerController::UpdateMonster()
 					SpawnMonster->CurrentMonsterType = (EMonsterName)monster->MonsterType;
 				}
 				//				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("TYPE %d"), monster->MonsterType));
+
+			}
+		}
+		else
+		{
+			for (auto actor : SpawnedMonsters)
+			{
+				AHMonster * monster = Cast<AHMonster>(actor);
+
+				if (monster)
+				{
+					const Monster * MonsterInfo = &TOAMonsterset->monsters[monster->MonsterID];
+
+					FVector MonsterLocation;
+					MonsterLocation.X = MonsterInfo->X;
+					MonsterLocation.Y = MonsterInfo->Y;
+					MonsterLocation.Z = MonsterInfo->Z;
+
+					monster->MoveToLocation(MonsterLocation);
+
+					TYPE = MonsterInfo->MonsterType;
+
+
+					if (MonsterInfo->IsAttacking)
+					{
+						if (TYPE == 0)
+						{
+							monster->ServerAttack(EMonsterName::GOLEM);
+						}
+
+						else
+						{
+							monster->ServerAttack(EMonsterName::VAMP);
+						}
+
+					}
+				}
+			}
+		}
+
+	}
+
+	//다음 스테이지 스폰할 몬스터들
+	if (world && CurrentStageLevel == 1)
+	{
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHMonster::StaticClass(), SpawnedMonsters);
+
+		if (MonsterNum == 10)
+		{
+			MonsterNum = TOAMonsterset->monsters.size();
+
+			for (auto& kvp : TOAMonsterset->monsters)
+			{
+				const Monster * monster = &kvp.second;
+				FVector SpawnLocation;
+				SpawnLocation.X = monster->X;
+				SpawnLocation.Y = monster->Y;
+				SpawnLocation.Z = monster->Z;
+
+				FRotator SpawnRotation(0, 0, 0);
+
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.Owner = this;
+				SpawnParams.Instigator = Instigator;
+				SpawnParams.Name = FName(*FString(to_string(monster->MonsterID).c_str()));
+				TYPE = monster->MonsterType;
+
+				if (TYPE == 0)
+				{
+					AHGolem* SpawnMonster = world->SpawnActor<AHGolem>(AHGolem::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+					SpawnMonster->SpawnDefaultController();
+					SpawnMonster->MonsterID = monster->MonsterID;
+					SpawnMonster->CurrentMonsterType = (EMonsterName)monster->MonsterType;
+				}
+				else
+				{
+					AHVamp* SpawnMonster = world->SpawnActor<AHVamp>(AHVamp::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+					SpawnMonster->SpawnDefaultController();
+					SpawnMonster->MonsterID = monster->MonsterID;
+					SpawnMonster->CurrentMonsterType = (EMonsterName)monster->MonsterType;
+				}
 
 			}
 		}
