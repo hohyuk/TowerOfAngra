@@ -325,13 +325,7 @@ void ATowerofAngraCharacter::Skill()
 
 void ATowerofAngraCharacter::CommonSkill()
 {
-	if (IsSkilling) return;
-	if (IsAttacking) return;
-	if (CharacterState->GetMP() <= CommonSkillMP)return;
-
-	FinalMana += CommonSkillMP;
 	SKILL_TYPE = ESkillType::COMMONSKILL;
-	IsSkilling = true;
 }
 
 void ATowerofAngraCharacter::CommonSkillCheck()

@@ -146,8 +146,13 @@ void AHWarriorCharacter::Skill()
 void AHWarriorCharacter::CommonSkill()
 {
 	Super::CommonSkill();
+	if (IsSkilling) return;
+	if (IsAttacking) return;
+	if (CharacterState->GetMP() <= CommonSkillMP)return;
 
+	FinalMana += CommonSkillMP;
 	WarriorAnim->PlayCommonSkillMontage();
+	IsSkilling = true;
 }
 
 void AHWarriorCharacter::OtherPlayerAttack(int AttackCount)

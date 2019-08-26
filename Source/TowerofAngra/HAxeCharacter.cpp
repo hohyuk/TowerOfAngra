@@ -141,7 +141,13 @@ void AHAxeCharacter::CommonSkill()
 {
 	Super::CommonSkill();
 
+	if (IsSkilling) return;
+	if (IsAttacking) return;
+	if (CharacterState->GetMP() <= CommonSkillMP)return;
+
+	FinalMana += CommonSkillMP;
 	AxeAnim->PlayCommonSkillMontage();
+	IsSkilling = true;
 }
 
 void AHAxeCharacter::OtherPlayerAttack(int AttackCount)
