@@ -85,10 +85,12 @@ protected:
 		TSubclassOf<class UHResultUserWidget> ResultWidgetClass;
 private:
 	UPROPERTY()
-		class AHTOAGameState* TOAPlayerState;
+	class ATowerofAngraCharacter* MyPlayer{ nullptr };
+	UPROPERTY()
+	class AHTOAGameState* TOAPlayerState;
 
 	UPROPERTY()
-		class UHResultUserWidget* ResultWidget;
+	class UHResultUserWidget* ResultWidget;
 
 	FInputModeGameOnly GameInputMode;
 	FInputModeUIOnly UIInputMode;

@@ -85,29 +85,28 @@ void ACharacterPlayerController::BeginPlay()
 
 	ResultWidget = CreateWidget<UHResultUserWidget>(this, ResultWidgetClass);
 
-	// 캐릭터 등록
-	ATowerofAngraCharacter* Player = nullptr;
+	// MyPlayer 캐릭터 등록
 	if (PlayerType == EPlayerType::KAYA)
 	{
-		Player = Cast<AHKayaCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+		MyPlayer = Cast<AHKayaCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	}
 	else if (PlayerType == EPlayerType::AXE)
 	{
-		Player = Cast<AHAxeCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+		MyPlayer = Cast<AHAxeCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	}
 	else if (PlayerType == EPlayerType::WARRIOR)
 	{
-		Player = Cast<AHWarriorCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+		MyPlayer = Cast<AHWarriorCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	}
 	else
 		return;
-
-	if (!Player)
+	
+	if (!MyPlayer)
 	{
 		return;
 	}
-	auto MyLocation = Player->GetActorLocation();
-	auto MyRotation = Player->GetActorRotation();
+	auto MyLocation = MyPlayer->GetActorLocation();
+	auto MyRotation = MyPlayer->GetActorRotation();
 
 	cPlayer cp;
 
@@ -120,10 +119,10 @@ void ACharacterPlayerController::BeginPlay()
 	cp.StageLevel = CurrentStageLevel;
 
 	//	cp.Hp = Player->FinalDamage;
-	cp.IsSkilling = Player->IsSkilling;
-	cp.SkillType = int(Player->SKILL_TYPE);
-	cp.IsAttacking = Player->IsServerSend_Attacking;
-	cp.clientPlayerType = int(Player->CurrentPlayerType);
+	cp.IsSkilling = MyPlayer->IsSkilling;
+	cp.SkillType = int(MyPlayer->SKILL_TYPE);
+	cp.IsAttacking = MyPlayer->IsServerSend_Attacking;
+	cp.clientPlayerType = int(MyPlayer->CurrentPlayerType);
 
 	Socket->EnrollCharacterInfo(cp);
 	Socket->StartListen();
@@ -145,7 +144,7 @@ int ACharacterPlayerController::GetSessionId()
 void ACharacterPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 	if (bNewPlayerEntered)
 	{
 		UpdateNewPlayer();
@@ -217,53 +216,28 @@ void ACharacterPlayerController::RecvDestroyMonster(Monster*m)
 
 void ACharacterPlayerController::SendPlayerInfo()
 {
-	ATowerofAngraCharacter* Player = nullptr;
-	if (PlayerType == EPlayerType::KAYA)
-	{
-		Player = Cast<AHKayaCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-	}
-	else if (PlayerType == EPlayerType::AXE)
-	{
-		Player = Cast<AHAxeCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-	}
-	else if (PlayerType == EPlayerType::WARRIOR)
-	{
-		Player = Cast<AHWarriorCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-	}
-	else
-		return;
-
-	if (!Player)
-		return;
-
-	const auto &MyLocation = Player->GetActorLocation();
-	const auto &MyRotation = Player->GetActorRotation();
-	const auto &Velocity = Player->GetVelocity();
-
 	cPlayer cp;
 	cp.ClientID = SessionId;
 
-	cp.Location = MyLocation;
+	cp.Location = MyPlayer->GetActorLocation();
 
-	cp.Rotation = MyRotation;
+	cp.Rotation = MyPlayer->GetActorRotation();
 
-	cp.Velocity = Velocity;
+	cp.Velocity = MyPlayer->GetVelocity();
+
 	cp.StageLevel = CurrentStageLevel;
 
 	//	cp.Hp = Player->FinalDamage;
-	cp.SkillType = int(Player->SKILL_TYPE);
-	cp.IsSkilling = Player->IsSkilling;
-	cp.IsAttacking = Player->IsServerSend_Attacking;
-	cp.clientPlayerType = int(Player->CurrentPlayerType);
+	cp.SkillType = int(MyPlayer->SKILL_TYPE);
+	cp.IsSkilling = MyPlayer->IsSkilling;
+	cp.IsAttacking = MyPlayer->IsServerSend_Attacking;
+	cp.clientPlayerType = int(MyPlayer->CurrentPlayerType);
 
 	Socket->SendCharacterInfo(cp);
 }
 
 bool ACharacterPlayerController::UpdateWorldInfo()
 {
-	UWorld* const world = GetWorld();
-	if (world == nullptr)
-		return false;
 	if (playerinfo == nullptr)
 		return false;
 
@@ -274,14 +248,13 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), TOA_OtherPlayerClass, SpawnedCharacters);
 	int StageLevel = -1;
 
-
 	if (nPlayers == -1)
 	{
 		for (auto & player : playerinfo->players)
 		{
 			if (player.first == SessionId)
 				continue;
-
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("if__SessionId : %d"), SessionId));
 			FVector SpawnLocation = player.second.Location;
 
 			FRotator SpawnRotation = player.second.Rotation;
@@ -305,25 +278,16 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 			else
 			{
 				TOA_OtherPlayerClass = AHAxeCharacter::StaticClass();
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Error Player Type")));
 			}
 
-			ATowerofAngraCharacter* SpawnCharacter = world->SpawnActor<ATowerofAngraCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
+			ATowerofAngraCharacter* SpawnCharacter = GetWorld()->SpawnActor<ATowerofAngraCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
 			SpawnCharacter->SpawnDefaultController();
 
-			//SpawnCharacter->FinalDamage = player.second.Hp;
-
 			SpawnCharacter->SessionId = player.second.ClientID;
-			SpawnCharacter->SKILL_TYPE = ESkillType(player.second.SkillType);
-			SpawnCharacter->IsSkilling = player.second.IsSkilling;
-			SpawnCharacter->IsServerSend_Attacking = player.second.IsAttacking;
-
-			//StageLevel = CurrentStageLevel;
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("StageLevel : %d"), StageLevel));
-
-
-			SpawnCharacter->CurrentPlayerType = EPlayerType(player.second.clientPlayerType);
 		}
 		nPlayers = playerinfo->players.size();
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("nPlayers Size : %d"),nPlayers));
 	}
 	else
 	{
@@ -357,57 +321,17 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 
 			FVector CharacterVelocity = info->Velocity;
 
-			// 다른 플레이어 타입
-			EPlayerType OtherPlayerType = EPlayerType(info->clientPlayerType);
-			if (OtherPlayerType == EPlayerType::AXE)
-			{
-				TOA_OtherPlayerClass = AHAxeCharacter::StaticClass();
-			}
-			else if (OtherPlayerType == EPlayerType::WARRIOR)
-			{
-				TOA_OtherPlayerClass = AHWarriorCharacter::StaticClass();
-			}
-			else
-			{
-				TOA_OtherPlayerClass = AHAxeCharacter::StaticClass();
-			}
-			//			SpawnCharacter->CurrentPlayerType = EPlayerType(player.second.clientPlayerType);
-			//			UE_LOG(LogTemp, Log, TEXT("clientPlayerType :: &d"), int(NewPlayer->clientPlayerType));
-
 			OtherCharacter->AddMovementInput(CharacterVelocity);
 			OtherCharacter->SetActorRotation(CharacterRotation);
 			OtherCharacter->SetActorLocation(CharacterLocation);
+			//GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Red, FString::Printf(TEXT("else")));
 		}
-
 	}
 	return true;
 }
 
 void ACharacterPlayerController::UpdatePlayerInfo(const cPlayer & info)
 {
-	ATowerofAngraCharacter* Player = nullptr;
-	if (PlayerType == EPlayerType::KAYA)
-	{
-		Player = Cast<AHKayaCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-	}
-	else if (PlayerType == EPlayerType::AXE)
-	{
-		Player = Cast<AHAxeCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-	}
-	else if (PlayerType == EPlayerType::WARRIOR)
-	{
-		Player = Cast<AHWarriorCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
-	}
-	else
-		return;
-
-	if (!Player)
-		return;
-
-	UWorld* const world = GetWorld();
-	if (!world)
-		return;
-
 	//향후 체력이나 다른플레이어 체력 등등 업뎃
 
 //	Player->FinalDamage = info.Hp;
@@ -415,15 +339,13 @@ void ACharacterPlayerController::UpdatePlayerInfo(const cPlayer & info)
 
 void ACharacterPlayerController::UpdateNewPlayer()
 {
-	UWorld* const world = GetWorld();
-
 	if (NewPlayer->ClientID == SessionId)
 	{
 		bNewPlayerEntered = false;
 		NewPlayer = nullptr;
 		return;
 	}
-
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("UpdateNewPlayer SessionId : %d"), SessionId));
 	FVector SpawnLocation = NewPlayer->Location;
 	FRotator SpawnRotation = NewPlayer->Rotation;
 
@@ -438,17 +360,20 @@ void ACharacterPlayerController::UpdateNewPlayer()
 	if (OtherPlayerType == EPlayerType::AXE)
 	{
 		TOA_OtherPlayerClass = AHAxeCharacter::StaticClass();
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("AXE")));
 	}
 	else if (OtherPlayerType == EPlayerType::WARRIOR)
 	{
 		TOA_OtherPlayerClass = AHWarriorCharacter::StaticClass();
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("WARRIOR")));
 	}
 	else
 	{
 		TOA_OtherPlayerClass = AHAxeCharacter::StaticClass();
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Error Player Type")));
 	}
 
-	ATowerofAngraCharacter* SpawnCharacter = world->SpawnActor<ATowerofAngraCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
+	ATowerofAngraCharacter* SpawnCharacter = GetWorld()->SpawnActor<ATowerofAngraCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
 	SpawnCharacter->SpawnDefaultController();
 
 	if (SpawnCharacter == nullptr)
@@ -461,20 +386,6 @@ void ACharacterPlayerController::UpdateNewPlayer()
 	{
 		cPlayer player;
 		player.ClientID = NewPlayer->ClientID;
-		player.Location = NewPlayer->Location;
-
-		player.Rotation = NewPlayer->Rotation;
-
-		player.Velocity = NewPlayer->Velocity;
-
-		//player.Hp = NewPlayer->Hp;
-		player.SkillType = int(NewPlayer->SkillType);
-		player.IsSkilling = NewPlayer->IsSkilling;
-		player.IsAttacking = NewPlayer->IsAttacking;
-		player.clientPlayerType = int(NewPlayer->clientPlayerType);
-
-
-
 		playerinfo->players[NewPlayer->ClientID] = player;
 	}
 
