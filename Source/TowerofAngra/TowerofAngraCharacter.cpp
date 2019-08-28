@@ -334,19 +334,26 @@ void ATowerofAngraCharacter::CommonSkillCheck()
 		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(CameraShake, 1.f);
 
 	// 충돌체크
-	float AttackRadius = 500.f;
-
+	float AttackRadius = 300.f;
+	
+	FVector SkillPos = GetActorLocation() + GetActorForwardVector() * 500.f;		// 스킬 떨어지는 위치
 	TArray<FOverlapResult> OverlapResults;
 	FCollisionQueryParams Params(NAME_None, false, this);
 	bool bResult = GetWorld()->OverlapMultiByChannel(
 		OverlapResults,
-		GetActorLocation(),
+		SkillPos,
 		FQuat::Identity,
 		ECollisionChannel::ECC_GameTraceChannel2,
 		FCollisionShape::MakeSphere(AttackRadius),
 		Params
 	);
 
+	
+
+#if ENABLE_DRAW_DEBUG
+	DrawDebugSphere(GetWorld(), SkillPos, AttackRadius, 16, FColor::Green, false, 2.0f);
+
+#endif
 	if (bResult)
 	{
 		for (auto OverlapResult : OverlapResults)
