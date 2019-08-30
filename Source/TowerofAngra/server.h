@@ -72,6 +72,9 @@ public:
 	// SkillTYPE
 	int SkillType = 0; // 0 - None 1 - CommonSkill 2 - Skill
 
+
+
+	//2019-08-30 플레이어타입이랑 라이빙 주석
 	int StageLevel;
 	//패킷 직렬화 역직렬화
 	friend ostream& operator<<(ostream &stream, cPlayer& info)
@@ -89,14 +92,13 @@ public:
 		stream << info.Rotation.Pitch << endl;
 		stream << info.Rotation.Roll << endl;
 
-		//	stream << info.Hp << endl;
 		stream << info.SkillType << endl;
 		stream << info.StageLevel << endl;
 
 		stream << info.IsSkilling << endl;
 		stream << info.IsAttacking << endl;
 		stream << info.clientPlayerType << endl;
-		stream << info.IsAliving << endl;
+		//stream << info.IsAliving << endl;
 		return stream;
 	}
 
@@ -115,13 +117,12 @@ public:
 		stream >> info.Rotation.Pitch;
 		stream >> info.Rotation.Roll;
 
-		//	stream >> info.Hp;
 		stream >> info.SkillType;
 		stream >> info.StageLevel;
 		stream >> info.IsSkilling;
 		stream >> info.IsAttacking;
 		stream >> info.clientPlayerType;
-		stream >> info.IsAliving;
+		//stream >> info.IsAliving;
 		return stream;
 	}
 };
@@ -275,7 +276,6 @@ public:
 	bool Connect(const char*, int);
 
 	void EnrollCharacterInfo(cPlayer&);
-	void SendCharacterInfo(cPlayer&);
 	void LogoutCharacter(int);
 	void SendPlayer(cPlayer& info);
 	MonsterSet* RecvMonsterSet(stringstream&);

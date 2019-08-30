@@ -19,8 +19,10 @@ ACharacterPlayerController::ACharacterPlayerController()
 
 	Socket = server::GetSingleton();
 	Socket->InitSock();
+	
 	const char* ip = TCHAR_TO_ANSI(*IPaddress);
 	bIsConnected = Socket->Connect(ip, 9000);
+	
 	if (bIsConnected)
 	{
 		Socket->SetPlayerController(this);
@@ -118,7 +120,6 @@ void ACharacterPlayerController::BeginPlay()
 	cp.Velocity = FVector::ZeroVector;
 	cp.StageLevel = CurrentStageLevel;
 
-	//	cp.Hp = Player->FinalDamage;
 	cp.IsSkilling = MyPlayer->IsSkilling;
 	cp.SkillType = int(MyPlayer->SKILL_TYPE);
 	cp.IsAttacking = MyPlayer->IsServerSend_Attacking;
@@ -128,7 +129,6 @@ void ACharacterPlayerController::BeginPlay()
 	Socket->StartListen();
 
 	GetWorldTimerManager().SetTimer(SendPlayerInfoHandle, this, &ACharacterPlayerController::SendPlayerInfo, 0.010f, true);
-
 }
 
 void ACharacterPlayerController::SetupInputComponent()
@@ -160,7 +160,6 @@ void ACharacterPlayerController::Tick(float DeltaTime)
 	if (MonsterDestroy)
 		DesTroyMonster();
 
-
 	UpdateMonster();
 }
 
@@ -175,9 +174,7 @@ void ACharacterPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReaso
 void ACharacterPlayerController::RecvWorldInfo(cPlayerInfo * pi)
 {
 	if (pi != nullptr)
-	{
 		playerinfo = pi;
-	}
 }
 
 void ACharacterPlayerController::RecvNewPlayer(cPlayer * NewPlayer_)
@@ -186,6 +183,7 @@ void ACharacterPlayerController::RecvNewPlayer(cPlayer * NewPlayer_)
 	{
 		bNewPlayerEntered = true;
 		NewPlayer = NewPlayer_;
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RecvNewPlayer")));
 	}
 }
 void ACharacterPlayerController::RecvNewMonster(MonsterSet* NewMonster_)
@@ -220,20 +218,17 @@ void ACharacterPlayerController::SendPlayerInfo()
 	cp.ClientID = SessionId;
 
 	cp.Location = MyPlayer->GetActorLocation();
-
 	cp.Rotation = MyPlayer->GetActorRotation();
-
 	cp.Velocity = MyPlayer->GetVelocity();
 
 	cp.StageLevel = CurrentStageLevel;
 
-	//	cp.Hp = Player->FinalDamage;
 	cp.SkillType = int(MyPlayer->SKILL_TYPE);
 	cp.IsSkilling = MyPlayer->IsSkilling;
 	cp.IsAttacking = MyPlayer->IsServerSend_Attacking;
 	cp.clientPlayerType = int(MyPlayer->CurrentPlayerType);
 
-	Socket->SendCharacterInfo(cp);
+	Socket->SendPlayer(cp);
 }
 
 bool ACharacterPlayerController::UpdateWorldInfo()
@@ -243,9 +238,8 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 
 	//	UpdatePlayerInfo(playerinfo->players[SessionId]);
 
-	TArray<AActor*> SpawnedCharacters;
-
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), TOA_OtherPlayerClass, SpawnedCharacters);
+	TArray<AActor*> AllActor;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), TOA_OtherPlayerClass, AllActor);
 	int StageLevel = -1;
 
 	if (nPlayers == -1)
@@ -254,7 +248,7 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 		{
 			if (player.first == SessionId)
 				continue;
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("if__SessionId : %d"), SessionId));
+				
 			FVector SpawnLocation = player.second.Location;
 
 			FRotator SpawnRotation = player.second.Rotation;
@@ -270,39 +264,42 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 			if (OtherPlayerType == EPlayerType::AXE)
 			{
 				TOA_OtherPlayerClass = AHAxeCharacter::StaticClass();
+
+				AHAxeCharacter* SpawnCharacter = GetWorld()->SpawnActor<AHAxeCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
+				SpawnCharacter->SpawnDefaultController();
+				SpawnCharacter->SessionId = player.second.ClientID;
 			}
 			else if (OtherPlayerType == EPlayerType::WARRIOR)
 			{
 				TOA_OtherPlayerClass = AHWarriorCharacter::StaticClass();
+
+				AHWarriorCharacter* SpawnCharacter = GetWorld()->SpawnActor<AHWarriorCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
+				SpawnCharacter->SpawnDefaultController();
+				SpawnCharacter->SessionId = player.second.ClientID;
 			}
 			else
 			{
 				TOA_OtherPlayerClass = AHAxeCharacter::StaticClass();
+
+				AHAxeCharacter* SpawnCharacter = GetWorld()->SpawnActor<AHAxeCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
+				SpawnCharacter->SpawnDefaultController();
+				SpawnCharacter->SessionId = player.second.ClientID;
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Error Player Type")));
 			}
-
-			ATowerofAngraCharacter* SpawnCharacter = GetWorld()->SpawnActor<ATowerofAngraCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
-			SpawnCharacter->SpawnDefaultController();
-
-			SpawnCharacter->SessionId = player.second.ClientID;
 		}
 		nPlayers = playerinfo->players.size();
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("nPlayers Size : %d"),nPlayers));
 	}
 	else
 	{
-		for (const auto& Character : SpawnedCharacters)
+		for (const auto& Character : AllActor)
 		{
 			ATowerofAngraCharacter * OtherCharacter = Cast<ATowerofAngraCharacter>(Character);
 
 			if (!OtherCharacter || OtherCharacter->SessionId == -1 || OtherCharacter->SessionId == SessionId)
-			{
 				continue;
-			}
 
 			cPlayer * info = &playerinfo->players[OtherCharacter->SessionId];
-
-			//OtherCharacter->FinalDamage = info->Hp;
 			info->StageLevel = CurrentStageLevel;
 
 			if (info->IsSkilling)
@@ -316,15 +313,10 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 				OtherCharacter->Attack();
 			}
 
-			FVector CharacterLocation = info->Location;
-			FRotator CharacterRotation = info->Rotation;
-
-			FVector CharacterVelocity = info->Velocity;
-
-			OtherCharacter->AddMovementInput(CharacterVelocity);
-			OtherCharacter->SetActorRotation(CharacterRotation);
-			OtherCharacter->SetActorLocation(CharacterLocation);
-			//GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Red, FString::Printf(TEXT("else")));
+			OtherCharacter->AddMovementInput(info->Velocity);
+			OtherCharacter->SetActorRotation(info->Rotation);
+			OtherCharacter->SetActorLocation(info->Location);
+			OtherCharacter->CurrentPlayerType = EPlayerType(info->clientPlayerType);
 		}
 	}
 	return true;
@@ -333,8 +325,6 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 void ACharacterPlayerController::UpdatePlayerInfo(const cPlayer & info)
 {
 	//향후 체력이나 다른플레이어 체력 등등 업뎃
-
-//	Player->FinalDamage = info.Hp;
 }
 
 void ACharacterPlayerController::UpdateNewPlayer()
@@ -360,32 +350,45 @@ void ACharacterPlayerController::UpdateNewPlayer()
 	if (OtherPlayerType == EPlayerType::AXE)
 	{
 		TOA_OtherPlayerClass = AHAxeCharacter::StaticClass();
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("AXE")));
+		
+		AHAxeCharacter* SpawnCharacter = GetWorld()->SpawnActor<AHAxeCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
+		SpawnCharacter->SpawnDefaultController();
+		SpawnCharacter->SessionId = NewPlayer->ClientID;
 	}
 	else if (OtherPlayerType == EPlayerType::WARRIOR)
 	{
 		TOA_OtherPlayerClass = AHWarriorCharacter::StaticClass();
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("WARRIOR")));
+
+		AHWarriorCharacter* SpawnCharacter = GetWorld()->SpawnActor<AHWarriorCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
+		SpawnCharacter->SpawnDefaultController();
+		SpawnCharacter->SessionId = NewPlayer->ClientID;
 	}
 	else
 	{
 		TOA_OtherPlayerClass = AHAxeCharacter::StaticClass();
+
+		AHAxeCharacter* SpawnCharacter = GetWorld()->SpawnActor<AHAxeCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
+		SpawnCharacter->SpawnDefaultController();
+		SpawnCharacter->SessionId = NewPlayer->ClientID;
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Error Player Type")));
 	}
 
-	ATowerofAngraCharacter* SpawnCharacter = GetWorld()->SpawnActor<ATowerofAngraCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
-	SpawnCharacter->SpawnDefaultController();
-
-	if (SpawnCharacter == nullptr)
-	{
-		UE_LOG(LogTemp, Log, TEXT("! Failed to spawn AprojectlevelCharacter Pawn."));
-	}
-	SpawnCharacter->SessionId = NewPlayer->ClientID;
-	//	SpawnCharacter->FinalDamage = NewPlayer->Hp;
 	if (playerinfo != nullptr)
 	{
 		cPlayer player;
+
 		player.ClientID = NewPlayer->ClientID;
+
+		player.Location = NewPlayer->Location;
+		player.Rotation = NewPlayer->Rotation;
+		player.Velocity = NewPlayer->Velocity;
+
+		player.SkillType = int(NewPlayer->SkillType);
+		player.IsSkilling = NewPlayer->IsSkilling;
+		player.IsAttacking = NewPlayer->IsAttacking;
+		player.clientPlayerType = int(NewPlayer->clientPlayerType);
+
 		playerinfo->players[NewPlayer->ClientID] = player;
 	}
 

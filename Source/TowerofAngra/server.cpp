@@ -83,6 +83,7 @@ void server::EnrollCharacterInfo(cPlayer& info)
 	}
 }
 
+// 캐릭터 동기화
 void server::SendPlayer(cPlayer& info)
 {
 	// 캐릭터 정보 직렬화
@@ -105,29 +106,7 @@ void server::SendPlayer(cPlayer& info)
 		return;
 	}
 }
-// 캐릭터 동기화
-void server::SendCharacterInfo(cPlayer& info)
-{
-	// 캐릭터 정보 직렬화
-	stringstream SendStream;
-	// 요청 종류
-	SendStream << PacketType::SEND_CHARACTER << endl;;
-	SendStream << info;
 
-	// 캐릭터 정보 전송
-	int nSendLen = send
-	(
-		Sock,
-		(CHAR*)SendStream.str().c_str(),
-		SendStream.str().length(),
-		0
-	);
-
-	if (nSendLen == -1)
-	{
-		return;
-	}
-}
 // 캐릭터 로그아웃
 void server::LogoutCharacter(int SessionId)
 {

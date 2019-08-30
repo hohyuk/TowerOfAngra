@@ -71,7 +71,7 @@ private:
 	// 새 플레이어 입장
 	int	nPlayers;
 	bool bNewPlayerEntered;
-	cPlayer * NewPlayer;
+	cPlayer * NewPlayer{ nullptr };
 	void UpdateNewPlayer();
 
 public:

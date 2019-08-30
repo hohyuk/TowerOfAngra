@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "Engine.h"
 #include "HMultiSelectUserWidget.h"
 #include "Components/Button.h"
 #include "Components/EditableTextBox.h"
-
 void UHMultiSelectUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -34,7 +34,7 @@ void UHMultiSelectUserWidget::OnWorriorButtonClicked()
 	if (IPaddress.Len() <= 0 || IPaddress.Len() > 15) return;
 
 	PlayerType = EPlayerType::WARRIOR;
-	
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%d"),int(PlayerType)));
 	UGameplayStatics::OpenLevel(GetWorld(), TEXT("MTOA_Stage"));
 }
 
@@ -43,7 +43,7 @@ void UHMultiSelectUserWidget::OnAxeButtonClicked()
 	if (IPaddress.Len() <= 0 || IPaddress.Len() > 15) return;
 
 	PlayerType = EPlayerType::AXE;
-
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%d"), int(PlayerType)));
 	UGameplayStatics::OpenLevel(GetWorld(), TEXT("MTOA_Stage"));
 }
 

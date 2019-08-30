@@ -14,6 +14,8 @@ ATowerofAngraGameMode::ATowerofAngraGameMode()
 	// 초기화
 	CurrentStageLevel = 0;
 	CurrentScore = 0;
+	/*CurrentGameMode = EGameMode::MULTI_GAME;
+	PlayerType = EPlayerType::WARRIOR;*/
 
 	// 연습용
 	if (PlayerType == EPlayerType::NONE && CurrentGameMode == EGameMode::NONE)
