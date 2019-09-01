@@ -35,7 +35,6 @@ public:
 public:	
 	int MonsterID;
 	float HP;
-	EMonsterName CurrentMonsterType;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -75,8 +74,7 @@ protected:
 	UPROPERTY()
 	class AHMonsterAIController* MonsterAIController;
 
-	UPROPERTY(Transient, VisibleInstanceOnly, BlueprintReadOnly, Category = State, Meta = (AllowPrivateAccess = true))
-	EMonsterName CurrentMonsterName;
+	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = State, Meta = (AllowPrivateAccess = true))
 	float DeadTimer;
@@ -119,6 +117,9 @@ public:
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = State, Meta = (AllowPrivateAccess = true))
 	bool IsAliving;
+
+	UPROPERTY(Transient, VisibleInstanceOnly, BlueprintReadOnly, Category = State, Meta = (AllowPrivateAccess = true))
+	EMonsterName CurrentMonsterType;
 public:
 	void SetHpShow(bool HpShow) { IsHP_Show = HpShow; }
 
@@ -127,4 +128,6 @@ public:
 	float GetAttackRange()const { return AttackRange; }
 
 	void MoveToLocation(const FVector& dest);
+
+	void ServerSendDieOn(EMonsterName MonsterType);
 };

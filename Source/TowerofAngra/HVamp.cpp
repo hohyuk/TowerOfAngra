@@ -7,7 +7,7 @@
 
 AHVamp::AHVamp()
 {
-	CurrentMonsterName = EMonsterName::VAMP;
+	CurrentMonsterType = EMonsterName::VAMP;
 
 	BodyCenter = 88.f;
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_CARDBOARD(TEXT("/Game/TowerofAngra/Monster/Vamp/vampire_a_lusth.vampire_a_lusth"));

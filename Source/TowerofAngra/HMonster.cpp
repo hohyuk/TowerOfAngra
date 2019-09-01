@@ -135,7 +135,7 @@ void AHMonster::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	
 
-	switch (CurrentMonsterName)
+	switch (CurrentMonsterType)
 	{
 	case EMonsterName::GOLEM:
 	{
@@ -230,7 +230,7 @@ void AHMonster::Attack()
 {
 	if (IsAttacking) return;
 
-	switch (CurrentMonsterName)
+	switch (CurrentMonsterType)
 	{
 	case EMonsterName::GOLEM:
 	{
@@ -408,4 +408,42 @@ void AHMonster::MoveToLocation(const FVector & dest)
 	{
 		Controller->MoveToLocation(dest);
 	}
+}
+
+void AHMonster::ServerSendDieOn(EMonsterName MonsterType)
+{
+	switch (MonsterType)
+	{
+	case EMonsterName::GOLEM:
+	{
+		AnimInstance = Cast<UHGolemAnimInstance>(GetMesh()->GetAnimInstance());
+		if (nullptr == AnimInstance)return;
+		dynamic_cast<UHGolemAnimInstance*>(AnimInstance)->SetDeadAnim();
+	}
+	break;
+	case EMonsterName::VAMP:
+	{
+		AnimInstance = Cast<UHVampAnimInstance>(GetMesh()->GetAnimInstance());
+		if (nullptr == AnimInstance)return;
+		dynamic_cast<UHVampAnimInstance*>(AnimInstance)->SetDeadAnim();
+	}
+	break;
+	case EMonsterName::DEMON:
+	{
+		AnimInstance = Cast<UHDemonAnimInstance>(GetMesh()->GetAnimInstance());
+		if (nullptr == AnimInstance)return;
+		dynamic_cast<UHDemonAnimInstance*>(AnimInstance)->SetDeadAnim();
+	}
+	break;
+	case EMonsterName::LIZARD:
+	{
+		AnimInstance = Cast<UHLizardAnimInstance>(GetMesh()->GetAnimInstance());
+		if (nullptr == AnimInstance)return;
+		dynamic_cast<UHLizardAnimInstance*>(AnimInstance)->SetDeadAnim();
+	}
+	break;
+	default:
+		break;
+	}
+	DieOn();
 }

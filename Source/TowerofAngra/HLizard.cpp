@@ -6,7 +6,7 @@
 
 AHLizard::AHLizard()
 {
-	CurrentMonsterName = EMonsterName::LIZARD;
+	CurrentMonsterType = EMonsterName::LIZARD;
 
 	BodyCenter = 70.f;
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_CARDBOARD(TEXT("/Game/TowerofAngra/Monster/LizardBeast/Meshes/SK_LizardBeast.SK_LizardBeast"));

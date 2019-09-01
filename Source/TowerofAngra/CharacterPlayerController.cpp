@@ -156,10 +156,10 @@ void ACharacterPlayerController::Tick(float DeltaTime)
 	{
 		SpawnMonster();
 	}
-	/*È£Çõ ¼öÁ¤*/
+	
 	// ¸ó½ºÅÍ ÆÄ±«
-	//if (MonsterDestroy)
-	//	DesTroyMonster();
+	if (MonsterDestroy)
+		DesTroyMonster();
 
 	UpdateMonster();
 }
@@ -481,7 +481,6 @@ void ACharacterPlayerController::UpdateMonster()
 					SpawnMonster->SpawnDefaultController();
 					SpawnMonster->MonsterID = monster->MonsterID;
 					SpawnMonster->CurrentMonsterType = (EMonsterName)monster->MonsterType;
-					SpawnMonster->IsAliving = monster->IsAliving;
 				}
 				else
 				{
@@ -489,7 +488,6 @@ void ACharacterPlayerController::UpdateMonster()
 					SpawnMonster->SpawnDefaultController();
 					SpawnMonster->MonsterID = monster->MonsterID;
 					SpawnMonster->CurrentMonsterType = (EMonsterName)monster->MonsterType;
-					SpawnMonster->IsAliving = monster->IsAliving;
 				}
 				//				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("TYPE %d"), monster->MonsterType));
 
@@ -512,9 +510,7 @@ void ACharacterPlayerController::UpdateMonster()
 
 					monster->MoveToLocation(MonsterLocation);
 
-					monster->IsAliving = MonsterInfo->IsAliving;
 					TYPE = MonsterInfo->MonsterType;
-
 
 					if (MonsterInfo->IsAttacking)
 					{
@@ -566,7 +562,6 @@ void ACharacterPlayerController::UpdateMonster()
 					SpawnMonster->SpawnDefaultController();
 					SpawnMonster->MonsterID = monster->MonsterID;
 					SpawnMonster->CurrentMonsterType = (EMonsterName)monster->MonsterType;
-					SpawnMonster->IsAliving = monster->IsAliving;
 				}
 				else
 				{
@@ -574,9 +569,7 @@ void ACharacterPlayerController::UpdateMonster()
 					SpawnMonster->SpawnDefaultController();
 					SpawnMonster->MonsterID = monster->MonsterID;
 					SpawnMonster->CurrentMonsterType = (EMonsterName)monster->MonsterType;
-					SpawnMonster->IsAliving = monster->IsAliving;
 				}
-
 			}
 		}
 		else
@@ -596,7 +589,6 @@ void ACharacterPlayerController::UpdateMonster()
 
 					monster->MoveToLocation(MonsterLocation);
 
-					monster->IsAliving = MonsterInfo->IsAliving;
 					TYPE = MonsterInfo->MonsterType;
 
 
@@ -634,7 +626,7 @@ void ACharacterPlayerController::DesTroyMonster()
 			AHMonster * Monster = Cast<AHMonster>(Actor);
 			if (Monster && Monster->MonsterID == TOAMonster->MonsterID)
 			{
-				Monster->DieOn();
+				Monster->ServerSendDieOn(Monster->CurrentMonsterType);
 				break;
 			}
 		}

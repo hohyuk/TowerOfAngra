@@ -7,7 +7,7 @@
 
 AHGolem::AHGolem()
 {
-	CurrentMonsterName = EMonsterName::GOLEM;
+	CurrentMonsterType = EMonsterName::GOLEM;
 
 	BodyCenter = 170.f;
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_CARDBOARD(TEXT("/Game/TowerofAngra/Monster/Golem/Mesh/SK_Golem.SK_Golem"));

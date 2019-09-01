@@ -6,7 +6,7 @@
 
 AHDemon::AHDemon()
 {
-	CurrentMonsterName = EMonsterName::DEMON;
+	CurrentMonsterType = EMonsterName::DEMON;
 	BodyCenter = 88.f;
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_CARDBOARD(TEXT("/Game/TowerofAngra/Demon/demon.demon"));
 	if (SK_CARDBOARD.Succeeded())
