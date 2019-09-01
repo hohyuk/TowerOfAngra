@@ -1,8 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "Engine.h"
 #include "HTallFance.h"
 #include "TowerofAngraCharacter.h"
-
+#include "CharacterPlayerController.h"
 // Sets default values
 AHTallFance::AHTallFance()
 {
@@ -49,7 +50,11 @@ void AHTallFance::OverlapBegins(UPrimitiveComponent * OverlappedComponent, AActo
 {
 	ATowerofAngraCharacter* Character = Cast<ATowerofAngraCharacter>(OtherActor);
 
-	if (Character && !IsOpenFence)
+	ACharacterPlayerController* PlayerController = Cast<ACharacterPlayerController>(GetWorld()->GetFirstPlayerController());
+	int MonsterNum = PlayerController->TOAMonsterset->monsters.size();
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("MonsterNum  %d "), MonsterNum));
+	if ((Character && !IsOpenFence) && !MonsterNum)
 	{
 		IsOpenFence = true;
 		fZPos = 0.f;

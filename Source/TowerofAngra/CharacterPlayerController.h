@@ -51,8 +51,7 @@ public:
 	int TYPE;
 	//------------------------------------
 private:
-	MonsterSet * TOAMonsterset;
-	int MonsterNum;
+	int MonsterNum;		
 	Monster * TOAMonster;
 	bool MonsterSpawn;
 	server* Socket;
@@ -94,4 +93,7 @@ private:
 
 	FInputModeGameOnly GameInputMode;
 	FInputModeUIOnly UIInputMode;
+
+public:
+	MonsterSet* TOAMonsterset;
 };
