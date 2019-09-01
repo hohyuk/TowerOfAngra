@@ -98,8 +98,6 @@ void AHMonster::DieOn()
 	MonsterAIController->StopAI();
 	CurrentScore += 10;
 
-	IsAliving = false;			// 서버로 보내서 삭제
-
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]()->void {
 
 		float PosZ = GetActorLocation().Z;
@@ -412,38 +410,5 @@ void AHMonster::MoveToLocation(const FVector & dest)
 
 void AHMonster::ServerSendDieOn(EMonsterName MonsterType)
 {
-	switch (MonsterType)
-	{
-	case EMonsterName::GOLEM:
-	{
-		AnimInstance = Cast<UHGolemAnimInstance>(GetMesh()->GetAnimInstance());
-		if (nullptr == AnimInstance)return;
-		dynamic_cast<UHGolemAnimInstance*>(AnimInstance)->SetDeadAnim();
-	}
-	break;
-	case EMonsterName::VAMP:
-	{
-		AnimInstance = Cast<UHVampAnimInstance>(GetMesh()->GetAnimInstance());
-		if (nullptr == AnimInstance)return;
-		dynamic_cast<UHVampAnimInstance*>(AnimInstance)->SetDeadAnim();
-	}
-	break;
-	case EMonsterName::DEMON:
-	{
-		AnimInstance = Cast<UHDemonAnimInstance>(GetMesh()->GetAnimInstance());
-		if (nullptr == AnimInstance)return;
-		dynamic_cast<UHDemonAnimInstance*>(AnimInstance)->SetDeadAnim();
-	}
-	break;
-	case EMonsterName::LIZARD:
-	{
-		AnimInstance = Cast<UHLizardAnimInstance>(GetMesh()->GetAnimInstance());
-		if (nullptr == AnimInstance)return;
-		dynamic_cast<UHLizardAnimInstance*>(AnimInstance)->SetDeadAnim();
-	}
-	break;
-	default:
-		break;
-	}
-	DieOn();
+	CharacterState->SetHP(0.f);
 }
