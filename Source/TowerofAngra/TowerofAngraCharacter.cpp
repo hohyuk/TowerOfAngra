@@ -7,6 +7,8 @@
 #include "HOtherPlayerHPWidget.h"
 #include "TowerofAngraGameMode.h"
 #include "HMonster.h"
+#include "server.h"
+#include "CharacterPlayerController.h"	
 
 //////////////////////////////////////////////////////////////////////////
 // ATowerofAngraCharacter
@@ -363,7 +365,13 @@ void ATowerofAngraCharacter::CommonSkillCheck()
 			{
 				FDamageEvent DamageEvent;
 				Monster->DamageAnim();
-				OverlapResult.Actor->TakeDamage(fCommonSkillPower, DamageEvent, GetController(), this);
+				if (CurrentGameMode == EGameMode::MULTI_GAME)
+				{
+					ACharacterPlayerController* PlayerController = Cast<ACharacterPlayerController>(GetWorld()->GetFirstPlayerController());
+					PlayerController->HitMonster(Monster->MonsterID);
+				}
+				else
+					OverlapResult.Actor->TakeDamage(fCommonSkillPower, DamageEvent, GetController(), this);
 			}
 		}
 	}

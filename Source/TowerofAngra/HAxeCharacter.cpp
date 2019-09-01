@@ -4,7 +4,8 @@
 #include "HAxeAnimInstance.h"
 #include "HCharaterStateComponent.h"
 #include "HMonster.h"
-
+#include "server.h"
+#include "CharacterPlayerController.h"	
 AHAxeCharacter::AHAxeCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -231,13 +232,19 @@ void AHAxeCharacter::AttackCheck()
 		DebugLifeTime);*/
 
 #endif
-
-	if (bResult)
+	AHMonster* Monster = Cast<AHMonster>(HitResult.Actor);
+	if (bResult && Monster)
 	{
 		if (HitResult.Actor.IsValid())
 		{
 			FDamageEvent DamageEvent;
-			HitResult.Actor->TakeDamage(fAttackPower, DamageEvent, GetController(), this);
+			if (CurrentGameMode == EGameMode::MULTI_GAME)
+			{
+				ACharacterPlayerController* PlayerController = Cast<ACharacterPlayerController>(GetWorld()->GetFirstPlayerController());
+				PlayerController->HitMonster(Monster->MonsterID);
+			}
+			else
+				HitResult.Actor->TakeDamage(fAttackPower, DamageEvent, GetController(), this);
 		}
 	}
 }
@@ -277,7 +284,13 @@ void AHAxeCharacter::SkillCheck()
 			{
 				FDamageEvent DamageEvent;
 				Monster->DamageAnim();
-				OverlapResult.Actor->TakeDamage(fSkillPower, DamageEvent, GetController(), this);
+				if (CurrentGameMode == EGameMode::MULTI_GAME)
+				{
+					ACharacterPlayerController* PlayerController = Cast<ACharacterPlayerController>(GetWorld()->GetFirstPlayerController());
+					PlayerController->HitMonster(Monster->MonsterID);
+				}
+				else
+					OverlapResult.Actor->TakeDamage(fSkillPower, DamageEvent, GetController(), this);
 			}
 		}
 	}

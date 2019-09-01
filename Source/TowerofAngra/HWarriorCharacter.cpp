@@ -4,6 +4,8 @@
 #include "HWarriorAnimInstance.h"
 #include "HCharaterStateComponent.h"
 #include "HMonster.h"
+#include "server.h"
+#include "CharacterPlayerController.h"	
 
 AHWarriorCharacter::AHWarriorCharacter()
 {
@@ -244,7 +246,13 @@ void AHWarriorCharacter::AttackCheck()
 		if (HitResult.Actor.IsValid())
 		{
 			FDamageEvent DamageEvent;
-			HitResult.Actor->TakeDamage(fAttackPower, DamageEvent, GetController(), this);
+			if (CurrentGameMode == EGameMode::MULTI_GAME)
+			{
+				ACharacterPlayerController* PlayerController = Cast<ACharacterPlayerController>(GetWorld()->GetFirstPlayerController());
+				PlayerController->HitMonster(Monster->MonsterID);
+			}
+			else
+				HitResult.Actor->TakeDamage(fAttackPower, DamageEvent, GetController(), this);
 		}
 	}
 }
@@ -277,11 +285,18 @@ void AHWarriorCharacter::SkillCheck()
 		for (auto OverlapResult : OverlapResults)
 		{
 			AHMonster* Monster = Cast<AHMonster>(OverlapResult.GetActor());
+
 			if (Monster)
 			{
 				FDamageEvent DamageEvent;
 				Monster->DamageAnim();
-				OverlapResult.Actor->TakeDamage(fSkillPower, DamageEvent, GetController(), this);
+				if (CurrentGameMode == EGameMode::MULTI_GAME)
+				{
+					ACharacterPlayerController* PlayerController = Cast<ACharacterPlayerController>(GetWorld()->GetFirstPlayerController());
+					PlayerController->HitMonster(Monster->MonsterID);
+				}
+				else
+					OverlapResult.Actor->TakeDamage(fSkillPower, DamageEvent, GetController(), this);
 			}
 		}
 	}
