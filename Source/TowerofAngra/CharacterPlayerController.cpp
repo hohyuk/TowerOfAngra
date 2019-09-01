@@ -156,9 +156,10 @@ void ACharacterPlayerController::Tick(float DeltaTime)
 	{
 		SpawnMonster();
 	}
+	/*È£Çõ ¼öÁ¤*/
 	// ¸ó½ºÅÍ ÆÄ±«
-	if (MonsterDestroy)
-		DesTroyMonster();
+	//if (MonsterDestroy)
+	//	DesTroyMonster();
 
 	UpdateMonster();
 }
@@ -480,6 +481,7 @@ void ACharacterPlayerController::UpdateMonster()
 					SpawnMonster->SpawnDefaultController();
 					SpawnMonster->MonsterID = monster->MonsterID;
 					SpawnMonster->CurrentMonsterType = (EMonsterName)monster->MonsterType;
+					SpawnMonster->IsAliving = monster->IsAliving;
 				}
 				else
 				{
@@ -487,6 +489,7 @@ void ACharacterPlayerController::UpdateMonster()
 					SpawnMonster->SpawnDefaultController();
 					SpawnMonster->MonsterID = monster->MonsterID;
 					SpawnMonster->CurrentMonsterType = (EMonsterName)monster->MonsterType;
+					SpawnMonster->IsAliving = monster->IsAliving;
 				}
 				//				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("TYPE %d"), monster->MonsterType));
 
@@ -509,6 +512,7 @@ void ACharacterPlayerController::UpdateMonster()
 
 					monster->MoveToLocation(MonsterLocation);
 
+					monster->IsAliving = MonsterInfo->IsAliving;
 					TYPE = MonsterInfo->MonsterType;
 
 
@@ -536,7 +540,7 @@ void ACharacterPlayerController::UpdateMonster()
 	{
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHMonster::StaticClass(), SpawnedMonsters);
 
-		if (MonsterNum == 10)
+		if (MonsterNum == 15)
 		{
 			MonsterNum = TOAMonsterset->monsters.size();
 
@@ -562,6 +566,7 @@ void ACharacterPlayerController::UpdateMonster()
 					SpawnMonster->SpawnDefaultController();
 					SpawnMonster->MonsterID = monster->MonsterID;
 					SpawnMonster->CurrentMonsterType = (EMonsterName)monster->MonsterType;
+					SpawnMonster->IsAliving = monster->IsAliving;
 				}
 				else
 				{
@@ -569,6 +574,7 @@ void ACharacterPlayerController::UpdateMonster()
 					SpawnMonster->SpawnDefaultController();
 					SpawnMonster->MonsterID = monster->MonsterID;
 					SpawnMonster->CurrentMonsterType = (EMonsterName)monster->MonsterType;
+					SpawnMonster->IsAliving = monster->IsAliving;
 				}
 
 			}
@@ -590,6 +596,7 @@ void ACharacterPlayerController::UpdateMonster()
 
 					monster->MoveToLocation(MonsterLocation);
 
+					monster->IsAliving = MonsterInfo->IsAliving;
 					TYPE = MonsterInfo->MonsterType;
 
 

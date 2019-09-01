@@ -71,6 +71,9 @@ AHMonster::AHMonster()
 	// 플레이어 카메라 무시
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+
+
+	IsAliving = true;
 }
 
 // Called when the game starts or when spawned
@@ -94,6 +97,9 @@ void AHMonster::DieOn()
 	HPBarWidget->SetHiddenInGame(false);
 	MonsterAIController->StopAI();
 	CurrentScore += 10;
+
+	IsAliving = false;			// 서버로 보내서 삭제
+
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]()->void {
 
 		float PosZ = GetActorLocation().Z;
