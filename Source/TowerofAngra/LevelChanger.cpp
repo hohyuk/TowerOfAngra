@@ -2,6 +2,7 @@
 #pragma once
 #include "TowerofAngraGameMode.h"
 #include "LevelChanger.h"
+#include "TowerofAngraCharacter.h"
 #include "Engine.h"
 // Sets default values
 ALevelChanger::ALevelChanger()
@@ -31,8 +32,11 @@ void ALevelChanger::Tick(float DeltaTime)
 
 void ALevelChanger::OverlapBegins(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int32 OtherbodyIdx, bool bFromSweep, const FHitResult & SweepHit)
 {
-	ACharacter* MyChar = UGameplayStatics::GetPlayerCharacter(this, 0);
-	if (OtherActor == MyChar && LoadLevelName != "")
+	//ACharacter* MyChar = UGameplayStatics::GetPlayerCharacter(this, 0);
+
+	ATowerofAngraCharacter * Player = Cast<ATowerofAngraCharacter>(OtherActor);
+
+	if (Player && LoadLevelName != "")
 	{
 		FLatentActionInfo ActionInfo;
 
@@ -50,12 +54,13 @@ void ALevelChanger::OverlapBegins(UPrimitiveComponent * OverlappedComponent, AAc
 			CurrentStageLevel = 1;
 		}
 		TOALOG(Warning, TEXT("LoadLevelName : %s"), *LoadLevelName.ToString());
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("StageLevel  %d "), CurrentStageLevel));
 	}
 
-	if (OtherActor == MyChar && OpenLevelName != "")
+	/*if (OtherActor == MyChar && OpenLevelName != "")
 	{
 		GameMode->SetPlayerDefaults(MyChar);
 		UGameplayStatics::OpenLevel(this, OpenLevelName);
-	}
+	}*/
 }
 

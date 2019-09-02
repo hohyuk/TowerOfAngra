@@ -50,14 +50,25 @@ void AHTallFance::OverlapBegins(UPrimitiveComponent * OverlappedComponent, AActo
 {
 	ATowerofAngraCharacter* Character = Cast<ATowerofAngraCharacter>(OtherActor);
 
-	ACharacterPlayerController* PlayerController = Cast<ACharacterPlayerController>(GetWorld()->GetFirstPlayerController());
-	int MonsterNum = PlayerController->TOAMonsterset->monsters.size();
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("MonsterNum  %d "), MonsterNum));
-	if ((Character && !IsOpenFence) && !MonsterNum)
+	if (CurrentGameMode == EGameMode::MULTI_GAME)
 	{
-		IsOpenFence = true;
-		fZPos = 0.f;
+		ACharacterPlayerController* PlayerController = Cast<ACharacterPlayerController>(GetWorld()->GetFirstPlayerController());
+		int MonsterNum = PlayerController->TOAMonsterset->monsters.size();
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("MonsterNum  %d "), MonsterNum));
+		if ((Character && !IsOpenFence) /*&& !MonsterNum*/)
+		{
+			IsOpenFence = true;
+			fZPos = 0.f;
+		}
+	}
+	else
+	{
+		if (Character && !IsOpenFence)
+		{
+			IsOpenFence = true;
+			fZPos = 0.f;
+		}
 	}
 }
 

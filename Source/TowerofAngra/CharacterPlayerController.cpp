@@ -323,7 +323,6 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 			OtherCharacter->SetActorRotation(info->Rotation);
 			OtherCharacter->SetActorLocation(info->Location);
 			OtherCharacter->ServerSetHP(info->HP);
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OtherCharacter HP : %f"), info->HP));
 			OtherCharacter->CurrentPlayerType = EPlayerType(info->clientPlayerType);
 		}
 	}
