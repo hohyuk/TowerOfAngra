@@ -432,14 +432,16 @@ void ACharacterPlayerController::SpawnMonster()
 
 		if (TOAMonster->MonsterType == 1)
 		{
-			AHGolem* SpawnMonster = world->SpawnActor<AHGolem>(AHGolem::StaticClass(), SpawnLocation, MonsterRotation, SpawnParams);
+			TOA_OtherMonsterClass = AHGolem::StaticClass();
+			AHGolem* SpawnMonster = world->SpawnActor<AHGolem>(TOA_OtherMonsterClass, SpawnLocation, MonsterRotation, SpawnParams);
 			SpawnMonster->SpawnDefaultController();
 			SpawnMonster->MonsterID = TOAMonster->MonsterID;
 			TOAMonster->MonsterType = (int)SpawnMonster->CurrentMonsterType;
 		}
 		else
 		{
-			AHVamp* SpawnMonster = world->SpawnActor<AHVamp>(AHVamp::StaticClass(), SpawnLocation, MonsterRotation, SpawnParams);
+			TOA_OtherMonsterClass = AHVamp::StaticClass();
+			AHVamp* SpawnMonster = world->SpawnActor<AHVamp>(TOA_OtherMonsterClass, SpawnLocation, MonsterRotation, SpawnParams);
 			SpawnMonster->SpawnDefaultController();
 			SpawnMonster->MonsterID = TOAMonster->MonsterID;
 			TOAMonster->MonsterType = (int)SpawnMonster->CurrentMonsterType;
@@ -462,8 +464,8 @@ void ACharacterPlayerController::UpdateMonster()
 
 	if (world && CurrentStageLevel == 0)
 	{
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHMonster::StaticClass(), SpawnedMonsters);
-
+		//UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHMonster::StaticClass(), SpawnedMonsters);
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), TOA_OtherMonsterClass, SpawnedMonsters);
 		if (MonsterNum == -1)
 		{
 			MonsterNum = TOAMonsterset->monsters.size();
@@ -486,14 +488,16 @@ void ACharacterPlayerController::UpdateMonster()
 
 				if (TYPE == 0)
 				{
-					AHGolem* SpawnMonster = world->SpawnActor<AHGolem>(AHGolem::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+					TOA_OtherMonsterClass = AHGolem::StaticClass();
+					AHGolem* SpawnMonster = world->SpawnActor<AHGolem>(TOA_OtherMonsterClass, SpawnLocation, SpawnRotation, SpawnParams);
 					SpawnMonster->SpawnDefaultController();
 					SpawnMonster->MonsterID = monster->MonsterID;
 					SpawnMonster->CurrentMonsterType = (EMonsterName)monster->MonsterType;
 				}
 				else
 				{
-					AHVamp* SpawnMonster = world->SpawnActor<AHVamp>(AHVamp::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+					TOA_OtherMonsterClass = AHVamp::StaticClass();
+					AHVamp* SpawnMonster = world->SpawnActor<AHVamp>(TOA_OtherMonsterClass, SpawnLocation, SpawnRotation, SpawnParams);
 					SpawnMonster->SpawnDefaultController();
 					SpawnMonster->MonsterID = monster->MonsterID;
 					SpawnMonster->CurrentMonsterType = (EMonsterName)monster->MonsterType;
@@ -543,8 +547,8 @@ void ACharacterPlayerController::UpdateMonster()
 	//다음 스테이지 스폰할 몬스터들
 	if (world && CurrentStageLevel == 1)
 	{
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHMonster::StaticClass(), SpawnedMonsters);
-
+		//UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHMonster::StaticClass(), SpawnedMonsters);
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), TOA_OtherMonsterClass, SpawnedMonsters);
 		if (NextStageMonsterNum == -1)
 		{
 			NextStageMonsterNum = TOAMonsterset->monsters.size();
@@ -567,14 +571,16 @@ void ACharacterPlayerController::UpdateMonster()
 
 				if (TYPE == 0)
 				{
-					AHGolem* SpawnMonster = world->SpawnActor<AHGolem>(AHGolem::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+					TOA_OtherMonsterClass = AHGolem::StaticClass();
+					AHGolem* SpawnMonster = world->SpawnActor<AHGolem>(TOA_OtherMonsterClass, SpawnLocation, SpawnRotation, SpawnParams);
 					SpawnMonster->SpawnDefaultController();
 					SpawnMonster->MonsterID = monster->MonsterID;
 					SpawnMonster->CurrentMonsterType = (EMonsterName)monster->MonsterType;
 				}
 				else
 				{
-					AHVamp* SpawnMonster = world->SpawnActor<AHVamp>(AHVamp::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+					TOA_OtherMonsterClass = AHVamp::StaticClass();
+					AHVamp* SpawnMonster = world->SpawnActor<AHVamp>(TOA_OtherMonsterClass, SpawnLocation, SpawnRotation, SpawnParams);
 					SpawnMonster->SpawnDefaultController();
 					SpawnMonster->MonsterID = monster->MonsterID;
 					SpawnMonster->CurrentMonsterType = (EMonsterName)monster->MonsterType;
@@ -628,8 +634,8 @@ void ACharacterPlayerController::DesTroyMonster()
 	{
 		// 스폰된 몬스터에서 찾아 파괴
 		TArray<AActor*> SpawnedMonsters;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHMonster::StaticClass(), SpawnedMonsters);
-
+		//UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHMonster::StaticClass(), SpawnedMonsters);
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), TOA_OtherMonsterClass, SpawnedMonsters);
 		for (auto Actor : SpawnedMonsters)
 		{
 			AHMonster * Monster = Cast<AHMonster>(Actor);
