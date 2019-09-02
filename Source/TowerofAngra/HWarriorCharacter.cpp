@@ -4,8 +4,6 @@
 #include "HWarriorAnimInstance.h"
 #include "HCharaterStateComponent.h"
 #include "HMonster.h"
-#include "server.h"
-#include "CharacterPlayerController.h"	
 
 AHWarriorCharacter::AHWarriorCharacter()
 {
@@ -247,10 +245,7 @@ void AHWarriorCharacter::AttackCheck()
 		{
 			FDamageEvent DamageEvent;
 			if (CurrentGameMode == EGameMode::MULTI_GAME)
-			{
-				ACharacterPlayerController* PlayerController = Cast<ACharacterPlayerController>(GetWorld()->GetFirstPlayerController());
-				PlayerController->HitMonster(Monster->MonsterID);
-			}
+				Monster->MonsterDamageEffect();
 			else
 				HitResult.Actor->TakeDamage(fAttackPower, DamageEvent, GetController(), this);
 		}
@@ -291,10 +286,7 @@ void AHWarriorCharacter::SkillCheck()
 				FDamageEvent DamageEvent;
 				Monster->DamageAnim();
 				if (CurrentGameMode == EGameMode::MULTI_GAME)
-				{
-					ACharacterPlayerController* PlayerController = Cast<ACharacterPlayerController>(GetWorld()->GetFirstPlayerController());
-					PlayerController->HitMonster(Monster->MonsterID);
-				}
+					Monster->MonsterDamageEffect();
 				else
 					OverlapResult.Actor->TakeDamage(fSkillPower, DamageEvent, GetController(), this);
 			}

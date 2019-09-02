@@ -12,6 +12,8 @@
 #include "TowerofAngraCharacter.h"
 #include "Components/WidgetComponent.h"
 #include "HTOAGameState.h"
+#include "CharacterPlayerController.h"	
+
 // Sets default values
 AHMonster::AHMonster()
 {
@@ -411,4 +413,12 @@ void AHMonster::MoveToLocation(const FVector & dest)
 void AHMonster::ServerSendDieOn(EMonsterName MonsterType)
 {
 	CharacterState->SetHP(0.f);
+}
+
+void AHMonster::MonsterDamageEffect()
+{
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), AttackDamageEffect->Template, GetActorLocation(), GetActorRotation());
+
+	ACharacterPlayerController* PlayerController = Cast<ACharacterPlayerController>(GetWorld()->GetFirstPlayerController());
+	PlayerController->HitMonster(MonsterID);
 }

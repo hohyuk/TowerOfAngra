@@ -130,4 +130,6 @@ public:
 	void MoveToLocation(const FVector& dest);
 
 	void ServerSendDieOn(EMonsterName MonsterType);
+
+	void MonsterDamageEffect();
 };
