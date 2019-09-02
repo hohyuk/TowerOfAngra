@@ -47,7 +47,7 @@ public:
 	void DesTroyMonster();
 	//------------------------------------2019-08-03
 	void HitCharacter(const int&);
-	void HitMonster(const int&);
+	void HitMonster(const int&, const float&);
 	int TYPE;
 	//------------------------------------
 private:

@@ -653,9 +653,9 @@ void ACharacterPlayerController::HitCharacter(const int & SessionId)
 	Socket->HitPlayer(SessionId);
 }
 
-void ACharacterPlayerController::HitMonster(const int & MonsterId)
+void ACharacterPlayerController::HitMonster(const int & MonsterId, const float& damage)
 {
 	//	UE_LOG(LogClass, Log, TEXT("Monster Hit Called %d"), MonsterId);
 
-	Socket->HitMonster(MonsterId);
+	Socket->HitMonster(MonsterId, damage);
 }

@@ -131,5 +131,5 @@ public:
 
 	void ServerSendDieOn(EMonsterName MonsterType);
 
-	void MonsterDamageEffect();
+	void MonsterDamageEffect(const float& damage);
 };

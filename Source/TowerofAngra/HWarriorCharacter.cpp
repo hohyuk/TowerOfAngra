@@ -245,7 +245,7 @@ void AHWarriorCharacter::AttackCheck()
 		{
 			FDamageEvent DamageEvent;
 			if (CurrentGameMode == EGameMode::MULTI_GAME)
-				Monster->MonsterDamageEffect();
+				Monster->MonsterDamageEffect(fAttackPower);
 			else
 				HitResult.Actor->TakeDamage(fAttackPower, DamageEvent, GetController(), this);
 		}
@@ -286,7 +286,7 @@ void AHWarriorCharacter::SkillCheck()
 				FDamageEvent DamageEvent;
 				Monster->DamageAnim();
 				if (CurrentGameMode == EGameMode::MULTI_GAME)
-					Monster->MonsterDamageEffect();
+					Monster->MonsterDamageEffect(fSkillPower);
 				else
 					OverlapResult.Actor->TakeDamage(fSkillPower, DamageEvent, GetController(), this);
 			}

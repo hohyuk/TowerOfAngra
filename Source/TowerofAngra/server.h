@@ -309,7 +309,7 @@ public:
 	void SetPlayerController(ACharacterPlayerController*);
 
 	//-----------------------------------------------08-03
-	void HitMonster(const int&);
+	void HitMonster(const int&, const float&);
 	void HitPlayer(const int&);
 	//-----------------------------------------------
 	static server* GetSingleton()

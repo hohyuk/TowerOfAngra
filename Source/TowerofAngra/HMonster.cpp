@@ -415,10 +415,10 @@ void AHMonster::ServerSendDieOn(EMonsterName MonsterType)
 	CharacterState->SetHP(0.f);
 }
 
-void AHMonster::MonsterDamageEffect()
+void AHMonster::MonsterDamageEffect(const float& damage)
 {
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), AttackDamageEffect->Template, GetActorLocation(), GetActorRotation());
 
 	ACharacterPlayerController* PlayerController = Cast<ACharacterPlayerController>(GetWorld()->GetFirstPlayerController());
-	PlayerController->HitMonster(MonsterID);
+	PlayerController->HitMonster(MonsterID, damage);
 }

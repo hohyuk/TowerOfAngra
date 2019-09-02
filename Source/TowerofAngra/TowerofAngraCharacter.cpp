@@ -364,7 +364,7 @@ void ATowerofAngraCharacter::CommonSkillCheck()
 				FDamageEvent DamageEvent;
 				Monster->DamageAnim();
 				if (CurrentGameMode == EGameMode::MULTI_GAME)
-					Monster->MonsterDamageEffect();
+					Monster->MonsterDamageEffect(fCommonSkillPower);
 				else
 					OverlapResult.Actor->TakeDamage(fCommonSkillPower, DamageEvent, GetController(), this);
 			}

@@ -263,12 +263,13 @@ void server::SetPlayerController(ACharacterPlayerController* PlayerController)
 	}
 }
 //=====================================================2019-08-03
-void server::HitMonster(const int & MonsterID)
+void server::HitMonster(const int & MonsterID, const float& damage)
 {
 	// 서버에게 데미지를 준 몬스터 정보 전송
 	stringstream SendStream;
 	SendStream << PacketType::HIT_MONSTER << endl;
 	SendStream << MonsterID << endl;
+	SendStream << damage << endl;
 
 	int nSendLen = send
 	(
