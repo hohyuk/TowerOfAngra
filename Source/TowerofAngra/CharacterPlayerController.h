@@ -51,7 +51,8 @@ public:
 	int TYPE;
 	//------------------------------------
 private:
-	int MonsterNum;		
+	int MonsterNum;	
+	int NextStageMonsterNum;
 	Monster * TOAMonster;
 	bool MonsterSpawn;
 	server* Socket;

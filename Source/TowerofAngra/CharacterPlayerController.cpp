@@ -30,6 +30,7 @@ ACharacterPlayerController::ACharacterPlayerController()
 	bNewPlayerEntered = false;
 	nPlayers = -1;
 	MonsterNum = -1;
+	NextStageMonsterNum = -1;
 	MonsterSpawn = false;
 	DesMonster = false;
 	PrimaryActorTick.bCanEverTick = true;
@@ -544,9 +545,9 @@ void ACharacterPlayerController::UpdateMonster()
 	{
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHMonster::StaticClass(), SpawnedMonsters);
 
-		if (MonsterNum == 15)
+		if (NextStageMonsterNum == -1)
 		{
-			MonsterNum = TOAMonsterset->monsters.size();
+			NextStageMonsterNum = TOAMonsterset->monsters.size();
 
 			for (auto& kvp : TOAMonsterset->monsters)
 			{
