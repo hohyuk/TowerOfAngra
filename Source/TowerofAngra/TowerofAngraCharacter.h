@@ -154,7 +154,8 @@ public:
 	virtual void Skill();
 	virtual void CommonSkill();
 	virtual void CommonSkillCheck();		// 스킬 충돌체크
-	virtual void SeverRecvSkillCheck(ESkillType skill_type);
+	virtual void ServerRecvSkillCheck(ESkillType skill_type);
+	virtual void ServerSetHP(float hp);
 /* ---------------------- virtual 함수 ---------------------- */
 
 /* ---------------------- 현재 나의 캐릭터 함수 ---------------------- */

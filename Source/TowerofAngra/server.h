@@ -65,7 +65,7 @@ public:
 	FRotator Rotation;		// 회전
 	FVector Velocity;		// 속도
 
-	float Hp;
+	float HP;
 	bool IsSkilling;
 	bool IsAttacking;
 	bool IsAliving;
@@ -80,6 +80,7 @@ public:
 	friend ostream& operator<<(ostream &stream, cPlayer& info)
 	{
 		stream << info.ClientID << endl;
+
 		stream << info.Location.X << endl;
 		stream << info.Location.Y << endl;
 		stream << info.Location.Z << endl;
@@ -91,6 +92,8 @@ public:
 		stream << info.Rotation.Yaw << endl;
 		stream << info.Rotation.Pitch << endl;
 		stream << info.Rotation.Roll << endl;
+
+		stream << info.HP << endl;
 
 		stream << info.SkillType << endl;
 		stream << info.StageLevel << endl;
@@ -105,6 +108,7 @@ public:
 	friend istream& operator>>(istream& stream, cPlayer& info)
 	{
 		stream >> info.ClientID;
+
 		stream >> info.Location.X;
 		stream >> info.Location.Y;
 		stream >> info.Location.Z;
@@ -117,8 +121,11 @@ public:
 		stream >> info.Rotation.Pitch;
 		stream >> info.Rotation.Roll;
 
+		stream >> info.HP;
+
 		stream >> info.SkillType;
 		stream >> info.StageLevel;
+
 		stream >> info.IsSkilling;
 		stream >> info.IsAttacking;
 		stream >> info.clientPlayerType;

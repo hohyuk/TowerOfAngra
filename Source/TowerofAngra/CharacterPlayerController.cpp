@@ -118,6 +118,9 @@ void ACharacterPlayerController::BeginPlay()
 	cp.Rotation = MyRotation;
 
 	cp.Velocity = FVector::ZeroVector;
+
+	cp.HP = MyPlayer->CurrentHP;
+
 	cp.StageLevel = CurrentStageLevel;
 
 	cp.IsSkilling = MyPlayer->IsSkilling;
@@ -222,6 +225,8 @@ void ACharacterPlayerController::SendPlayerInfo()
 	cp.Rotation = MyPlayer->GetActorRotation();
 	cp.Velocity = MyPlayer->GetVelocity();
 
+	cp.HP = MyPlayer->CurrentHP;
+
 	cp.StageLevel = CurrentStageLevel;
 
 	cp.SkillType = int(MyPlayer->SKILL_TYPE);
@@ -306,7 +311,7 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 			if (info->IsSkilling)
 			{
 				UE_LOG(LogClass, Log, TEXT("Skilling ANIM"));
-				OtherCharacter->SeverRecvSkillCheck(ESkillType(info->SkillType));
+				OtherCharacter->ServerRecvSkillCheck(ESkillType(info->SkillType));
 			}
 			else if (info->IsAttacking)
 			{
@@ -317,6 +322,8 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 			OtherCharacter->AddMovementInput(info->Velocity);
 			OtherCharacter->SetActorRotation(info->Rotation);
 			OtherCharacter->SetActorLocation(info->Location);
+			OtherCharacter->ServerSetHP(info->HP);
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OtherCharacter HP : %f"), info->HP));
 			OtherCharacter->CurrentPlayerType = EPlayerType(info->clientPlayerType);
 		}
 	}
@@ -384,6 +391,8 @@ void ACharacterPlayerController::UpdateNewPlayer()
 		player.Location = NewPlayer->Location;
 		player.Rotation = NewPlayer->Rotation;
 		player.Velocity = NewPlayer->Velocity;
+
+		player.HP = NewPlayer->HP;
 
 		player.SkillType = int(NewPlayer->SkillType);
 		player.IsSkilling = NewPlayer->IsSkilling;

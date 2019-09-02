@@ -78,6 +78,12 @@ void ATowerofAngraCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	auto OtherCharacterWidget = Cast<UHOtherPlayerHPWidget>(OtherPlayerHPBarWidget->GetUserWidgetObject());
+	if (nullptr != OtherCharacterWidget)
+	{
+		OtherCharacterWidget->BindCharacterState(CharacterState);
+	}
+
 	if (!IsPlayerControlled()) return;
 
 	// HUD
@@ -87,12 +93,6 @@ void ATowerofAngraCharacter::BeginPlay()
 	{
 		CharacterWidget->AddToViewport(1);
 		CharacterWidget->BindCharacterState(CharacterState);
-	}
-
-	auto OtherCharacterWidget = Cast<UHOtherPlayerHPWidget>(OtherPlayerHPBarWidget->GetUserWidgetObject());
-	if (nullptr != OtherCharacterWidget)
-	{
-		OtherCharacterWidget->BindCharacterState(CharacterState);
 	}
 }
 
@@ -377,7 +377,12 @@ void ATowerofAngraCharacter::CommonSkillCheck()
 	}
 }
 
-void ATowerofAngraCharacter::SeverRecvSkillCheck(ESkillType skill_type)
+void ATowerofAngraCharacter::ServerSetHP(float hp)
+{
+	CharacterState->SetHP(hp);
+}
+
+void ATowerofAngraCharacter::ServerRecvSkillCheck(ESkillType skill_type)
 {
 	if (skill_type == ESkillType::COMMONSKILL)
 		CommonSkill();
@@ -464,4 +469,5 @@ void ATowerofAngraCharacter::ViewChange()
 void ATowerofAngraCharacter::Cheat()
 {
 	CurrentScore += 17;
+	FinalDamage = 10;
 }
