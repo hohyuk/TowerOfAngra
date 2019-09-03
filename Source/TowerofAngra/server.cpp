@@ -212,6 +212,7 @@ uint32 server::Run()
 				Controller->RecvSpawnMonster(RecvMonster(RecvStream));
 			}
 			break;
+
 			case PacketType::NEXT_LEVEL_STAGE_SPAWN_MONSTER:
 			{
 				Controller->NextStageRecvSpawnMonster(NextStageRecvMonster(RecvStream));
@@ -232,7 +233,11 @@ uint32 server::Run()
 				Controller->RecvDestroyMonster(RecvMonster(RecvStream));
 			}
 			break;
-
+			case PacketType::NEXT_LEVEL_STAGE_DESTROY_MONSTER:
+			{
+				Controller->NextStageRecvDestroyMonster(NextStageRecvMonster(RecvStream));
+			}
+			break;
 			default:
 				break;
 			}
@@ -286,6 +291,23 @@ void server::SetPlayerController(ACharacterPlayerController* PlayerController)
 	{
 		Controller = PlayerController;
 	}
+}
+
+void server::NextStageHitMonster(const int& MonsterID, const float& damage)
+{
+	// 서버에게 데미지를 준 몬스터 정보 전송
+	stringstream SendStream;
+	SendStream << PacketType::HIT_NEXT_STAGE_MONSTER << endl;
+	SendStream << MonsterID << endl;
+	SendStream << damage << endl;
+
+	int nSendLen = send
+	(
+		Sock,
+		(CHAR*)SendStream.str().c_str(),
+		SendStream.str().length(),
+		0
+	);
 }
 //=====================================================2019-08-03
 void server::HitMonster(const int & MonsterID, const float& damage)

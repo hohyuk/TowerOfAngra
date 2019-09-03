@@ -41,10 +41,12 @@ enum PacketType
 	SPAWN_MONSTER,
 	HIT_PLAYER,
 	HIT_MONSTER,
+	HIT_NEXT_STAGE_MONSTER,
 	SYNCRO_MONSTER,
 	DESTROY_MONSTER,
 	NEXT_LEVEL_STAGE_SYNCRO_MONSTER,
-	NEXT_LEVEL_STAGE_SPAWN_MONSTER
+	NEXT_LEVEL_STAGE_SPAWN_MONSTER,
+	NEXT_LEVEL_STAGE_DESTROY_MONSTER
 };
 
 class cPlayer
@@ -201,7 +203,7 @@ public:
 		stream << info.IsAttacking << endl;
 		stream << info.IsAliving << endl;
 		stream << info.HP << endl;
-		stream << info.MonsterType << endl;
+		//		stream << info.MonsterType << endl;
 
 		return stream;
 	}
@@ -215,7 +217,7 @@ public:
 		stream >> info.IsAttacking;
 		stream >> info.IsAliving;
 		stream >> info.HP;
-		stream >> info.MonsterType;
+		//		stream >> info.MonsterType;
 
 		return stream;
 	}
@@ -289,7 +291,7 @@ public:
 		stream << info.IsAttacking << endl;
 		stream << info.IsAliving << endl;
 		stream << info.HP << endl;
-		stream << info.MonsterType << endl;
+		//		stream << info.MonsterType << endl;
 		return stream;
 	}
 
@@ -302,7 +304,7 @@ public:
 		stream >> info.IsAttacking;
 		stream >> info.IsAliving;
 		stream >> info.HP;
-		stream >> info.MonsterType;
+		//		stream >> info.MonsterType;
 		return stream;
 	}
 };
@@ -410,6 +412,7 @@ public:
 	void HitMonster(const int&, const float&);
 	void HitPlayer(const int&);
 	//-----------------------------------------------
+	void NextStageHitMonster(const int&, const float&);
 	static server* GetSingleton()
 	{
 		static server ins;

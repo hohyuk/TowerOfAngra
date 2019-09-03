@@ -44,7 +44,7 @@ public:
 	void SpawnMonster();
 	//=======================================================================================================
 	void NextStageSpawnMonster();
-
+	void NextStageDesTroyMonster();
 	//=============================================================================================
 	void UpdateMonster();
 	void UpdateNextStageMonster();
@@ -56,7 +56,7 @@ public:
 	int TYPE;
 	//------------------------------------
 
-
+	void NextStageHitMonster(const int&, const float&);
 	//==============================================================================================다음 스테이지
 	void NextStageRecvDestroyMonster(NextStageMonster*);
 
@@ -82,6 +82,9 @@ private:
 	cPlayerInfo *		playerinfo;	// 다른 캐릭터의 정보
 	bool MonsterDestroy;
 	bool DesMonster;
+
+	bool NextStageMonsterDestroy;
+	bool NextStageDesMonster;
 
 	void SendPlayerInfo();		// 플레이어 위치 송신
 	bool UpdateWorldInfo();		// 월드 동기화

@@ -444,5 +444,9 @@ void AHMonster::MonsterDamageEffect(const float& damage)
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), AttackDamageEffect->Template, GetActorLocation(), GetActorRotation());
 
 	ACharacterPlayerController* PlayerController = Cast<ACharacterPlayerController>(GetWorld()->GetFirstPlayerController());
-	PlayerController->HitMonster(MonsterID, damage);
+
+	if (CurrentStageLevel == 0)
+		PlayerController->HitMonster(MonsterID, damage);
+	else if(CurrentStageLevel == 1)
+		PlayerController->NextStageHitMonster(MonsterID, damage);
 }
