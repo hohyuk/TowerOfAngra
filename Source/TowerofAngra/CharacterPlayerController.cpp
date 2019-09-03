@@ -413,37 +413,37 @@ void ACharacterPlayerController::SpawnMonster()
 {
 	if (GetWorld())
 	{
-		//FVector SpawnLocation;
-		//SpawnLocation.X = TOAMonster->X;
-		//SpawnLocation.Y = TOAMonster->Y;
-		//SpawnLocation.Z = TOAMonster->Z;
+		FVector SpawnLocation;
+		SpawnLocation.X = TOAMonster->X;
+		SpawnLocation.Y = TOAMonster->Y;
+		SpawnLocation.Z = TOAMonster->Z;
 
-		//FRotator MonsterRotation;
-		//MonsterRotation.Yaw = 0;
-		//MonsterRotation.Pitch = 0;
-		//MonsterRotation.Roll = 0;
+		FRotator MonsterRotation;
+		MonsterRotation.Yaw = 0;
+		MonsterRotation.Pitch = 0;
+		MonsterRotation.Roll = 0;
 
-		//FActorSpawnParameters SpawnParams;
-		//SpawnParams.Owner = this;
-		//SpawnParams.Instigator = Instigator;
-		//SpawnParams.Name = FName(*FString(to_string(TOAMonster->MonsterID).c_str()));
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = Instigator;
+		SpawnParams.Name = FName(*FString(to_string(TOAMonster->MonsterID).c_str()));
 
-		//if (TOAMonster->MonsterType == 1)
-		//{
-		//	//TOA_OtherMonsterClass = AHGolem::StaticClass();
-		//	AHGolem* SpawnMonster = GetWorld()->SpawnActor<AHGolem>(AHGolem::StaticClass(), SpawnLocation, MonsterRotation, SpawnParams);
-		//	SpawnMonster->SpawnDefaultController();
-		//	SpawnMonster->MonsterID = TOAMonster->MonsterID;
-		//	TOAMonster->MonsterType = (int)SpawnMonster->CurrentMonsterType;
-		//}
-		//else
-		//{
-		//	//TOA_OtherMonsterClass = AHVamp::StaticClass();
-		//	AHVamp* SpawnMonster = GetWorld()->SpawnActor<AHVamp>(AHVamp::StaticClass(), SpawnLocation, MonsterRotation, SpawnParams);
-		//	SpawnMonster->SpawnDefaultController();
-		//	SpawnMonster->MonsterID = TOAMonster->MonsterID;
-		//	TOAMonster->MonsterType = (int)SpawnMonster->CurrentMonsterType;
-		//}
+		if (TOAMonster->MonsterType == 1)
+		{
+			//TOA_OtherMonsterClass = AHGolem::StaticClass();
+			AHGolem* SpawnMonster = GetWorld()->SpawnActor<AHGolem>(AHGolem::StaticClass(), SpawnLocation, MonsterRotation, SpawnParams);
+			SpawnMonster->SpawnDefaultController();
+			SpawnMonster->MonsterID = TOAMonster->MonsterID;
+			TOAMonster->MonsterType = (int)SpawnMonster->CurrentMonsterType;
+		}
+		else
+		{
+			//TOA_OtherMonsterClass = AHVamp::StaticClass();
+			AHVamp* SpawnMonster = GetWorld()->SpawnActor<AHVamp>(AHVamp::StaticClass(), SpawnLocation, MonsterRotation, SpawnParams);
+			SpawnMonster->SpawnDefaultController();
+			SpawnMonster->MonsterID = TOAMonster->MonsterID;
+			TOAMonster->MonsterType = (int)SpawnMonster->CurrentMonsterType;
+		}
 
 		TOAMonster = nullptr;
 		MonsterSpawn = false;
