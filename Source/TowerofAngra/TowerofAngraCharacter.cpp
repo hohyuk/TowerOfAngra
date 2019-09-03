@@ -70,6 +70,15 @@ ATowerofAngraCharacter::ATowerofAngraCharacter()
 	static ConstructorHelpers::FClassFinder<UCameraShake> SHAKE(TEXT("/Script/TowerofAngra.HPlayerCameraShake"));
 	if (SHAKE.Succeeded())
 		CameraShake = SHAKE.Class;
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> PARTICLE2(TEXT("ParticleSystem'/Game/VFX_Toolkit_V1/ParticleSystems/356Days/Par_MatraBoom_01.Par_MatraBoom_01'"));
+	AttackDamageEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Effect2"));
+
+	if (PARTICLE2.Succeeded())
+	{
+		AttackDamageEffect->SetTemplate(PARTICLE2.Object);
+		AttackDamageEffect->bAutoActivate = false;
+	}
 }
 
 void ATowerofAngraCharacter::BeginPlay()
@@ -194,6 +203,7 @@ float ATowerofAngraCharacter::TakeDamage(float DamageAmount, FDamageEvent const 
 	if (IsPlayerControlled())
 		FinalDamage += Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), AttackDamageEffect->Template, GetActorLocation(), GetActorRotation());
 	return FinalDamage;
 }
 

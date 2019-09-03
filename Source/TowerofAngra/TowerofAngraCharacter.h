@@ -124,6 +124,9 @@ public:
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = HP, Meta = (AllowPrivateAccess = true))
 	float FillMP_Limit;
+
+	UPROPERTY(VisibleAnywhere, Category = Effect)
+	class UParticleSystemComponent* AttackDamageEffect;
 /* ---------------------- 캐릭터 공통 변수 ---------------------- */
 
 /* ---------------------- 캐릭터 데미지 함수 ---------------------- */

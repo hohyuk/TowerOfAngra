@@ -61,9 +61,9 @@ void ADoor::Tick(float DeltaTime)
 	
 	if ( OpenDoor && CurrentAngle < 120)
 	{
-		++CurrentAngle;
-		DoorRight->AddWorldRotation(FRotator(0, -1, 0));
-		DoorLeft->AddWorldRotation(FRotator(0, 1, 0));
+		CurrentAngle += 2;
+		DoorRight->AddWorldRotation(FRotator(0, -2, 0));
+		DoorLeft->AddWorldRotation(FRotator(0, 2, 0));
 		//GEngine->AddOnScreenDebugMessage(1, 3, FColor::Green, DoorRight->GetComponentRotation().ToString());
 	}
 }

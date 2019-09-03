@@ -325,19 +325,29 @@ void AHMonster::OnAttackMontageEnded(UAnimMontage * Montage, bool bInterrupted)
 
 void AHMonster::AttackCheck()
 {
-	FHitResult HitResult;
+	//FHitResult HitResult;
 	
+	//FCollisionQueryParams Params(NAME_None, false, this);
+	//bool bResult = GetWorld()->SweepSingleByChannel(
+	//	HitResult,
+	//	GetActorLocation(),
+	//	GetActorLocation() + GetActorForwardVector() * AttackRange,
+	//	FQuat::Identity,
+	//	ECollisionChannel::ECC_GameTraceChannel2,
+	//	FCollisionShape::MakeSphere(AttackRadius),
+	//	Params
+	//);
+
+	TArray<FOverlapResult> OverlapResults;
 	FCollisionQueryParams Params(NAME_None, false, this);
-	bool bResult = GetWorld()->SweepSingleByChannel(
-		HitResult,
-		GetActorLocation(),
+	bool bResult = GetWorld()->OverlapMultiByChannel(
+		OverlapResults,
 		GetActorLocation() + GetActorForwardVector() * AttackRange,
 		FQuat::Identity,
 		ECollisionChannel::ECC_GameTraceChannel2,
 		FCollisionShape::MakeSphere(AttackRadius),
 		Params
 	);
-
 #if ENABLE_DRAW_DEBUG
 
 	FVector TraceVec = GetActorForwardVector() * AttackRange;
@@ -358,7 +368,7 @@ void AHMonster::AttackCheck()
 
 #endif
 
-	ATowerofAngraCharacter* Player = Cast<ATowerofAngraCharacter>(HitResult.Actor);
+	/*ATowerofAngraCharacter* Player = Cast<ATowerofAngraCharacter>(HitResult.Actor);
 
 	if (bResult && Player)
 	{
@@ -366,6 +376,20 @@ void AHMonster::AttackCheck()
 		{
 			FDamageEvent DamageEvent;
 			HitResult.Actor->TakeDamage(fAttackPower, DamageEvent, GetController(), this);
+		}
+	}*/
+
+	if (bResult)
+	{
+		for (auto OverlapResult : OverlapResults)
+		{
+			ATowerofAngraCharacter* Player = Cast<ATowerofAngraCharacter>(OverlapResult.GetActor());
+			if (Player)
+			{
+				FDamageEvent DamageEvent;
+
+				OverlapResult.Actor->TakeDamage(fAttackPower, DamageEvent, GetController(), this);
+			}
 		}
 	}
 }
