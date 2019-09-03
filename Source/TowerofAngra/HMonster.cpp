@@ -325,6 +325,7 @@ void AHMonster::OnAttackMontageEnded(UAnimMontage * Montage, bool bInterrupted)
 
 void AHMonster::AttackCheck()
 {
+	if (CurrentGameMode != EGameMode::SINGLE_GAME) return;
 	//FHitResult HitResult;
 	
 	//FCollisionQueryParams Params(NAME_None, false, this);
@@ -396,6 +397,7 @@ void AHMonster::AttackCheck()
 
 void AHMonster::SkillCheck()
 {
+	if (CurrentGameMode != EGameMode::SINGLE_GAME) return;
 	// 충돌체크
 	float AttackRadius = 500.f;
 

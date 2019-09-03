@@ -168,7 +168,8 @@ void ACharacterPlayerController::Tick(float DeltaTime)
 	// 몬스터 파괴
 	if (MonsterDestroy)
 		DesTroyMonster();
-
+	if (NextStageMonsterDestroy)
+		NextStageDesTroyMonster();
 	if (CurrentStageLevel == 0)
 		UpdateMonster();
 	else if (CurrentStageLevel == 1)
@@ -571,23 +572,11 @@ void ACharacterPlayerController::UpdateNextStageMonster()
 
 					monster->MoveToLocation(MonsterLocation);
 
-
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("1stage monster x : %d"), MonsterInfo->X));
-
-					TYPE = MonsterInfo->MonsterType;
+					//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("1stage monster x : %d"), MonsterInfo->X));
 
 					if (MonsterInfo->IsAttacking)
 					{
-						if (TYPE == 0)
-						{
-							monster->ServerAttack(EMonsterName::GOLEM);
-						}
-
-						else
-						{
-							monster->ServerAttack(EMonsterName::VAMP);
-						}
-
+						monster->ServerAttack(EMonsterName::GOLEM);
 					}
 				}
 			}
@@ -601,13 +590,7 @@ void ACharacterPlayerController::UpdateMonster()
 
 	TArray<AActor*> SpawnedMonsters;
 
-
-
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHVamp::StaticClass(), SpawnedMonsters);
-
-
-	int TYPE = 0;
-
 
 	UWorld* const world = GetWorld();
 
@@ -660,22 +643,11 @@ void ACharacterPlayerController::UpdateMonster()
 					monster->MoveToLocation(MonsterLocation);
 
 
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("0stage monster x : %d"), MonsterInfo->X));
-
-					TYPE = MonsterInfo->MonsterType;
+					//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("0stage monster x : %d"), MonsterInfo->X));
 
 					if (MonsterInfo->IsAttacking)
 					{
-						if (TYPE == 0)
-						{
-							monster->ServerAttack(EMonsterName::GOLEM);
-						}
-
-						else
-						{
-							monster->ServerAttack(EMonsterName::VAMP);
-						}
-
+						monster->ServerAttack(EMonsterName::VAMP);
 					}
 				}
 			}
@@ -684,6 +656,7 @@ void ACharacterPlayerController::UpdateMonster()
 }
 void ACharacterPlayerController::NextStageDesTroyMonster()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("NextStageDesTroyMonster")));
 	if (GetWorld())
 	{
 		// 스폰된 몬스터에서 찾아 파괴
@@ -708,6 +681,7 @@ void ACharacterPlayerController::NextStageDesTroyMonster()
 }
 void ACharacterPlayerController::DesTroyMonster()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("DesTroyMonster")));
 	if (GetWorld())
 	{
 		// 스폰된 몬스터에서 찾아 파괴
@@ -720,7 +694,7 @@ void ACharacterPlayerController::DesTroyMonster()
 			if (Monster && Monster->MonsterID == TOAMonster->MonsterID)
 			{
 				Monster->ServerSendDieOn(EMonsterName::VAMP);
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("DesTroyMonster()  %d"), Monster->MonsterID));
+				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("DesTroyMonster()  %d"), Monster->MonsterID));
 				break;
 			}
 		}
