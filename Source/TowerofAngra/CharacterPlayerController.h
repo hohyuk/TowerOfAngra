@@ -42,7 +42,12 @@ public:
 	void RecvNewMonster(MonsterSet*);
 	void RecvSpawnMonster(Monster*);
 	void SpawnMonster();
+	//=======================================================================================================
+	void NextStageSpawnMonster();
+
+	//=============================================================================================
 	void UpdateMonster();
+	void UpdateNextStageMonster();
 	void RecvDestroyMonster(Monster*);
 	void DesTroyMonster();
 	//------------------------------------2019-08-03
@@ -50,11 +55,27 @@ public:
 	void HitMonster(const int&, const float&);
 	int TYPE;
 	//------------------------------------
+
+
+	//==============================================================================================다음 스테이지
+	void NextStageRecvDestroyMonster(NextStageMonster*);
+
+	void NextStageRecvNewMonster(NextStageMonsterSet*);
+	void NextStageRecvSpawnMonster(NextStageMonster*);
+	//==================================================================================================
 private:
-	int MonsterNum;	
+	int MonsterNum;
 	int NextStageMonsterNum;
 	Monster * TOAMonster;
+
+
+	//================================================================================================================
+	NextStageMonster * NextStageTOAMonster;
+	//==============================================================================================================
 	bool MonsterSpawn;
+	bool NextStageMonsterSpawn;
+
+
 	server* Socket;
 	bool				bIsConnected;	// 서버와 접속 유무
 	int					SessionId;		// 캐릭터의 세션 고유 아이디 (랜덤값)
@@ -85,16 +106,19 @@ protected:
 		TSubclassOf<class UHResultUserWidget> ResultWidgetClass;
 private:
 	UPROPERTY()
-	class ATowerofAngraCharacter* MyPlayer{ nullptr };
+		class ATowerofAngraCharacter* MyPlayer{ nullptr };
 	UPROPERTY()
-	class AHTOAGameState* TOAPlayerState;
+		class AHTOAGameState* TOAPlayerState;
 
 	UPROPERTY()
-	class UHResultUserWidget* ResultWidget;
+		class UHResultUserWidget* ResultWidget;
 
 	FInputModeGameOnly GameInputMode;
 	FInputModeUIOnly UIInputMode;
 
 public:
 	MonsterSet* TOAMonsterset;
+
+	//================================================================================다음 스테이지
+	NextStageMonsterSet* NextStageTOAMonsterset;
 };

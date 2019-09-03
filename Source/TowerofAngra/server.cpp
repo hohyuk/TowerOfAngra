@@ -212,9 +212,19 @@ uint32 server::Run()
 				Controller->RecvSpawnMonster(RecvMonster(RecvStream));
 			}
 			break;
+			case PacketType::NEXT_LEVEL_STAGE_SPAWN_MONSTER:
+			{
+				Controller->NextStageRecvSpawnMonster(NextStageRecvMonster(RecvStream));
+			}
+			break;
 			case PacketType::SYNCRO_MONSTER:
 			{
 				Controller->RecvNewMonster(RecvMonsterSet(RecvStream));
+			}
+			break;
+			case PacketType::NEXT_LEVEL_STAGE_SYNCRO_MONSTER:
+			{
+				Controller->NextStageRecvNewMonster(NextStageRecvMonsterSet(RecvStream));
 			}
 			break;
 			case PacketType::DESTROY_MONSTER:
@@ -249,6 +259,21 @@ Monster* server::RecvMonster(stringstream& RecvStream)
 	RecvStream >> MonsterInfo;
 	return &MonsterInfo;
 }
+
+
+//====================================================================================================================다음 스테이지
+NextStageMonsterSet* server::NextStageRecvMonsterSet(stringstream& RecvStream)
+{
+	RecvStream >> NextStageMonsterSetInfo;
+	return &NextStageMonsterSetInfo;
+}
+NextStageMonster* server::NextStageRecvMonster(stringstream& RecvStream)
+{
+	RecvStream >> NextStageMonsterInfo;
+	return &NextStageMonsterInfo;
+}
+//====================================================================================================================다음 스테이지
+
 cPlayer *server::RecvNewPlayer(stringstream & RecvStream)
 {
 	RecvStream >> NewPlayer;

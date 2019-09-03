@@ -358,8 +358,6 @@ void ATowerofAngraCharacter::CommonSkillCheck()
 		Params
 	);
 
-	
-
 #if ENABLE_DRAW_DEBUG
 	DrawDebugSphere(GetWorld(), SkillPos, AttackRadius, 16, FColor::Green, false, 2.0f);
 

@@ -43,6 +43,7 @@ enum PacketType
 	HIT_MONSTER,
 	SYNCRO_MONSTER,
 	DESTROY_MONSTER,
+	NEXT_LEVEL_STAGE_SYNCRO_MONSTER,
 	NEXT_LEVEL_STAGE_SPAWN_MONSTER
 };
 
@@ -255,7 +256,91 @@ public:
 		return stream;
 	}
 };
+//=======================================================================
+class NextStageMonster
+{
+public:
+	float X;
+	float Y;
+	float Z;
+	float Movement;
 
+	int MonsterID;
+	bool IsAttacking;
+	bool IsAliving;
+	float HP;
+	float AttackRange;
+	float ChaseRange;
+	bool Chasing;
+	float AttackPower;
+
+
+	// MonsterTYPE
+	int MonsterType = 0;
+
+
+
+	friend ostream& operator<<(ostream &stream, NextStageMonster& info)
+	{
+		stream << info.X << endl;
+		stream << info.Y << endl;
+		stream << info.Z << endl;
+		stream << info.MonsterID << endl;
+		stream << info.IsAttacking << endl;
+		stream << info.IsAliving << endl;
+		stream << info.HP << endl;
+		stream << info.MonsterType << endl;
+		return stream;
+	}
+
+	friend istream& operator>>(istream& stream, NextStageMonster& info)
+	{
+		stream >> info.X;
+		stream >> info.Y;
+		stream >> info.Z;
+		stream >> info.MonsterID;
+		stream >> info.IsAttacking;
+		stream >> info.IsAliving;
+		stream >> info.HP;
+		stream >> info.MonsterType;
+		return stream;
+	}
+};
+class NextStageMonsterSet
+{
+public:
+	map<int, NextStageMonster> monsters;
+
+	friend ostream& operator<<(ostream &stream, NextStageMonsterSet& info)
+	{
+		stream << info.monsters.size() << endl;
+		for (auto& kvp : info.monsters)
+		{
+			stream << kvp.first << endl;
+			stream << kvp.second << endl;
+		}
+
+		return stream;
+	}
+
+	friend istream& operator>>(istream& stream, NextStageMonsterSet& info)
+	{
+		int nMonsters = 0;
+		int PrimaryId = 0;
+		NextStageMonster monster;
+		info.monsters.clear();
+
+		stream >> nMonsters;
+		for (int i = 0; i < nMonsters; i++)
+		{
+			stream >> PrimaryId;
+			stream >> monster;
+			info.monsters[PrimaryId] = monster;
+		}
+
+		return stream;
+	}
+};
 
 class TOWEROFANGRA_API server : public FRunnable
 {
@@ -268,6 +353,13 @@ private:
 	ACharacterPlayerController* Controller;	// 플레이어 컨트롤러 정보
 	MonsterSet	MonsterSetInfo;
 	Monster		MonsterInfo;
+
+
+	//========================================================================다음 스테이지
+	NextStageMonsterSet		NextStageMonsterSetInfo;
+	NextStageMonster		NextStageMonsterInfo;
+	//========================================================================다음 스테이지
+
 public:
 	server();
 	virtual ~server();
@@ -287,6 +379,12 @@ public:
 	void SendPlayer(cPlayer& info);
 	MonsterSet* RecvMonsterSet(stringstream&);
 	Monster* RecvMonster(stringstream&);
+
+	//========================================================================다음 스테이지
+	NextStageMonsterSet* NextStageRecvMonsterSet(stringstream&);
+	NextStageMonster* NextStageRecvMonster(stringstream&);
+	//========================================================================다음 스테이지
+
 	// 스레드 시작 및 종료
 	bool StartListen();
 	void StopListen();

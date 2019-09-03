@@ -85,6 +85,7 @@ void ATreasureChest::OverlapBegins(UPrimitiveComponent * OverlappedComponent, AA
 	
 	if (IsHave && !IsEmpty)
 	{
+		CurrentScore += 20;
 		Effect->Activate(true);
 		Body->SetStaticMesh(EmptyBody->GetStaticMesh());
 		IsEmpty = true;
