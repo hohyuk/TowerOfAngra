@@ -388,6 +388,7 @@ void ATowerofAngraCharacter::ServerSetHP(float hp)
 void ATowerofAngraCharacter::WeaponChange()
 {
 	Weapon->SetStaticMesh(SubWeapon->GetStaticMesh());
+	fAttackPower = 100.f;
 }
 
 void ATowerofAngraCharacter::ServerRecvSkillCheck(ESkillType skill_type)
