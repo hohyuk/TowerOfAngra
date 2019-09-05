@@ -447,8 +447,8 @@ void AHMonster::MonsterDamageEffect(const float& damage)
 
 	ACharacterPlayerController* PlayerController = Cast<ACharacterPlayerController>(GetWorld()->GetFirstPlayerController());
 
-	if (CurrentStageLevel == 0)
+	//if (CurrentStageLevel == 0)
 		PlayerController->HitMonster(MonsterID, damage);
-	else if(CurrentStageLevel == 1)
+	//else if(CurrentStageLevel == 1)
 		PlayerController->NextStageHitMonster(MonsterID, damage);
 }

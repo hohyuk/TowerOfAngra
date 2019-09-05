@@ -503,7 +503,7 @@ void ACharacterPlayerController::SpawnMonster()
 		{
 			SpawnMonster->SpawnDefaultController();
 			SpawnMonster->MonsterID = TOAMonster->MonsterID;
-			SpawnMonster->HP = TOAMonster->HP;
+			//		SpawnMonster->HP = TOAMonster->HP;
 		}
 
 
@@ -551,7 +551,7 @@ void ACharacterPlayerController::UpdateNextStageMonster()
 				{
 					SpawnMonster->SpawnDefaultController();
 					SpawnMonster->MonsterID = monster->MonsterID;
-					SpawnMonster->HP = monster->HP;
+					//	SpawnMonster->HP = monster->HP;
 				}
 			}
 		}
@@ -616,12 +616,17 @@ void ACharacterPlayerController::UpdateMonster()
 				SpawnParams.Instigator = Instigator;
 				SpawnParams.Name = FName(*FString(to_string(monster->MonsterID).c_str()));
 
+
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("monster->X =  %d"), monster->X));
+
+
+
 				AHVamp* SpawnMonster = world->SpawnActor<AHVamp>(AHVamp::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 				if (SpawnMonster)
 				{
 					SpawnMonster->SpawnDefaultController();
 					SpawnMonster->MonsterID = monster->MonsterID;
-					SpawnMonster->HP = monster->HP;
+					//	SpawnMonster->HP = monster->HP;
 				}
 			}
 		}
@@ -642,13 +647,14 @@ void ACharacterPlayerController::UpdateMonster()
 
 					monster->MoveToLocation(MonsterLocation);
 
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("MonsterInfo->X =  %f"), MonsterInfo->X));
 
-					//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("0stage monster x : %d"), MonsterInfo->X));
 
-					if (MonsterInfo->IsAttacking)
-					{
-						monster->ServerAttack(EMonsterName::VAMP);
-					}
+					//if (MonsterInfo->IsAttacking)
+					//{
+					//	monster->ServerAttack(EMonsterName::VAMP);
+
+					//}
 				}
 			}
 		}

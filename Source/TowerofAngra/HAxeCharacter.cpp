@@ -24,15 +24,24 @@ AHAxeCharacter::AHAxeCharacter()
 	FName WeaponSocket(TEXT("hand_rSocket"));
 	if (GetMesh()->DoesSocketExist(WeaponSocket))
 	{
-		Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WEAPON"));
-		static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_WEAPON(TEXT("/Game/InfinityBladeWeapons/Weapons/Blade/Axes/Blade_FissureBlade/SK_Blade_FissureBlade.SK_Blade_FissureBlade"));
+		Weapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WEAPON"));
+		static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_WEAPON(TEXT("/Game/InfinityBladeWeapons/Weapons/Blade/Axes/Blade_FissureBlade/SM_FissureBlade.SM_FissureBlade"));
 
-		if (SK_WEAPON.Succeeded())
+		if (SM_WEAPON.Succeeded())
 		{
-			Weapon->SetSkeletalMesh(SK_WEAPON.Object);
+			Weapon->SetStaticMesh(SM_WEAPON.Object);
 		}
 
 		Weapon->SetupAttachment(GetMesh(), WeaponSocket);
+	}
+
+	// SubWeapon
+	SubWeapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SUBWEAPON"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_SUBWEAPON(TEXT("/Game/InfinityBladeWeapons/Weapons/Blade/Axes/Blade_TAxe/SM_Blade_TAxe.SM_Blade_TAxe"));
+	if (SM_SUBWEAPON.Succeeded())
+	{
+		SubWeapon->SetStaticMesh(SM_SUBWEAPON.Object);
+		SubWeapon->bHiddenInGame = true;		// ¼û°Ü³õ´Â´Ù.
 	}
 
 	// Sound

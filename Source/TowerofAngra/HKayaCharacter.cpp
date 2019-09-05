@@ -40,21 +40,6 @@ AHKayaCharacter::AHKayaCharacter()
 
 	SkillMP = 20.f;
 
-	// Weapon
-	FName WeaponSocket(TEXT("hand_rSocket"));
-	if (GetMesh()->DoesSocketExist(WeaponSocket))
-	{
-		Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WEAPON"));
-		static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_WEAPON(TEXT("/Game/TowerofAngra/Weapon/Swords/Blade_BlackKnight/SK_Blade_BlackKnight.SK_Blade_BlackKnight"));
-
-		if (SK_WEAPON.Succeeded())
-		{
-			Weapon->SetSkeletalMesh(SK_WEAPON.Object);
-		}
-
-		Weapon->SetupAttachment(GetMesh(), WeaponSocket);
-	}
-
 	// Sound
 	/*static ConstructorHelpers::FObjectFinder<USoundBase> JUMPSOUND(TEXT("/Game/HumanVocalizations/HumanFemaleB/Wavs/voice_female_b_effort_jump_action_10.voice_female_b_effort_jump_action_10"));
 	if (JUMPSOUND.Succeeded())

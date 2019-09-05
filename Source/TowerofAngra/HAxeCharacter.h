@@ -40,7 +40,6 @@ public:
 	virtual void CommonSkill() override;
 	virtual void OtherPlayerAttack(int AttackCount) override;
 	void NotAttack();
-
 	FOnSkillEndDelegate OnSkillEnd;
 
 private:

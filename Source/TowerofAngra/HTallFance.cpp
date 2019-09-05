@@ -56,7 +56,7 @@ void AHTallFance::OverlapBegins(UPrimitiveComponent * OverlappedComponent, AActo
 		int MonsterNum = PlayerController->TOAMonsterset->monsters.size();
 
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("MonsterNum  %d "), MonsterNum));
-		if ((Character && !IsOpenFence) /*&& !MonsterNum*/)
+		if ((Character && !IsOpenFence) && (MonsterNum<8))
 		{
 			IsOpenFence = true;
 			fZPos = 0.f;

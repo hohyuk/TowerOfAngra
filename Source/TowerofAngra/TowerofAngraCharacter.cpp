@@ -385,6 +385,11 @@ void ATowerofAngraCharacter::ServerSetHP(float hp)
 	CharacterState->SetHP(hp);
 }
 
+void ATowerofAngraCharacter::WeaponChange()
+{
+	Weapon->SetStaticMesh(SubWeapon->GetStaticMesh());
+}
+
 void ATowerofAngraCharacter::ServerRecvSkillCheck(ESkillType skill_type)
 {
 	if (skill_type == ESkillType::COMMONSKILL)

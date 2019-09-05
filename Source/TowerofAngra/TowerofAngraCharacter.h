@@ -138,7 +138,10 @@ public:
 /* ---------------------- 무기 변수 ---------------------- */
 public:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
-	USkeletalMeshComponent* Weapon;
+	UStaticMeshComponent* Weapon;
+
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	UStaticMeshComponent* SubWeapon;
 
 /* ---------------------- 무기 변수 ---------------------- */
 
@@ -159,6 +162,7 @@ public:
 	virtual void CommonSkillCheck();		// 스킬 충돌체크
 	virtual void ServerRecvSkillCheck(ESkillType skill_type);
 	virtual void ServerSetHP(float hp);
+	virtual void WeaponChange();
 /* ---------------------- virtual 함수 ---------------------- */
 
 /* ---------------------- 현재 나의 캐릭터 함수 ---------------------- */
