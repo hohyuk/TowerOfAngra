@@ -2,18 +2,18 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "TowerofAngra.h"
 #include "GameFramework/Actor.h"
-#include "Door.generated.h"
+#include "HButtonDoor.generated.h"
 
 UCLASS()
-class ADoor : public AActor
+class TOWEROFANGRA_API AHButtonDoor : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ADoor();
+	AHButtonDoor();
 
 protected:
 	// Called when the game starts or when spawned
@@ -31,6 +31,9 @@ public:
 	UStaticMeshComponent* DoorFrame;
 	UPROPERTY(VisibleAnywhere, Category = Door)
 	class UBoxComponent* OverlapVolume;
+	
+	UPROPERTY(EditAnywhere, Category = ID)
+	int32 ID;
 
 	UFUNCTION()
 	void OverlapBegins(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int32 OtherbodyIdx, bool bFromSweep, const FHitResult & SweepHit);
@@ -41,4 +44,5 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = State, Meta = (AllowPrivateAccess = true))
 	float CurrentAngle;
+	
 };

@@ -51,6 +51,8 @@ void AHButtonFloor::OverlapBegins(UPrimitiveComponent * OverlappedComponent, AAc
 {
 	ATowerofAngraCharacter* Character = Cast<ATowerofAngraCharacter>(OtherActor);
 
+	if (!IsOnButton) ++CurrentButton;
+
 	if (Character)
 		IsOnButton = true;
 }
