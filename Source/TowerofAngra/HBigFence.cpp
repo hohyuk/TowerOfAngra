@@ -58,17 +58,30 @@ void AHBigFence::OverlapBegins(UPrimitiveComponent * OverlappedComponent, AActor
 {
 	ATowerofAngraCharacter* Character = Cast<ATowerofAngraCharacter>(OtherActor);
 
-	if (Character && fZPos == 300.f && IsCloseFence)
+	if (ID == 1)
 	{
-		IsOpenFence = true;
-		IsCloseFence = false;
-		fZPos = 0.f;
+		if (Character && fZPos == 300.f && IsCloseFence && CurrentButton == 8)
+		{
+			IsOpenFence = true;
+			IsCloseFence = false;
+			fZPos = 0.f;
+			//CurrentButton = 0;
+		}
+	}
+	else
+	{
+		if (Character && fZPos == 300.f && IsCloseFence)
+		{
+			IsOpenFence = true;
+			IsCloseFence = false;
+			fZPos = 0.f;
+		}
 	}
 }
 
 void AHBigFence::OnOverlapEnd(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
 {
-	if (fZPos == 300.f && IsOpenFence)
+	if (fZPos == 300.f && IsOpenFence && ID != 1)
 	{
 		IsOpenFence = false;
 		IsCloseFence = true;

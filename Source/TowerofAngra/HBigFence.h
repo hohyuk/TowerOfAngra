@@ -28,6 +28,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Fence)
 	class UBoxComponent* OverlapVolume;
 
+	UPROPERTY(EditAnywhere, Category = ID)
+	int32 ID;
+
 	UFUNCTION()
 	void OverlapBegins(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int32 OtherbodyIdx, bool bFromSweep, const FHitResult & SweepHit);
 

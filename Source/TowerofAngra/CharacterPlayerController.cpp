@@ -124,11 +124,13 @@ void ACharacterPlayerController::BeginPlay()
 	cp.HP = MyPlayer->CurrentHP;
 
 	cp.StageLevel = CurrentStageLevel;
-
+	
 	cp.IsSkilling = MyPlayer->IsSkilling;
 	cp.SkillType = int(MyPlayer->SKILL_TYPE);
 	cp.IsAttacking = MyPlayer->IsServerSend_Attacking;
 	cp.clientPlayerType = int(MyPlayer->CurrentPlayerType);
+
+	
 
 	Socket->EnrollCharacterInfo(cp);
 	Socket->StartListen();
@@ -264,7 +266,7 @@ void ACharacterPlayerController::SendPlayerInfo()
 	cp.HP = MyPlayer->CurrentHP;
 
 	cp.StageLevel = CurrentStageLevel;
-
+	
 	cp.SkillType = int(MyPlayer->SKILL_TYPE);
 	cp.IsSkilling = MyPlayer->IsSkilling;
 	cp.IsAttacking = MyPlayer->IsServerSend_Attacking;
@@ -616,10 +618,7 @@ void ACharacterPlayerController::UpdateMonster()
 				SpawnParams.Instigator = Instigator;
 				SpawnParams.Name = FName(*FString(to_string(monster->MonsterID).c_str()));
 
-
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("monster->X =  %d"), monster->X));
-
-
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("monster->X =  %d"), monster->X));
 
 				AHVamp* SpawnMonster = world->SpawnActor<AHVamp>(AHVamp::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 				if (SpawnMonster)
@@ -647,7 +646,7 @@ void ACharacterPlayerController::UpdateMonster()
 
 					monster->MoveToLocation(MonsterLocation);
 
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("MonsterInfo->X =  %f"), MonsterInfo->X));
+					//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("MonsterInfo->X =  %f"), MonsterInfo->X));
 
 
 					//if (MonsterInfo->IsAttacking)
@@ -675,7 +674,7 @@ void ACharacterPlayerController::NextStageDesTroyMonster()
 			if (Monster && Monster->MonsterID == NextStageTOAMonster->MonsterID)
 			{
 				Monster->ServerSendDieOn(EMonsterName::GOLEM);
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("NextStageDesTroyMonster()  %d"), Monster->MonsterID));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("NextStageDesTroyMonster()  %d"), Monster->MonsterID));
 				break;
 			}
 		}

@@ -75,10 +75,8 @@ public:
 	// SkillTYPE
 	int SkillType = 0; // 0 - None 1 - CommonSkill 2 - Skill
 
+	int StageLevel;			
 
-
-	//2019-08-30 플레이어타입이랑 라이빙 주석
-	int StageLevel;
 	//패킷 직렬화 역직렬화
 	friend ostream& operator<<(ostream &stream, cPlayer& info)
 	{
@@ -100,11 +98,9 @@ public:
 
 		stream << info.SkillType << endl;
 		stream << info.StageLevel << endl;
-
 		stream << info.IsSkilling << endl;
 		stream << info.IsAttacking << endl;
 		stream << info.clientPlayerType << endl;
-		//stream << info.IsAliving << endl;
 		return stream;
 	}
 
@@ -128,11 +124,9 @@ public:
 
 		stream >> info.SkillType;
 		stream >> info.StageLevel;
-
 		stream >> info.IsSkilling;
 		stream >> info.IsAttacking;
 		stream >> info.clientPlayerType;
-		//stream >> info.IsAliving;
 		return stream;
 	}
 };

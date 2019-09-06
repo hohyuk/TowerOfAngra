@@ -2,6 +2,7 @@
 
 #include "HButtonFloor.h"
 #include "TowerofAngraCharacter.h"
+#include "Engine.h"
 
 // Sets default values
 AHButtonFloor::AHButtonFloor()
@@ -51,7 +52,11 @@ void AHButtonFloor::OverlapBegins(UPrimitiveComponent * OverlappedComponent, AAc
 {
 	ATowerofAngraCharacter* Character = Cast<ATowerofAngraCharacter>(OtherActor);
 
-	if (!IsOnButton) ++CurrentButton;
+	if (!IsOnButton)
+	{
+		++CurrentButton;
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("CurrentButton : %d"), CurrentButton));
+	}
 
 	if (Character)
 		IsOnButton = true;

@@ -57,11 +57,11 @@ void AHButtonDoor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (ID == 1 && CurrentButton == 1)
+	if (ID == 1 && CurrentButton == 4)
+	{
 		OpenDoor = true;
-	else if (ID == 2 && CurrentButton == 2)
-		OpenDoor = true;
-
+	}
+	
 	if (OpenDoor && CurrentAngle < 140)
 	{
 		CurrentAngle += 2;
@@ -72,11 +72,12 @@ void AHButtonDoor::Tick(float DeltaTime)
 
 void AHButtonDoor::OverlapBegins(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int32 OtherbodyIdx, bool bFromSweep, const FHitResult & SweepHit)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("CurrentButton : %d"), CurrentButton));
-
+	/*ATowerofAngraCharacter* Character = Cast<ATowerofAngraCharacter>(OtherActor);
 	if(ID==1 && CurrentButton==1)
 		OpenDoor = true;
 	else if (ID == 2 && CurrentButton == 2)
 		OpenDoor = true;
+	
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("CurrentButton : %d"), CurrentButton));*/
 }
 
