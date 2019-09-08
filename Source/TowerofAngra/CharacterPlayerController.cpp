@@ -124,13 +124,13 @@ void ACharacterPlayerController::BeginPlay()
 	cp.HP = MyPlayer->CurrentHP;
 
 	cp.StageLevel = CurrentStageLevel;
-	
+
 	cp.IsSkilling = MyPlayer->IsSkilling;
 	cp.SkillType = int(MyPlayer->SKILL_TYPE);
 	cp.IsAttacking = MyPlayer->IsServerSend_Attacking;
 	cp.clientPlayerType = int(MyPlayer->CurrentPlayerType);
 
-	
+
 
 	Socket->EnrollCharacterInfo(cp);
 	Socket->StartListen();
@@ -266,7 +266,7 @@ void ACharacterPlayerController::SendPlayerInfo()
 	cp.HP = MyPlayer->CurrentHP;
 
 	cp.StageLevel = CurrentStageLevel;
-	
+
 	cp.SkillType = int(MyPlayer->SKILL_TYPE);
 	cp.IsSkilling = MyPlayer->IsSkilling;
 	cp.IsAttacking = MyPlayer->IsServerSend_Attacking;
@@ -472,7 +472,7 @@ void ACharacterPlayerController::NextStageSpawnMonster()
 		{
 			SpawnMonster->SpawnDefaultController();
 			SpawnMonster->MonsterID = NextStageTOAMonster->MonsterID;
-			SpawnMonster->HP = NextStageTOAMonster->HP;
+			//SpawnMonster->HP = NextStageTOAMonster->HP;
 		}
 
 
@@ -576,10 +576,10 @@ void ACharacterPlayerController::UpdateNextStageMonster()
 
 					//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("1stage monster x : %d"), MonsterInfo->X));
 
-					if (MonsterInfo->IsAttacking)
+					/*if (MonsterInfo->IsAttacking)
 					{
 						monster->ServerAttack(EMonsterName::GOLEM);
-					}
+					}*/
 				}
 			}
 		}

@@ -75,7 +75,7 @@ public:
 	// SkillTYPE
 	int SkillType = 0; // 0 - None 1 - CommonSkill 2 - Skill
 
-	int StageLevel;			
+	int StageLevel;
 
 	//패킷 직렬화 역직렬화
 	friend ostream& operator<<(ostream &stream, cPlayer& info)
@@ -282,9 +282,9 @@ public:
 		stream << info.Y << endl;
 		stream << info.Z << endl;
 		stream << info.MonsterID << endl;
-		stream << info.IsAttacking << endl;
-		stream << info.IsAliving << endl;
-		stream << info.HP << endl;
+		//stream << info.IsAttacking << endl;
+		//stream << info.IsAliving << endl;
+		//stream << info.HP << endl;
 		//		stream << info.MonsterType << endl;
 		return stream;
 	}
@@ -295,9 +295,9 @@ public:
 		stream >> info.Y;
 		stream >> info.Z;
 		stream >> info.MonsterID;
-		stream >> info.IsAttacking;
-		stream >> info.IsAliving;
-		stream >> info.HP;
+		//stream >> info.IsAttacking;
+		//stream >> info.IsAliving;
+		//stream >> info.HP;
 		//		stream >> info.MonsterType;
 		return stream;
 	}
