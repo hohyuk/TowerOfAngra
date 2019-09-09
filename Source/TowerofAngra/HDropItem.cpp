@@ -69,6 +69,7 @@ void AHDropItem::OnCharacterOverlap(UPrimitiveComponent * OverlappedComp, AActor
 		SetActorEnableCollision(false);
 		Effect->OnSystemFinished.AddDynamic(this, &AHDropItem::OnEffectFinished);
 		Player->IsFillHP = true;
+		UGameplayStatics::PlaySoundAtLocation(this, Player->EatSound, GetActorLocation());
 	}
 }
 

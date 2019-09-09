@@ -201,11 +201,11 @@ protected:
 	class UWidgetComponent* OtherPlayerHPBarWidget;
 
 	// Sound
-protected:
+public:
 	class USoundBase* HowlSound;
 	class USoundBase* AtkSound;
 	class USoundBase* JumpSound;
-
+	class USoundBase* EatSound;
 /* ======= Server ======= */
 public:
 	int SessionId;

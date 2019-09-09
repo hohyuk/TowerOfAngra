@@ -79,6 +79,11 @@ ATowerofAngraCharacter::ATowerofAngraCharacter()
 		AttackDamageEffect->SetTemplate(PARTICLE2.Object);
 		AttackDamageEffect->bAutoActivate = false;
 	}
+
+	// Sound
+	static ConstructorHelpers::FObjectFinder<USoundBase> EATSOUND(TEXT("/Game/VFX_Toolkit_V1/Sounds/S_Rocket_Launch_01.S_Rocket_Launch_01"));
+	if (EATSOUND.Succeeded())
+		EatSound = EATSOUND.Object;
 }
 
 void ATowerofAngraCharacter::BeginPlay()
@@ -388,6 +393,7 @@ void ATowerofAngraCharacter::ServerSetHP(float hp)
 void ATowerofAngraCharacter::WeaponChange()
 {
 	Weapon->SetStaticMesh(SubWeapon->GetStaticMesh());
+	UGameplayStatics::PlaySoundAtLocation(this, EatSound, GetActorLocation());
 	fAttackPower = 100.f;
 }
 
