@@ -2,14 +2,16 @@
 #pragma warning(disable : 4996)
 
 #include "server.h"
-#include<sstream>
-#include"Runtime/Core/Public/GenericPlatform/GenericPlatformAffinity.h"
-#include"Runtime/Core/Public/HAL/Runnable.h"
-#include "RunnableThread.h"
-#include<algorithm>
-#include<string>
-#include"CharacterPlayerController.h"
+#include <sstream>
+#include "Runtime/Core/Public/GenericPlatform/GenericPlatformAffinity.h"
+#include "Runtime/Core/Public/HAL/Runnable.h"
+#include "Runtime/Core/Public/Async/Async.h"
 
+#include "RunnableThread.h"
+#include <algorithm>
+#include <string>
+#include "CharacterPlayerController.h"
+#include "Async.h"
 
 server::server() :StopTaskCounter(0)
 {
@@ -87,9 +89,10 @@ void server::EnrollCharacterInfo(cPlayer& info)
 void server::SendPlayer(cPlayer& info)
 {
 	// 캐릭터 정보 직렬화
+
 	stringstream SendStream;
 	// 요청 종류
-	SendStream << PacketType::SEND_CHARACTER << endl;;
+	SendStream << PacketType::SEND_CHARACTER << endl;
 	SendStream << info;
 
 	// 캐릭터 정보 전송
@@ -169,27 +172,17 @@ cPlayerInfo* server::RecvCharacterInfo(stringstream& RecvStream)
 bool server::Init()
 {
 	return true;
+
 }
 
 uint32 server::Run()
 {
 	FPlatformProcess::Sleep(0.03);
-	while (StopTaskCounter.GetValue() == 0 && Controller != nullptr)
+	while (StopTaskCounter.GetValue() == 0)
 	{
 		stringstream RecvStream;
 		int PacketType;
-		int nRecvLen = recv
-		(
-			Sock,
-			(CHAR*)&recvBuffer,
-			SOCKET_BUF_SIZE,
-			0
-		);
-		if (nRecvLen == SOCKET_ERROR)
-		{
-			UE_LOG(LogTemp, Log, TEXT("Recv Socket ERROR\n"));
-		}
-
+		int nRecvLen = recv(Sock, (CHAR*)&recvBuffer, SOCKET_BUF_SIZE, 0);
 		if (nRecvLen > 0)
 		{
 			RecvStream << recvBuffer;
@@ -209,12 +202,15 @@ uint32 server::Run()
 			break;
 			case PacketType::SPAWN_MONSTER:
 			{
+
 				Controller->RecvSpawnMonster(RecvMonster(RecvStream));
 			}
 			break;
 
 			case PacketType::NEXT_LEVEL_STAGE_SPAWN_MONSTER:
 			{
+
+
 				Controller->NextStageRecvSpawnMonster(NextStageRecvMonster(RecvStream));
 			}
 			break;
@@ -253,7 +249,7 @@ void server::Exit()
 {
 
 }
-//FRunnable override 함수
+
 MonsterSet* server::RecvMonsterSet(stringstream& RecvStream)
 {
 	RecvStream >> MonsterSetInfo;

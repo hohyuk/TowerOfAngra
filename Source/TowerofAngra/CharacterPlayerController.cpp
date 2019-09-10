@@ -12,10 +12,11 @@
 #include "HGolem.h"
 #include "HTOAGameState.h"
 #include "HResultUserWidget.h"
+#include "Async.h"
 
 ACharacterPlayerController::ACharacterPlayerController()
 {
-	SessionId = FMath::RandRange(0, 100);
+	SessionId = FMath::RandRange(1000, 2000);
 
 	Socket = server::GetSingleton();
 	Socket->InitSock();
@@ -23,10 +24,7 @@ ACharacterPlayerController::ACharacterPlayerController()
 	const char* ip = TCHAR_TO_ANSI(*IPaddress);
 	bIsConnected = Socket->Connect(ip, 9000);
 
-	if (bIsConnected)
-	{
-		Socket->SetPlayerController(this);
-	}
+
 	bNewPlayerEntered = false;
 	nPlayers = -1;
 	MonsterNum = -1;
@@ -84,7 +82,10 @@ void ACharacterPlayerController::ShowResultUI()
 void ACharacterPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
+	if (bIsConnected)
+	{
+		Socket->SetPlayerController(this);
+	}
 	ChangeInputMode(true);
 
 	ResultWidget = CreateWidget<UHResultUserWidget>(this, ResultWidgetClass);
@@ -109,6 +110,8 @@ void ACharacterPlayerController::BeginPlay()
 	{
 		return;
 	}
+
+	MyPlayer->SessionId = SessionId;
 	auto MyLocation = MyPlayer->GetActorLocation();
 	auto MyRotation = MyPlayer->GetActorRotation();
 
@@ -133,6 +136,8 @@ void ACharacterPlayerController::BeginPlay()
 
 
 	Socket->EnrollCharacterInfo(cp);
+
+
 	Socket->StartListen();
 
 	GetWorldTimerManager().SetTimer(SendPlayerInfoHandle, this, &ACharacterPlayerController::SendPlayerInfo, 0.010f, true);
@@ -170,12 +175,14 @@ void ACharacterPlayerController::Tick(float DeltaTime)
 	// 몬스터 파괴
 	if (MonsterDestroy)
 		DesTroyMonster();
+
 	if (NextStageMonsterDestroy)
 		NextStageDesTroyMonster();
-	if (CurrentStageLevel == 0)
-		UpdateMonster();
-	else if (CurrentStageLevel == 1)
-		UpdateNextStageMonster();
+
+	UpdateMonster();
+
+	UpdateNextStageMonster();
+
 }
 
 void ACharacterPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -263,6 +270,7 @@ void ACharacterPlayerController::SendPlayerInfo()
 	cp.Rotation = MyPlayer->GetActorRotation();
 	cp.Velocity = MyPlayer->GetVelocity();
 
+
 	cp.HP = MyPlayer->CurrentHP;
 
 	cp.StageLevel = CurrentStageLevel;
@@ -279,15 +287,14 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 {
 	if (playerinfo == nullptr)
 		return false;
-
-	//	UpdatePlayerInfo(playerinfo->players[SessionId]);
-
 	TArray<AActor*> AllActor;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), TOA_OtherPlayerClass, AllActor);
-	int StageLevel = -1;
+
 
 	if (nPlayers == -1)
 	{
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), TOA_OtherPlayerClass, AllActor);
+
+		nPlayers = playerinfo->players.size();
 		for (auto & player : playerinfo->players)
 		{
 			if (player.first == SessionId)
@@ -300,7 +307,7 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.Owner = this;
 			SpawnParams.Instigator = this->Instigator;
-			SpawnParams.Name = FName(*FString(to_string(player.second.ClientID).c_str()));
+
 
 			// 다른 플레이어 타입
 			EPlayerType OtherPlayerType = EPlayerType(player.second.clientPlayerType);
@@ -309,7 +316,7 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 			{
 				TOA_OtherPlayerClass = AHAxeCharacter::StaticClass();
 
-				AHAxeCharacter* SpawnCharacter = GetWorld()->SpawnActor<AHAxeCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
+				AHAxeCharacter* SpawnCharacter = GetWorld()->SpawnActor<AHAxeCharacter>(AHAxeCharacter::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 				SpawnCharacter->SpawnDefaultController();
 				SpawnCharacter->SessionId = player.second.ClientID;
 			}
@@ -317,22 +324,11 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 			{
 				TOA_OtherPlayerClass = AHWarriorCharacter::StaticClass();
 
-				AHWarriorCharacter* SpawnCharacter = GetWorld()->SpawnActor<AHWarriorCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
+				AHWarriorCharacter* SpawnCharacter = GetWorld()->SpawnActor<AHWarriorCharacter>(AHWarriorCharacter::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 				SpawnCharacter->SpawnDefaultController();
 				SpawnCharacter->SessionId = player.second.ClientID;
-			}
-			else
-			{
-				TOA_OtherPlayerClass = AHAxeCharacter::StaticClass();
-
-				AHAxeCharacter* SpawnCharacter = GetWorld()->SpawnActor<AHAxeCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
-				SpawnCharacter->SpawnDefaultController();
-				SpawnCharacter->SessionId = player.second.ClientID;
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Error Player Type")));
 			}
 		}
-		nPlayers = playerinfo->players.size();
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("nPlayers Size : %d"), nPlayers));
 	}
 	else
 	{
@@ -356,12 +352,12 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 				UE_LOG(LogClass, Log, TEXT("Attacking ANIM"));
 				OtherCharacter->Attack();
 			}
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("nPlayers Size : %d"), playerinfo->players.size()));
 
 			OtherCharacter->AddMovementInput(info->Velocity);
 			OtherCharacter->SetActorRotation(info->Rotation);
 			OtherCharacter->SetActorLocation(info->Location);
 			OtherCharacter->ServerSetHP(info->HP);
-			OtherCharacter->CurrentPlayerType = EPlayerType(info->clientPlayerType);
 		}
 	}
 	return true;
@@ -369,7 +365,17 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 
 void ACharacterPlayerController::UpdatePlayerInfo(const cPlayer & info)
 {
-	//향후 체력이나 다른플레이어 체력 등등 업뎃
+	auto Player = Cast<ATowerofAngraCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+	if (!Player)
+		return;
+
+	UWorld* const world = GetWorld();
+	if (!world)
+		return;
+
+
+	Player->ServerSetHP(info.HP);
+	Player->CurrentPlayerType = EPlayerType(info.clientPlayerType);
 }
 
 void ACharacterPlayerController::UpdateNewPlayer()
@@ -386,8 +392,8 @@ void ACharacterPlayerController::UpdateNewPlayer()
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
-	SpawnParams.Instigator = Instigator;
-	SpawnParams.Name = FName(*FString(to_string(NewPlayer->ClientID).c_str()));
+	SpawnParams.Instigator = this->Instigator;
+
 
 	// 다른 플레이어 타입
 	EPlayerType OtherPlayerType = EPlayerType(NewPlayer->clientPlayerType);
@@ -396,16 +402,15 @@ void ACharacterPlayerController::UpdateNewPlayer()
 	{
 		TOA_OtherPlayerClass = AHAxeCharacter::StaticClass();
 
-		AHAxeCharacter* SpawnCharacter = GetWorld()->SpawnActor<AHAxeCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
+		AHAxeCharacter* SpawnCharacter = GetWorld()->SpawnActor<AHAxeCharacter>(AHAxeCharacter::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 		SpawnCharacter->SpawnDefaultController();
 		SpawnCharacter->SessionId = NewPlayer->ClientID;
 	}
 	else if (OtherPlayerType == EPlayerType::WARRIOR)
 	{
 		TOA_OtherPlayerClass = AHWarriorCharacter::StaticClass();
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("WARRIOR")));
 
-		AHWarriorCharacter* SpawnCharacter = GetWorld()->SpawnActor<AHWarriorCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
+		AHWarriorCharacter* SpawnCharacter = GetWorld()->SpawnActor<AHWarriorCharacter>(AHWarriorCharacter::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 		SpawnCharacter->SpawnDefaultController();
 		SpawnCharacter->SessionId = NewPlayer->ClientID;
 	}
@@ -416,7 +421,7 @@ void ACharacterPlayerController::UpdateNewPlayer()
 		AHAxeCharacter* SpawnCharacter = GetWorld()->SpawnActor<AHAxeCharacter>(TOA_OtherPlayerClass, SpawnLocation, SpawnRotation, SpawnParams);
 		SpawnCharacter->SpawnDefaultController();
 		SpawnCharacter->SessionId = NewPlayer->ClientID;
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Error Player Type")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Error Player Type")));
 	}
 
 	if (playerinfo != nullptr)
@@ -434,6 +439,7 @@ void ACharacterPlayerController::UpdateNewPlayer()
 		player.SkillType = int(NewPlayer->SkillType);
 		player.IsSkilling = NewPlayer->IsSkilling;
 		player.IsAttacking = NewPlayer->IsAttacking;
+		player.StageLevel = CurrentStageLevel;
 		player.clientPlayerType = int(NewPlayer->clientPlayerType);
 
 		playerinfo->players[NewPlayer->ClientID] = player;
@@ -465,14 +471,14 @@ void ACharacterPlayerController::NextStageSpawnMonster()
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = Instigator;
-		SpawnParams.Name = FName(*FString(to_string(NextStageTOAMonster->MonsterID).c_str()));
+
 
 		AHGolem* SpawnMonster = world->SpawnActor<AHGolem>(AHGolem::StaticClass(), SpawnLocation, MonsterRotation, SpawnParams);
 		if (SpawnMonster)
 		{
 			SpawnMonster->SpawnDefaultController();
 			SpawnMonster->MonsterID = NextStageTOAMonster->MonsterID;
-			//SpawnMonster->HP = NextStageTOAMonster->HP;
+			SpawnMonster->HP = NextStageTOAMonster->HP;
 		}
 
 
@@ -498,14 +504,13 @@ void ACharacterPlayerController::SpawnMonster()
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = Instigator;
-		SpawnParams.Name = FName(*FString(to_string(TOAMonster->MonsterID).c_str()));
 
 		AHVamp* SpawnMonster = world->SpawnActor<AHVamp>(AHVamp::StaticClass(), SpawnLocation, MonsterRotation, SpawnParams);
 		if (SpawnMonster)
 		{
 			SpawnMonster->SpawnDefaultController();
 			SpawnMonster->MonsterID = TOAMonster->MonsterID;
-			//		SpawnMonster->HP = TOAMonster->HP;
+			SpawnMonster->HP = TOAMonster->HP;
 		}
 
 
@@ -519,8 +524,6 @@ void ACharacterPlayerController::UpdateNextStageMonster()
 {
 	if (NextStageTOAMonsterset == nullptr)
 		return;
-	TArray<AActor*> SpawnedMonsters;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHGolem::StaticClass(), SpawnedMonsters);
 
 	UWorld* const world = GetWorld();
 
@@ -528,6 +531,9 @@ void ACharacterPlayerController::UpdateNextStageMonster()
 
 	if (world && CurrentStageLevel == 1)
 	{
+		TArray<AActor*> SpawnedMonsters;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHGolem::StaticClass(), SpawnedMonsters);
+
 		if (NextStageMonsterNum == -1)
 		{
 			NextStageMonsterNum = NextStageTOAMonsterset->monsters.size();
@@ -545,7 +551,6 @@ void ACharacterPlayerController::UpdateNextStageMonster()
 				FActorSpawnParameters SpawnParams;
 				SpawnParams.Owner = this;
 				SpawnParams.Instigator = Instigator;
-				SpawnParams.Name = FName(*FString(to_string(monster->MonsterID).c_str()));
 
 				AHGolem* SpawnMonster = world->SpawnActor<AHGolem>(AHGolem::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 
@@ -553,7 +558,7 @@ void ACharacterPlayerController::UpdateNextStageMonster()
 				{
 					SpawnMonster->SpawnDefaultController();
 					SpawnMonster->MonsterID = monster->MonsterID;
-					//	SpawnMonster->HP = monster->HP;
+					SpawnMonster->HP = monster->HP;
 				}
 			}
 		}
@@ -574,12 +579,12 @@ void ACharacterPlayerController::UpdateNextStageMonster()
 
 					monster->MoveToLocation(MonsterLocation);
 
-					//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("1stage monster x : %d"), MonsterInfo->X));
+					//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("%d MonsterInfo->X =  %f"), MonsterInfo->MonsterID, MonsterInfo->X));
 
-					/*if (MonsterInfo->IsAttacking)
+					if (MonsterInfo->IsAttacking)
 					{
 						monster->ServerAttack(EMonsterName::GOLEM);
-					}*/
+					}
 				}
 			}
 		}
@@ -590,18 +595,16 @@ void ACharacterPlayerController::UpdateMonster()
 	if (TOAMonsterset == nullptr)
 		return;
 
-	TArray<AActor*> SpawnedMonsters;
-
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHVamp::StaticClass(), SpawnedMonsters);
-
 	UWorld* const world = GetWorld();
 
 	if (world && CurrentStageLevel == 0)
 	{
+		TArray<AActor*> SpawnedMonsters;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHVamp::StaticClass(), SpawnedMonsters);
+
 		if (MonsterNum == -1)
 		{
-			MonsterNum = TOAMonsterset->monsters.size();
+
 
 			for (const auto& kvp : TOAMonsterset->monsters)
 			{
@@ -616,7 +619,6 @@ void ACharacterPlayerController::UpdateMonster()
 				FActorSpawnParameters SpawnParams;
 				SpawnParams.Owner = this;
 				SpawnParams.Instigator = Instigator;
-				SpawnParams.Name = FName(*FString(to_string(monster->MonsterID).c_str()));
 
 				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("monster->X =  %d"), monster->X));
 
@@ -625,9 +627,10 @@ void ACharacterPlayerController::UpdateMonster()
 				{
 					SpawnMonster->SpawnDefaultController();
 					SpawnMonster->MonsterID = monster->MonsterID;
-					//	SpawnMonster->HP = monster->HP;
+					SpawnMonster->HP = monster->HP;
 				}
 			}
+			MonsterNum = TOAMonsterset->monsters.size();
 		}
 		else
 		{
@@ -646,22 +649,23 @@ void ACharacterPlayerController::UpdateMonster()
 
 					monster->MoveToLocation(MonsterLocation);
 
-					//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("MonsterInfo->X =  %f"), MonsterInfo->X));
 
 
-					//if (MonsterInfo->IsAttacking)
-					//{
-					//	monster->ServerAttack(EMonsterName::VAMP);
+					if (MonsterInfo->IsAttacking)
+					{
+						monster->ServerAttack(EMonsterName::VAMP);
 
-					//}
+					}
 				}
 			}
 		}
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("monster size =  %d"), TOAMonsterset->monsters.size()));
+
 	}
 }
 void ACharacterPlayerController::NextStageDesTroyMonster()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("NextStageDesTroyMonster")));
+	//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("NextStageDesTroyMonster")));
 	if (GetWorld())
 	{
 		// 스폰된 몬스터에서 찾아 파괴
@@ -674,7 +678,7 @@ void ACharacterPlayerController::NextStageDesTroyMonster()
 			if (Monster && Monster->MonsterID == NextStageTOAMonster->MonsterID)
 			{
 				Monster->ServerSendDieOn(EMonsterName::GOLEM);
-				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("NextStageDesTroyMonster()  %d"), Monster->MonsterID));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("NextStageDesTroyMonster()  %d"), Monster->MonsterID));
 				break;
 			}
 		}
@@ -686,7 +690,7 @@ void ACharacterPlayerController::NextStageDesTroyMonster()
 }
 void ACharacterPlayerController::DesTroyMonster()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("DesTroyMonster")));
+	//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("DesTroyMonster")));
 	if (GetWorld())
 	{
 		// 스폰된 몬스터에서 찾아 파괴
@@ -699,6 +703,7 @@ void ACharacterPlayerController::DesTroyMonster()
 			if (Monster && Monster->MonsterID == TOAMonster->MonsterID)
 			{
 				Monster->ServerSendDieOn(EMonsterName::VAMP);
+				TOAMonsterset->monsters.erase(TOAMonster->MonsterID);
 				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("DesTroyMonster()  %d"), Monster->MonsterID));
 				break;
 			}

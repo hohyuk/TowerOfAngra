@@ -5,10 +5,11 @@
 // *******************************************************
 #include "TowerofAngra.h"
 #pragma comment(lib, "ws2_32.lib")
-#include<WinSock2.h>
-#include<iostream>
-#include<map>
-#include"Runtime/Core/Public/HAL/Runnable.h"
+#include <WinSock2.h>
+#include <iostream>
+#include <map>
+#include "Runtime/Core/Public/HAL/Runnable.h"
+#include "Runtime/Core/Public/HAL/ThreadSafeCounter.h"
 
 class ACharacterPlayerController;
 
@@ -180,7 +181,6 @@ public:
 
 	int MonsterID;
 	bool IsAttacking;
-	bool IsAliving;
 	float HP;
 
 	// MonsterTYPE
@@ -194,10 +194,8 @@ public:
 		stream << info.Y << endl;
 		stream << info.Z << endl;
 		stream << info.MonsterID << endl;
-		//stream << info.IsAttacking << endl;
-		//stream << info.IsAliving << endl;
-		//stream << info.HP << endl;
-		//		stream << info.MonsterType << endl;
+		stream << info.IsAttacking << endl;
+		stream << info.HP << endl;
 
 		return stream;
 	}
@@ -208,10 +206,8 @@ public:
 		stream >> info.Y;
 		stream >> info.Z;
 		stream >> info.MonsterID;
-		//stream >> info.IsAttacking;
-		//stream >> info.IsAliving;
-		//stream >> info.HP;
-		//		stream >> info.MonsterType;
+		stream >> info.IsAttacking;
+		stream >> info.HP;
 
 		return stream;
 	}
@@ -263,7 +259,6 @@ public:
 
 	int MonsterID;
 	bool IsAttacking;
-	bool IsAliving;
 	float HP;
 	float AttackRange;
 	float ChaseRange;
@@ -282,10 +277,8 @@ public:
 		stream << info.Y << endl;
 		stream << info.Z << endl;
 		stream << info.MonsterID << endl;
-		//stream << info.IsAttacking << endl;
-		//stream << info.IsAliving << endl;
-		//stream << info.HP << endl;
-		//		stream << info.MonsterType << endl;
+		stream << info.IsAttacking << endl;
+		stream << info.HP << endl;
 		return stream;
 	}
 
@@ -295,10 +288,8 @@ public:
 		stream >> info.Y;
 		stream >> info.Z;
 		stream >> info.MonsterID;
-		//stream >> info.IsAttacking;
-		//stream >> info.IsAliving;
-		//stream >> info.HP;
-		//		stream >> info.MonsterType;
+		stream >> info.IsAttacking;
+		stream >> info.HP;
 		return stream;
 	}
 };

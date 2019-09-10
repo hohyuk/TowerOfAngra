@@ -120,6 +120,9 @@ public:
 
 	UPROPERTY(Transient, VisibleInstanceOnly, BlueprintReadOnly, Category = State, Meta = (AllowPrivateAccess = true))
 	EMonsterName CurrentMonsterType;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	bool IsServerAttacking;
 public:
 	void SetHpShow(bool HpShow) { IsHP_Show = HpShow; }
 

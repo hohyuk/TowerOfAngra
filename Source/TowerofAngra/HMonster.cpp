@@ -38,6 +38,7 @@ AHMonster::AHMonster()
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	IsAttacking = false;
+	IsServerAttacking = false;		// 서버로 부터 공격판단.
 	AnimInstance = nullptr;
 	DeadTimer = 3.f;
 	FinalDamage = 0.f;
@@ -273,6 +274,7 @@ void AHMonster::Attack()
 
 void AHMonster::ServerAttack(EMonsterName MonsterType)
 {
+	if (IsServerAttacking) return;
 	switch (MonsterType)
 	{
 	case EMonsterName::GOLEM:
@@ -289,6 +291,7 @@ void AHMonster::ServerAttack(EMonsterName MonsterType)
 		if (nullptr == AnimInstance)return;
 
 		dynamic_cast<UHVampAnimInstance*>(AnimInstance)->PlayAttackMontage();
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("ServerAttack VAMP")));
 	}
 	break;
 	case EMonsterName::DEMON:
@@ -310,6 +313,7 @@ void AHMonster::ServerAttack(EMonsterName MonsterType)
 	default:
 		break;
 	}
+	IsServerAttacking = true;
 }
 
 void AHMonster::DamageAnim()
@@ -320,6 +324,7 @@ void AHMonster::DamageAnim()
 void AHMonster::OnAttackMontageEnded(UAnimMontage * Montage, bool bInterrupted)
 {
 	IsAttacking = false;
+	IsServerAttacking = false;
 	OnAttackEnd.Broadcast();
 }
 
