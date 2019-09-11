@@ -277,6 +277,8 @@ void AHMonster::Attack()
 void AHMonster::ServerAttack(EMonsterName MonsterType)
 {
 	if (IsServerAttacking) return;
+	if (CharacterState->GetHP() <= 0) return;
+
 	switch (MonsterType)
 	{
 	case EMonsterName::GOLEM:
@@ -433,6 +435,7 @@ void AHMonster::SkillCheck()
 
 void AHMonster::MoveToLocation(const FVector & dest)
 {
+	if (CharacterState->GetHP() <= 0) return;
 	AHMonsterAIController* Controller = Cast<AHMonsterAIController>(GetController());
 	if (Controller)
 	{
