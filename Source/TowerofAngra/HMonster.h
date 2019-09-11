@@ -74,8 +74,6 @@ protected:
 	UPROPERTY()
 	class AHMonsterAIController* MonsterAIController;
 
-	
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = State, Meta = (AllowPrivateAccess = true))
 	float DeadTimer;
 
@@ -95,9 +93,6 @@ protected:
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	float AttackRadius;		// 공격 반지름
-
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	float AttackRange;		// 공격 범위
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	float fAttackPower;		// 공격력
@@ -126,6 +121,10 @@ public:
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsServerAttacking;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	float AttackRange;		// 공격 범위
+
 public:
 	void SetHpShow(bool HpShow) { IsHP_Show = HpShow; }
 

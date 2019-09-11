@@ -486,7 +486,7 @@ void AHMonster::ServerHpShowTick()
 		{
 			ATowerofAngraCharacter* APlayer = Cast< ATowerofAngraCharacter>(OverlapResult.GetActor());
 
-			if (APlayer->GetController()->IsPlayerController())
+			if (APlayer && APlayer->GetController()->IsPlayerController())
 			{
 				IsHP_Show = true;
 				return;
