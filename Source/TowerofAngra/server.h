@@ -394,10 +394,10 @@ public:
 	void SetPlayerController(ACharacterPlayerController*);
 
 	//-----------------------------------------------08-03
-	void HitMonster(const int&, const float&);
+	void HitMonster(const int & MonsterID, const float& Hp, const float& damage, const bool& isDie);
 	void HitPlayer(const int&);
 	//-----------------------------------------------
-	void NextStageHitMonster(const int&, const float&);
+	void NextStageHitMonster(const int & MonsterID, const float& Hp, const float& damage, const bool& isDie);
 	static server* GetSingleton()
 	{
 		static server ins;

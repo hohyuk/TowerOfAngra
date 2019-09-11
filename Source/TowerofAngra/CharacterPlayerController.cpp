@@ -173,8 +173,8 @@ void ACharacterPlayerController::Tick(float DeltaTime)
 		NextStageSpawnMonster();
 	}
 	// ¸ó½ºÅÍ ÆÄ±«
-	if (MonsterDestroy)
-		DesTroyMonster();
+	/*if (MonsterDestroy)
+		DesTroyMonster();*/
 
 	if (NextStageMonsterDestroy)
 		NextStageDesTroyMonster();
@@ -288,11 +288,11 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 	if (playerinfo == nullptr)
 		return false;
 	TArray<AActor*> AllActor;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), TOA_OtherPlayerClass, AllActor);
 
 
 	if (nPlayers == -1)
 	{
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), TOA_OtherPlayerClass, AllActor);
 
 		nPlayers = playerinfo->players.size();
 		for (auto & player : playerinfo->players)
@@ -722,16 +722,16 @@ void ACharacterPlayerController::HitCharacter(const int & SessionId)
 	Socket->HitPlayer(SessionId);
 }
 
-void ACharacterPlayerController::HitMonster(const int & MonsterId, const float& damage)
+void ACharacterPlayerController::HitMonster(const int & MonsterID, const float& Hp, const float& damage, const bool& isDie)
 {
 	//	UE_LOG(LogClass, Log, TEXT("Monster Hit Called %d"), MonsterId);
-
-	Socket->HitMonster(MonsterId, damage);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("HitMonster Hp =  %f"), Hp));
+	Socket->HitMonster(MonsterID, Hp, damage, isDie);
 }
 
-void ACharacterPlayerController::NextStageHitMonster(const int & MonsterId, const float& damage)
+void ACharacterPlayerController::NextStageHitMonster(const int & MonsterID, const float& Hp, const float& damage, const bool& isDie)
 {
 	//	UE_LOG(LogClass, Log, TEXT("Monster Hit Called %d"), MonsterId);
 
-	Socket->NextStageHitMonster(MonsterId, damage);
+	Socket->NextStageHitMonster(MonsterID, Hp, damage, isDie);
 }

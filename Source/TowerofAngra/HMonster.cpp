@@ -77,6 +77,7 @@ AHMonster::AHMonster()
 
 
 	IsAliving = true;
+	IsDie = false;
 }
 
 // Called when the game starts or when spawned
@@ -100,14 +101,14 @@ void AHMonster::DieOn()
 	HPBarWidget->SetHiddenInGame(false);
 	MonsterAIController->StopAI();
 	CurrentScore += 10;
+	IsDie = true;
 
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda([this]()->void {
 
 		float PosZ = GetActorLocation().Z;
 		PosZ = (PosZ - BodyCenter) + 30; // 30 item z 크기
-
 		GetWorld()->SpawnActor<AHDropItem>(FVector(GetActorLocation().X, GetActorLocation().Y, PosZ), FRotator::ZeroRotator);
-			Destroy();
+		Destroy();
 	}), DeadTimer, false);
 }
 
@@ -129,6 +130,7 @@ void AHMonster::Tick(float DeltaTime)
 
 	CurrentHP = CharacterState->GetHP();
 
+	ServerHpShowTick();
 }
 
 void AHMonster::PostInitializeComponents()
@@ -291,7 +293,6 @@ void AHMonster::ServerAttack(EMonsterName MonsterType)
 		if (nullptr == AnimInstance)return;
 
 		dynamic_cast<UHVampAnimInstance*>(AnimInstance)->PlayAttackMontage();
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("ServerAttack VAMP")));
 	}
 	break;
 	case EMonsterName::DEMON:
@@ -330,7 +331,6 @@ void AHMonster::OnAttackMontageEnded(UAnimMontage * Montage, bool bInterrupted)
 
 void AHMonster::AttackCheck()
 {
-	//if (CurrentGameMode != EGameMode::SINGLE_GAME) return;
 	//FHitResult HitResult;
 	
 	//FCollisionQueryParams Params(NAME_None, false, this);
@@ -402,7 +402,6 @@ void AHMonster::AttackCheck()
 
 void AHMonster::SkillCheck()
 {
-	//if (CurrentGameMode != EGameMode::SINGLE_GAME) return;
 	// 충돌체크
 	float AttackRadius = 500.f;
 
@@ -452,8 +451,48 @@ void AHMonster::MonsterDamageEffect(const float& damage)
 
 	ACharacterPlayerController* PlayerController = Cast<ACharacterPlayerController>(GetWorld()->GetFirstPlayerController());
 
-	//if (CurrentStageLevel == 0)
-		PlayerController->HitMonster(MonsterID, damage);
-	//else if(CurrentStageLevel == 1)
-		PlayerController->NextStageHitMonster(MonsterID, damage);
+	CharacterState->SetDamage(damage);
+
+	PlayerController->HitMonster(MonsterID, CharacterState->GetHP(), damage, IsDie);
+
+	PlayerController->NextStageHitMonster(MonsterID, CharacterState->GetHP(), damage, IsDie);
+
+	if (CharacterState->GetHP() <= 0)
+	{
+		IsDie = true;
+		CharacterState->SetHP(0);
+	}
+}
+
+void AHMonster::ServerHpShowTick()
+{
+	if (CurrentGameMode != EGameMode::MULTI_GAME) return;
+
+	if (nullptr == GetWorld()) return;
+	TArray<FOverlapResult> OverlapResults;
+	FCollisionQueryParams CollisionQueryParam(NAME_None, false, GetController());
+	bool bResult = GetWorld()->OverlapMultiByChannel(
+		OverlapResults, GetActorLocation(),
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel2,
+		FCollisionShape::MakeSphere(DetectRadius),
+		CollisionQueryParam
+	);
+
+	// Player Target 했을시.
+	if (bResult)
+	{
+		for (auto OverlapResult : OverlapResults)
+		{
+			ATowerofAngraCharacter* APlayer = Cast< ATowerofAngraCharacter>(OverlapResult.GetActor());
+
+			if (APlayer->GetController()->IsPlayerController())
+			{
+				IsHP_Show = true;
+				return;
+			}
+		}
+	}
+
+	IsHP_Show = false;
 }

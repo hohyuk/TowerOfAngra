@@ -118,6 +118,9 @@ public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = State, Meta = (AllowPrivateAccess = true))
 	bool IsAliving;
 
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = State, Meta = (AllowPrivateAccess = true))
+	bool IsDie;
+
 	UPROPERTY(Transient, VisibleInstanceOnly, BlueprintReadOnly, Category = State, Meta = (AllowPrivateAccess = true))
 	EMonsterName CurrentMonsterType;
 
@@ -135,4 +138,6 @@ public:
 	void ServerSendDieOn(EMonsterName MonsterType);
 
 	void MonsterDamageEffect(const float& damage);
+
+	void ServerHpShowTick();
 };

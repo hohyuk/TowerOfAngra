@@ -52,11 +52,11 @@ public:
 	void DesTroyMonster();
 	//------------------------------------2019-08-03
 	void HitCharacter(const int&);
-	void HitMonster(const int&, const float&);
+	void HitMonster(const int & MonsterID, const float& Hp, const float& damage, const bool& isDie);
 	int TYPE;
 	//------------------------------------
 
-	void NextStageHitMonster(const int&, const float&);
+	void NextStageHitMonster(const int & MonsterID, const float& Hp, const float& damage, const bool& isDie);
 	//==============================================================================================다음 스테이지
 	void NextStageRecvDestroyMonster(NextStageMonster*);
 

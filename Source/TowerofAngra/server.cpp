@@ -289,13 +289,16 @@ void server::SetPlayerController(ACharacterPlayerController* PlayerController)
 	}
 }
 
-void server::NextStageHitMonster(const int& MonsterID, const float& damage)
+void server::NextStageHitMonster(const int & MonsterID, const float& Hp, const float& damage, const bool& isDie)
 {
 	// 서버에게 데미지를 준 몬스터 정보 전송
 	stringstream SendStream;
 	SendStream << PacketType::HIT_NEXT_STAGE_MONSTER << endl;
 	SendStream << MonsterID << endl;
 	SendStream << damage << endl;
+	SendStream << Hp << endl;
+	SendStream << damage << endl;
+	SendStream << isDie << endl;
 
 	int nSendLen = send
 	(
@@ -306,13 +309,15 @@ void server::NextStageHitMonster(const int& MonsterID, const float& damage)
 	);
 }
 //=====================================================2019-08-03
-void server::HitMonster(const int & MonsterID, const float& damage)
+void server::HitMonster(const int & MonsterID, const float& Hp, const float& damage, const bool& isDie)
 {
 	// 서버에게 데미지를 준 몬스터 정보 전송
 	stringstream SendStream;
 	SendStream << PacketType::HIT_MONSTER << endl;
 	SendStream << MonsterID << endl;
+	SendStream << Hp << endl;
 	SendStream << damage << endl;
+	SendStream << isDie << endl;
 
 	int nSendLen = send
 	(
