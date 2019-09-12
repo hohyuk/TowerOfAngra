@@ -295,7 +295,6 @@ void server::NextStageHitMonster(const int & MonsterID, const float& Hp, const f
 	stringstream SendStream;
 	SendStream << PacketType::HIT_NEXT_STAGE_MONSTER << endl;
 	SendStream << MonsterID << endl;
-	SendStream << damage << endl;
 	SendStream << Hp << endl;
 	SendStream << damage << endl;
 	SendStream << isDie << endl;

@@ -195,7 +195,8 @@ public:
 		stream << info.Z << endl;
 		stream << info.MonsterID << endl;
 		stream << info.IsAttacking << endl;
-		stream << info.HP << endl;
+		stream << info.MonsterType << endl;
+		//		stream << info.HP << endl;
 
 		return stream;
 	}
@@ -207,7 +208,8 @@ public:
 		stream >> info.Z;
 		stream >> info.MonsterID;
 		stream >> info.IsAttacking;
-		stream >> info.HP;
+		stream >> info.MonsterType;
+		//		stream >> info.HP;
 
 		return stream;
 	}
@@ -278,7 +280,7 @@ public:
 		stream << info.Z << endl;
 		stream << info.MonsterID << endl;
 		stream << info.IsAttacking << endl;
-		stream << info.HP << endl;
+		//		stream << info.HP << endl;
 		return stream;
 	}
 
@@ -289,7 +291,7 @@ public:
 		stream >> info.Z;
 		stream >> info.MonsterID;
 		stream >> info.IsAttacking;
-		stream >> info.HP;
+		//		stream >> info.HP;
 		return stream;
 	}
 };
