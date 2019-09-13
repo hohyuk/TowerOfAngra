@@ -93,6 +93,7 @@ void AHWarriorCharacter::PostInitializeComponents()
 		{
 			AttackStartComboState();
 			WarriorAnim->JumpToAttackMontageSection(CurrentCombo);
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("CurrentCombo : %d"), CurrentCombo));
 			TOALOG(Warning,TEXT("Combo : %d"),CurrentCombo);
 		}
 	});
@@ -129,6 +130,7 @@ void AHWarriorCharacter::Attack()
 		AttackStartComboState();
 		WarriorAnim->PlayAttackMontage();
 		WarriorAnim->JumpToAttackMontageSection(CurrentCombo);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("CurrentCombo : %d"), CurrentCombo));
 		IsAttacking = true;
 	}
 }

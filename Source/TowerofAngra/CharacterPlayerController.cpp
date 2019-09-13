@@ -294,7 +294,6 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 
 	if (nPlayers == -1)
 	{
-
 		nPlayers = playerinfo->players.size();
 		for (auto & player : playerinfo->players)
 		{
@@ -353,7 +352,7 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 				UE_LOG(LogClass, Log, TEXT("Attacking ANIM"));
 				OtherCharacter->Attack();
 			}
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("nPlayers Size : %d"), playerinfo->players.size()));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("nPlayers Size : %d"), playerinfo->players.size()));
 
 			OtherCharacter->AddMovementInput(info->Velocity);
 			OtherCharacter->SetActorRotation(info->Rotation);
@@ -366,14 +365,10 @@ bool ACharacterPlayerController::UpdateWorldInfo()
 
 void ACharacterPlayerController::UpdatePlayerInfo(const cPlayer & info)
 {
+	if (!GetWorld()) return;
 	auto Player = Cast<ATowerofAngraCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
 	if (!Player)
 		return;
-
-	UWorld* const world = GetWorld();
-	if (!world)
-		return;
-
 
 	Player->ServerSetHP(info.HP);
 	Player->CurrentPlayerType = EPlayerType(info.clientPlayerType);
@@ -456,8 +451,7 @@ void ACharacterPlayerController::UpdateNewPlayer()
 
 void ACharacterPlayerController::NextStageSpawnMonster()
 {
-	UWorld* const world = GetWorld();
-	if (world && CurrentStageLevel == 1)
+	if (GetWorld() && CurrentStageLevel == 1)
 	{
 		FVector SpawnLocation;
 		SpawnLocation.X = NextStageTOAMonster->X;
@@ -474,13 +468,12 @@ void ACharacterPlayerController::NextStageSpawnMonster()
 		SpawnParams.Instigator = Instigator;
 
 
-		AHGolem* SpawnMonster = world->SpawnActor<AHGolem>(AHGolem::StaticClass(), SpawnLocation, MonsterRotation, SpawnParams);
+		AHGolem* SpawnMonster = GetWorld()->SpawnActor<AHGolem>(AHGolem::StaticClass(), SpawnLocation, MonsterRotation, SpawnParams);
 		if (SpawnMonster)
 		{
 			SpawnMonster->SpawnDefaultController();
 			SpawnMonster->MonsterID = NextStageTOAMonster->MonsterID;
 		}
-
 
 		NextStageTOAMonster = nullptr;
 		NextStageMonsterSpawn = false;
@@ -488,8 +481,7 @@ void ACharacterPlayerController::NextStageSpawnMonster()
 }
 void ACharacterPlayerController::SpawnMonster()
 {
-	UWorld* const world = GetWorld();
-	if (world && CurrentStageLevel == 0)
+	if (GetWorld() && CurrentStageLevel == 0)
 	{
 		FVector SpawnLocation;
 		SpawnLocation.X = TOAMonster->X;
@@ -510,7 +502,7 @@ void ACharacterPlayerController::SpawnMonster()
 
 		if (MonsterName == EMonsterName::VAMP)
 		{
-			AHVamp* SpawnMonster = world->SpawnActor<AHVamp>(AHVamp::StaticClass(), SpawnLocation, MonsterRotation, SpawnParams);
+			AHVamp* SpawnMonster = GetWorld()->SpawnActor<AHVamp>(AHVamp::StaticClass(), SpawnLocation, MonsterRotation, SpawnParams);
 
 
 			SpawnMonster->SpawnDefaultController();
@@ -519,15 +511,13 @@ void ACharacterPlayerController::SpawnMonster()
 		}
 		else
 		{
-			AHLizard* SpawnMonster = world->SpawnActor<AHLizard>(AHLizard::StaticClass(), SpawnLocation, MonsterRotation, SpawnParams);
+			AHLizard* SpawnMonster = GetWorld()->SpawnActor<AHLizard>(AHLizard::StaticClass(), SpawnLocation, MonsterRotation, SpawnParams);
 
 
 			SpawnMonster->SpawnDefaultController();
 			SpawnMonster->MonsterID = TOAMonster->MonsterID;
 
 		}
-
-
 
 		TOAMonster = nullptr;
 		MonsterSpawn = false;
@@ -540,11 +530,9 @@ void ACharacterPlayerController::UpdateNextStageMonster()
 	if (NextStageTOAMonsterset == nullptr)
 		return;
 
-	UWorld* const world = GetWorld();
-
 	//다음 스테이지 스폰할 몬스터들
 
-	if (world && CurrentStageLevel == 1)
+	if (GetWorld() && CurrentStageLevel == 1)
 	{
 		TArray<AActor*> SpawnedMonsters;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHGolem::StaticClass(), SpawnedMonsters);
@@ -567,7 +555,7 @@ void ACharacterPlayerController::UpdateNextStageMonster()
 				SpawnParams.Owner = this;
 				SpawnParams.Instigator = Instigator;
 
-				AHGolem* SpawnMonster = world->SpawnActor<AHGolem>(AHGolem::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+				AHGolem* SpawnMonster = GetWorld()->SpawnActor<AHGolem>(AHGolem::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 
 				if (SpawnMonster)
 				{
@@ -609,9 +597,7 @@ void ACharacterPlayerController::UpdateMonster()
 	if (TOAMonsterset == nullptr)
 		return;
 
-	UWorld* const world = GetWorld();
-
-	if (world && CurrentStageLevel == 0)
+	if (GetWorld() && CurrentStageLevel == 0)
 	{
 		TArray<AActor*> SpawnedMonsters;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHMonster::StaticClass(), SpawnedMonsters);
@@ -642,13 +628,13 @@ void ACharacterPlayerController::UpdateMonster()
 
 				if (MonsterName == EMonsterName::VAMP)
 				{
-					AHVamp* SpawnMonster = world->SpawnActor<AHVamp>(AHVamp::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+					AHVamp* SpawnMonster = GetWorld()->SpawnActor<AHVamp>(AHVamp::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 					SpawnMonster->SpawnDefaultController();
 					SpawnMonster->MonsterID = monster->MonsterID;
 				}
 				else
 				{
-					AHLizard* SpawnMonster = world->SpawnActor<AHLizard>(AHLizard::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+					AHLizard* SpawnMonster = GetWorld()->SpawnActor<AHLizard>(AHLizard::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 					SpawnMonster->SpawnDefaultController();
 					SpawnMonster->MonsterID = monster->MonsterID;
 				}
@@ -671,8 +657,6 @@ void ACharacterPlayerController::UpdateMonster()
 					MonsterLocation.Z = MonsterInfo->Z;
 
 					monster->MoveToLocation(MonsterLocation);
-
-
 
 					if (MonsterInfo->IsAttacking)
 					{
@@ -758,7 +742,6 @@ void ACharacterPlayerController::DesTroyMonster()
 void ACharacterPlayerController::HitCharacter(const int & SessionId)
 {
 	//	UE_LOG(LogClass, Log, TEXT("Player Hit Called %d"), SessionId);
-
 	Socket->HitPlayer(SessionId);
 }
 
@@ -772,6 +755,5 @@ void ACharacterPlayerController::HitMonster(const int & MonsterID, const float& 
 void ACharacterPlayerController::NextStageHitMonster(const int & MonsterID, const float& Hp, const float& damage, const bool& isDie)
 {
 	//	UE_LOG(LogClass, Log, TEXT("Monster Hit Called %d"), MonsterId);
-
 	Socket->NextStageHitMonster(MonsterID, Hp, damage, isDie);
 }
