@@ -185,8 +185,8 @@ public:
 
 	// MonsterTYPE
 	int MonsterType = 0;
-
-
+	float TargetX, TargetY, TargetZ;
+	bool Chasing;
 
 	friend ostream& operator<<(ostream &stream, Monster& info)
 	{
@@ -196,8 +196,10 @@ public:
 		stream << info.MonsterID << endl;
 		stream << info.IsAttacking << endl;
 		stream << info.MonsterType << endl;
-		//		stream << info.HP << endl;
-
+		stream << info.Chasing << endl;
+		stream << info.TargetX << endl;
+		stream << info.TargetY << endl;
+		stream << info.TargetZ << endl;
 		return stream;
 	}
 
@@ -209,8 +211,10 @@ public:
 		stream >> info.MonsterID;
 		stream >> info.IsAttacking;
 		stream >> info.MonsterType;
-		//		stream >> info.HP;
-
+		stream >> info.Chasing;
+		stream >> info.TargetX;
+		stream >> info.TargetY;
+		stream >> info.TargetZ;
 		return stream;
 	}
 };

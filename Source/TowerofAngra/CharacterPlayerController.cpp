@@ -634,30 +634,48 @@ void ACharacterPlayerController::UpdateMonster()
 
 				if (monster)
 				{
-					const Monster * MonsterInfo = &TOAMonsterset->monsters[monster->MonsterID];
-					//EMonsterName MonsterName = (EMonsterName)TOAMonsterset->monsters[monster->MonsterID].MonsterType;
-					FVector MonsterLocation;
-					MonsterLocation.X = MonsterInfo->X;
-					MonsterLocation.Y = MonsterInfo->Y;
-					MonsterLocation.Z = MonsterInfo->Z;
+					AHMonster * monster = Cast<AHMonster>(actor);
 
-					monster->MoveToLocation(MonsterLocation);
-					//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("  MonsterInfo->X=  %f"), MonsterLocation.X));
-
-					if (MonsterInfo->IsAttacking)
+					if (monster)
 					{
-						if (MonsterInfo->MonsterType == (int)EMonsterName::VAMP)
-							monster->ServerAttack(EMonsterName::VAMP);
+						const Monster * MonsterInfo = &TOAMonsterset->monsters[monster->MonsterID];
+						//EMonsterName MonsterName = (EMonsterName)TOAMonsterset->monsters[monster->MonsterID].MonsterType;
+						FVector MonsterLocation;
 
-						else if (MonsterInfo->MonsterType == (int)EMonsterName::LIZARD)
-							monster->ServerAttack(EMonsterName::LIZARD);
+
+						if (MonsterInfo->Chasing)
+						{
+							MonsterLocation.X = MonsterInfo->TargetX;
+							MonsterLocation.Y = MonsterInfo->TargetY;
+							MonsterLocation.Z = MonsterInfo->TargetZ;
+						}
+						else
+						{
+							MonsterLocation.X = MonsterInfo->X;
+							MonsterLocation.Y = MonsterInfo->Y;
+							MonsterLocation.Z = MonsterInfo->Z;
+						}
+
+						//===========================================================================2019-09-15
+						monster->MoveToLocation(MonsterLocation);
+						//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("  MonsterInfo->X=  %f"), MonsterLocation.X));
+
+						if (MonsterInfo->IsAttacking)
+						{
+							if (MonsterInfo->MonsterType == (int)EMonsterName::VAMP)
+								monster->ServerAttack(EMonsterName::VAMP);
+
+							else if (MonsterInfo->MonsterType == (int)EMonsterName::LIZARD)
+								monster->ServerAttack(EMonsterName::LIZARD);
+						}
 					}
 				}
 			}
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("monster size =  %d"), TOAMonsterset->monsters.size()));
 		}
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("monster size =  %d"), TOAMonsterset->monsters.size()));
 	}
 }
+
 void ACharacterPlayerController::NextStageDesTroyMonster()
 {
 	// 필요없음
